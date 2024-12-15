@@ -6,6 +6,7 @@
       <list>
         <option value="$PROJECT_DIR$/minzi-plan/pom.xml" />
         <option value="$PROJECT_DIR$/minzi-common/pom.xml" />
+        <option value="$PROJECT_DIR$/pom.xml" />
       </list>
     </option>
   </component>
