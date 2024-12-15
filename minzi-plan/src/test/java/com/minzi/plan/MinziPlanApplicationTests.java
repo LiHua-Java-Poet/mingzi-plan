@@ -1,4 +1,4 @@
-package com.example.plan;
+package com.minzi.plan;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

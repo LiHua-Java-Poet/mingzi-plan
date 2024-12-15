@@ -1,4 +1,4 @@
-package com.example.plan.config;
+package com.minzi.plan.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

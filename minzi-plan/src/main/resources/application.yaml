@@ -7,7 +7,7 @@ mybatis-plus:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://112.74.191.203:3306/NetWorkDisk?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
+    url: jdbc:mysql://112.74.191.203:3306/tip?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
     username: yc
     password: 123456
   resources:
