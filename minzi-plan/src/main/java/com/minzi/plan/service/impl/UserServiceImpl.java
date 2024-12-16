@@ -2,16 +2,22 @@ package com.minzi.plan.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.minzi.common.utils.ObjectUtils;
 import com.minzi.plan.dao.UserDao;
 import com.minzi.plan.model.entity.UserEntity;
 import com.minzi.plan.service.UserService;
+import lombok.extern.java.Log;
+import lombok.extern.log4j.Log4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
 
+import static com.minzi.common.utils.MD5Utils.MD5Upper;
+
+@Log
 @Service
-public class UserServiceImpl extends ServiceImpl<UserDao,UserEntity> implements UserService {
+public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements UserService {
 
 
     @Resource

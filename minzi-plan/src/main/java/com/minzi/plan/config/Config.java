@@ -30,7 +30,7 @@ public class Config {
 
     @Bean
     public RedisTemplate<String, Map<Integer, Long>> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
-        RedisTemplate<String, Map<Integer, Long>> template = new RedisTemplate<>();
+        RedisTemplate<String, Map<Integer, Long>> template = new RedisTemplate();
         template.setConnectionFactory(redisConnectionFactory);
 
         // 设置key和value的序列化方式

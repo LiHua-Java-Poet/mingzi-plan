@@ -23,37 +23,37 @@ public class R<T> implements Serializable
 
     private T data;
 
-    public static <T> R<T> ok()
+    public static <T> R ok()
     {
         return restResult(null, SUCCESS, "操作成功");
     }
 
-    public static <T> R<T> ok(T data)
+    public static <T> R ok(T data)
     {
         return restResult(data, SUCCESS, "操作成功");
     }
 
-    public static <T> R<T> ok(T data, String msg)
+    public static <T> R ok(T data, String msg)
     {
         return restResult(data, SUCCESS, msg);
     }
 
-    public static <T> R<T> fail()
+    public static <T> R fail()
     {
         return restResult(null, FAIL, "操作失败");
     }
 
-    public static <T> R<T> fail(String msg)
+    public static <T> R fail(String msg)
     {
         return restResult(null, FAIL, msg);
     }
 
-    public static <T> R<T> fail(T data)
+    public static <T> R fail(T data)
     {
         return restResult(data, FAIL, "操作失败");
     }
 
-    public static <T> R<T> fail(T data, String msg)
+    public static <T> R fail(T data, String msg)
     {
         return restResult(data, FAIL, msg);
     }
@@ -65,7 +65,7 @@ public class R<T> implements Serializable
 
     private static <T> R<T> restResult(T data, int code, String msg)
     {
-        R<T> apiResult = new R<>();
+        R<T> apiResult = new R();
         apiResult.setCode(code);
         apiResult.setData(data);
         apiResult.setMsg(msg);
@@ -97,9 +97,10 @@ public class R<T> implements Serializable
         return data;
     }
 
-    public void setData(T data)
+    public R setData(T data)
     {
         this.data = data;
+        return this;
     }
 
     public static <T> Boolean isError(R<T> ret)
