@@ -1,6 +1,8 @@
 package com.minzi.plan.model.entity;
 
 
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
@@ -11,7 +13,7 @@ public class UserEntity {
     /**
      * 用户主键
      */
-    private String userPk;
+    private Long id;
 
     /**
      * 账号
@@ -36,7 +38,7 @@ public class UserEntity {
     /**
      * 状态 (1 正常, 2 停用)
      */
-    private int status;
+    private Integer status;
 
     /**
      * 头像地址
@@ -51,6 +53,10 @@ public class UserEntity {
     /**
      * 创建时间
      */
-    private int createTime;
+    private Integer createTime;
+
+    @TableLogic(value = "0", delval = "unix_timestamp()")
+    @TableField(select = false)
+    private Integer deletedTime;
 
 }

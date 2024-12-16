@@ -10,14 +10,14 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="minzi-common" />
-        <module name="minzi-plan" />
       </profile>
     </annotationProcessing>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="minzi" options="" />
       <module name="minzi-common" options="-parameters" />
-      <module name="minzi-plan" options="-parameters" />
+      <module name="minzi-plan" options="" />
     </option>
   </component>
 </project>

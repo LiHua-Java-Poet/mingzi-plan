@@ -20,6 +20,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao,UserEntity> implements 
 
     @Override
     public List<UserEntity> getList() {
+        List<UserEntity> list = userService.list();
         return userService.list();
     }
 }
