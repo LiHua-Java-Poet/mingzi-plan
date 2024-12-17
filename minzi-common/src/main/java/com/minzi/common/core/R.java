@@ -1,5 +1,7 @@
 package com.minzi.common.core;
 
+import lombok.Data;
+
 import java.io.Serializable;
 
 /**
@@ -7,6 +9,7 @@ import java.io.Serializable;
  *
  * @author ruoyi
  */
+@Data
 public class R<T> implements Serializable
 {
     private static final long serialVersionUID = 1L;
