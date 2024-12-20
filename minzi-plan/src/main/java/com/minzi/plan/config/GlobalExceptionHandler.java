@@ -12,9 +12,9 @@ public class GlobalExceptionHandler {
 
     // 捕获所有异常
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<R<Exception>> handleAllExceptions(Exception ex) {
+    public ResponseEntity<R> handleAllExceptions(Exception ex) {
         ex.printStackTrace();
         // 返回统一的错误响应
-        return new ResponseEntity<>(R.fail(406,ex.toString()), HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(R.error(500,"系统异常请检查"), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

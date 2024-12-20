@@ -1,6 +1,5 @@
 server:
   port: 8901
-mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 # application.yml
@@ -8,8 +7,8 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://112.74.191.203:3306/tip?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
-    username: yc
-    password: 123456
+    username: root
+    password: abcd+7523-
   resources:
     static-locations: classpath:/static/
   cors:
@@ -17,11 +16,15 @@ spring:
     allowed-methods: "*"
     allowed-headers: "*"
   application:
-    name: 'NetWorkDisk'
+    name: 'plan'
   redis:
     host: 112.74.191.203
     port: 6379
     password: redis123
+minio:
+  endpoint: http://112.74.191.203:9000
+  accesskey: minioadmin
+  secretKey: minioadmin
 
 
 filter.passage: "/user/login,/user/reg"

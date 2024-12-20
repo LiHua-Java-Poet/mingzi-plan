@@ -1,9 +1,7 @@
 package com.minzi.plan.model.entity;
 
 
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableLogic;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 
 @Data
@@ -13,6 +11,7 @@ public class UserEntity {
     /**
      * 用户主键
      */
+    @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
     /**

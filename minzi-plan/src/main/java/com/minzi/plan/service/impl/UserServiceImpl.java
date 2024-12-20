@@ -4,14 +4,11 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.minzi.common.core.R;
 import com.minzi.common.utils.DateUtils;
-import com.minzi.common.utils.MD5Utils;
-import com.minzi.common.utils.ObjectUtils;
 import com.minzi.plan.dao.UserDao;
 import com.minzi.plan.model.entity.UserEntity;
 import com.minzi.plan.model.vo.user.UserRegVo;
 import com.minzi.plan.service.UserService;
 import lombok.extern.java.Log;
-import lombok.extern.log4j.Log4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -40,14 +37,14 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
 
         List<UserEntity> list = userService.list(new LambdaQueryWrapper<UserEntity>().eq(UserEntity::getAccount, account));
         if (list.isEmpty()){
-            return R.fail();
+            return R.error(402,"token为空，请检查");
         }
         UserEntity userEntity = list.get(0);
         String newPassword = MD5Upper(password, userEntity.getCreateTime().toString());
 
         String password1 = userEntity.getPassword();
         if (!password1.equals(newPassword)){
-            return R.fail();
+            return R.error(402,"token为空，请检查");
         }
         return R.ok();
     }

@@ -3,116 +3,55 @@ package com.minzi.common.core;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 响应信息主体
  *
  * @author ruoyi
  */
-@Data
-public class R<T> implements Serializable
-{
+public class R extends HashMap<String, Object> {
     private static final long serialVersionUID = 1L;
 
-    /** 成功 */
-    public static final int SUCCESS = 0;
-
-    /** 失败 */
-    public static final int FAIL = 500;
-
-    private int code;
-
-    private String msg;
-
-    private T data;
-
-    public static <T> R ok()
-    {
-        return restResult(null, SUCCESS, "操作成功");
+    public R() {
+        put("code", 0);
     }
 
-    public static <T> R ok(T data)
-    {
-        return restResult(data, SUCCESS, "操作成功");
+    public static R error() {
+        return error(500, "未知异常，请联系管理员");
     }
 
-    public static <T> R ok(T data, String msg)
-    {
-        return restResult(data, SUCCESS, msg);
+    public static R error(String msg) {
+        return error(500, msg);
     }
 
-    public static <T> R fail()
-    {
-        return restResult(null, FAIL, "操作失败");
+    public static R error(int code, String msg) {
+        R r = new R();
+        r.put("code", code);
+        r.put("msg", msg);
+        return r;
     }
 
-    public static <T> R fail(String msg)
-    {
-        return restResult(null, FAIL, msg);
+    public static R ok(String msg) {
+        R r = new R();
+        r.put("msg", msg);
+        return r;
     }
 
-    public static <T> R fail(T data)
-    {
-        return restResult(data, FAIL, "操作失败");
+    public static R ok(Map<String, Object> map) {
+        R r = new R();
+        r.putAll(map);
+        return r;
     }
 
-    public static <T> R fail(T data, String msg)
-    {
-        return restResult(data, FAIL, msg);
+    public static R ok() {
+        return new R();
     }
 
-    public static <T> R<T> fail(int code, String msg)
-    {
-        return restResult(null, code, msg);
-    }
-
-    private static <T> R<T> restResult(T data, int code, String msg)
-    {
-        R<T> apiResult = new R();
-        apiResult.setCode(code);
-        apiResult.setData(data);
-        apiResult.setMsg(msg);
-        return apiResult;
-    }
-
-    public int getCode()
-    {
-        return code;
-    }
-
-    public void setCode(int code)
-    {
-        this.code = code;
-    }
-
-    public String getMsg()
-    {
-        return msg;
-    }
-
-    public void setMsg(String msg)
-    {
-        this.msg = msg;
-    }
-
-    public T getData()
-    {
-        return data;
-    }
-
-    public R setData(T data)
-    {
-        this.data = data;
+    @Override
+    public R put(String key, Object value) {
+        super.put(key, value);
         return this;
-    }
-
-    public static <T> Boolean isError(R<T> ret)
-    {
-        return !isSuccess(ret);
-    }
-
-    public static <T> Boolean isSuccess(R<T> ret)
-    {
-        return R.SUCCESS == ret.getCode();
     }
 }

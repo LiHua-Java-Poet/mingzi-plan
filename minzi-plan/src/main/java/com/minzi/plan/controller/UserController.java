@@ -22,7 +22,7 @@ public class UserController {
     public R getUserList() {
         List<UserEntity> list = userService.getList();
 
-        return R.ok().setData(list);
+        return R.ok();
     }
 
     @GetMapping("/demo")
