@@ -1,8 +1,6 @@
 package com.minzi.common.core;
 
-import lombok.Data;
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,6 +45,12 @@ public class R extends HashMap<String, Object> {
 
     public static R ok() {
         return new R();
+    }
+
+    public R setData(Object data) {
+        this.put("code", 200);
+        this.put("data", data);
+        return this;
     }
 
     @Override

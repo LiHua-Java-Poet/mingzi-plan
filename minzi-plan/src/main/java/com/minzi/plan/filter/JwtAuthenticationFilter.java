@@ -3,6 +3,9 @@ package com.minzi.plan.filter;
 
 import com.alibaba.fastjson.JSON;
 import com.minzi.common.core.R;
+import com.minzi.common.utils.AppJwtUtil;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -52,9 +55,16 @@ public class JwtAuthenticationFilter implements Filter {
             String token = httpServletRequest.getHeader("token");
             servletResponse.setCharacterEncoding("UTF-8");
             servletResponse.setContentType("application/json");
-            if (token==null){
+            if (token == null) {
                 PrintWriter writer = servletResponse.getWriter();
-                writer.write(JSON.toJSONString(R.error(402,"token为空，请检查")));
+                writer.write(JSON.toJSONString(R.error(402, "token为空，请检查")));
+                return;
+            }
+
+            //鉴权
+            if (!validateToken(token)){
+                PrintWriter writer = servletResponse.getWriter();
+                writer.write(JSON.toJSONString(R.error(402, "token无效")));
                 return;
             }
             filterChain.doFilter(servletRequest, servletResponse);
@@ -63,6 +73,18 @@ public class JwtAuthenticationFilter implements Filter {
         filterChain.doFilter(servletRequest, servletResponse);
     }
 
-
+    private boolean validateToken(String token) {
+        try {
+            Jws<Claims> jws = AppJwtUtil.getJws(token);
+            Claims claims = jws.getBody();
+            int i = AppJwtUtil.verifyToken(claims);
+            if (i < 1) {
+                return true;
+            }
+        }catch (Exception e){
+            return false;
+        }
+        return false;
+    }
 
 }

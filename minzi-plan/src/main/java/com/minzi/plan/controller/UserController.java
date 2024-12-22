@@ -21,8 +21,7 @@ public class UserController {
     @GetMapping("/getUserList")
     public R getUserList() {
         List<UserEntity> list = userService.getList();
-
-        return R.ok();
+        return R.ok().setData(list);
     }
 
     @GetMapping("/demo")
@@ -38,8 +37,7 @@ public class UserController {
 
     @PostMapping("/login")
     public R login(@RequestBody UserLoginVo vo) {
-        R login = userService.login(vo.getAccount(), vo.getPassword());
-        return login;
+        return userService.login(vo.getAccount(), vo.getPassword());
     }
 
 }

@@ -16,15 +16,17 @@ public class AppJwtUtil {
     private static final int REFRESH_TIME = 300;
 
     // 生产ID
-    public static String getToken(String id){
+    public static String getToken(Long id,String name,String userName){
         Map<String, Object> claimMaps = new HashMap();
         claimMaps.put("id",id);
+        claimMaps.put("name",name);
+        claimMaps.put("userName",userName);
         long currentTime = System.currentTimeMillis();
         return Jwts.builder()
                 .setId(UUID.randomUUID().toString())
                 .setIssuedAt(new Date(currentTime))  //签发时间
                 .setSubject("system")  //说明
-                .setIssuer("BlueBook") //签发者信息
+                .setIssuer("plan") //签发者信息
                 .setAudience("app")  //接收用户
                 .compressWith(CompressionCodecs.GZIP)  //数据压缩方式
                 .signWith(SignatureAlgorithm.HS512, generalKey()) //加密方式
@@ -39,7 +41,7 @@ public class AppJwtUtil {
      * @param token
      * @return
      */
-    private static Jws<Claims> getJws(String token) {
+    public static Jws<Claims> getJws(String token) {
             return Jwts.parser()
                     .setSigningKey(generalKey())
                     .parseClaimsJws(token);
@@ -106,12 +108,15 @@ public class AppJwtUtil {
     }
 
     public static void main(String[] args) {
-        System.out.println(AppJwtUtil.getToken("F14B992F8C484BF6828D"));
-        Jws<Claims> jws = AppJwtUtil.getJws("eyJhbGciOiJIUzUxMiIsInppcCI6IkdaSVAifQ.H4sIAAAAAAAAAC2L0QqDMAwA_yXPFkw6a-LfxDawDoRCK2yM_bsR9nbHcV94jQobRGHKO-UwG1F4mEkQ1hJy4ZjKWjRyggmqDtgwIQuvssgE_dz97p8-7Lh7765Pq4e66VnctDVne7f_KbjcZ_WGONPvAsM25luDAAAA._HLSpxHpSl4KZbYtSx1xnyeaRpsJTQ5xz6wMfFehqUr5etW6pOhCuP4EdrhSBefJZ5evmfYcUAj_dbHkLVdxSQ");
+        String token = AppJwtUtil.getToken(5L,"李华","155");
+        System.out.println(token);
+        Jws<Claims> jws = AppJwtUtil.getJws(token);
         Claims claims = jws.getBody();
         int i = AppJwtUtil.verifyToken(claims);
         System.out.println(i);
         System.out.println(claims.get("id"));
+        System.out.println(claims.get("name"));
+
 
     }
 
