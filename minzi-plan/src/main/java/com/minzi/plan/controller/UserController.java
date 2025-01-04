@@ -37,7 +37,7 @@ public class UserController {
 
     @PostMapping("/login")
     public R login(@RequestBody UserLoginVo vo) {
-        return userService.login(vo.getAccount(), vo.getPassword());
+        return userService.login(vo.getUserName(), vo.getPassword());
     }
 
 }

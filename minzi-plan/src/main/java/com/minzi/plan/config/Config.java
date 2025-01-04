@@ -18,7 +18,7 @@ public class Config {
     public CorsFilter corsFilter() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.addAllowedOrigin("http://localhost:8849"); // 设置允许访问的源，注意替换为你的uni-app应用地址
+        config.addAllowedOrigin("*"); // 设置允许访问的源，注意替换为你的uni-app应用地址
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
 

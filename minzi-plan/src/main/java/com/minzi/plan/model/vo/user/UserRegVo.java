@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 public class UserRegVo {
 
-    @ApiModelProperty("账号")
+    @ApiModelProperty("用户名")
     private String userName;
 
     @ApiModelProperty("账号")

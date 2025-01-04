@@ -11,7 +11,7 @@ public interface UserService extends IService<UserEntity> {
 
     List<UserEntity> getList();
 
-    R login(String account, String password);
+    R login(String userName, String password);
 
     void reg(UserRegVo vo);
 }

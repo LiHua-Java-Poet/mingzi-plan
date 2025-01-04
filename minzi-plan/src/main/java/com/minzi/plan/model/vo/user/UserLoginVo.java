@@ -7,8 +7,8 @@ import lombok.Data;
 @Data
 public class UserLoginVo {
 
-    @ApiModelProperty("账号")
-    private String account;
+    @ApiModelProperty("用户名")
+    private String userName;
 
     @ApiModelProperty("密码")
     private String password;

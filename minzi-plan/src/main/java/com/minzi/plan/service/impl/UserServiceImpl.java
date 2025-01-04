@@ -27,7 +27,6 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
     @Resource
     private UserService userService;
 
-
     @Override
     public List<UserEntity> getList() {
         List<UserEntity> list = userService.list();
@@ -36,8 +35,8 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
 
 
     @Override
-    public R login(String account, String password) {
-        List<UserEntity> list = userService.list(new LambdaQueryWrapper<UserEntity>().eq(UserEntity::getAccount, account));
+    public R login(String userName, String password) {
+        List<UserEntity> list = userService.list(new LambdaQueryWrapper<UserEntity>().eq(UserEntity::getUserName, userName));
         if (list.isEmpty()) {
             return R.error(402, "用户名不存在");
         }
