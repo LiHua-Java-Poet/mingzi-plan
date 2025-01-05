@@ -1,5 +1,6 @@
 server:
   port: 8901
+mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 # application.yml
@@ -12,7 +13,7 @@ spring:
   resources:
     static-locations: classpath:/static/
   cors:
-    allowed-origins: http://localhost:8849
+    allowed-origins: "*"
     allowed-methods: "*"
     allowed-headers: "*"
   application:

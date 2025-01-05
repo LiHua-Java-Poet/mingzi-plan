@@ -8,6 +8,8 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.Map;
 
@@ -17,13 +19,14 @@ public class Config {
     @Bean
     public CorsFilter corsFilter() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowCredentials(true);
-        config.addAllowedOrigin("*"); // 设置允许访问的源，注意替换为你的uni-app应用地址
-        config.addAllowedHeader("*");
-        config.addAllowedMethod("*");
+        config.setAllowCredentials(true); // 允许携带凭证
+        config.addAllowedOrigin("*"); // 允许所有域名访问
+        config.addAllowedHeader("*"); // 允许所有请求头
+        config.addAllowedMethod("*"); // 允许所有 HTTP 方法
+        config.addExposedHeader("*"); // 允许客户端访问所有响应头
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", config);
+        source.registerCorsConfiguration("/**", config); // 应用到所有路径
 
         return new CorsFilter(source);
     }

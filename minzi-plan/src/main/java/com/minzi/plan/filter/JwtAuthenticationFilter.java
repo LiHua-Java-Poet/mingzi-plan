@@ -8,13 +8,16 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpMethod;
 
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -47,23 +50,25 @@ public class JwtAuthenticationFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
 
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
-
+        HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
         //请求的接口地址
         String requestURI = httpServletRequest.getRequestURI();
-        if (!passageUri.contains(requestURI)) {
+        if (!HttpMethod.OPTIONS.toString().equals(((HttpServletRequest) servletRequest).getMethod()) && !passageUri.contains(requestURI)) {
             //鉴权
-            String token = httpServletRequest.getHeader("token");
+            String token = httpServletRequest.getHeader("Token");
             servletResponse.setCharacterEncoding("UTF-8");
             servletResponse.setContentType("application/json");
+
             if (token == null) {
-                PrintWriter writer = servletResponse.getWriter();
+                PrintWriter writer = httpServletResponse.getWriter();
+                httpServletResponse.setHeader("Access-Control-Allow-Origin","*");
                 writer.write(JSON.toJSONString(R.error(402, "token为空，请检查")));
                 return;
             }
-
             //鉴权
-            if (!validateToken(token)){
+            if (!validateToken(token)) {
                 PrintWriter writer = servletResponse.getWriter();
+                httpServletResponse.setHeader("Access-Control-Allow-Origin","*");
                 writer.write(JSON.toJSONString(R.error(402, "token无效")));
                 return;
             }
@@ -81,7 +86,7 @@ public class JwtAuthenticationFilter implements Filter {
             if (i < 1) {
                 return true;
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             return false;
         }
         return false;
