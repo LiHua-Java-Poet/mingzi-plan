@@ -1,46 +1,45 @@
-package com.minzi.plan.model.entity;
+package com.minzi.plan.model.to.plan;
 
-
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
 @Data
-@TableName("plan")
-public class PlanEntity {
+public class PlanInfoTo {
 
     /**
      * 主键
      */
     @TableId(value = "id", type = IdType.AUTO)
-    private Long id; // 主键
+    private Long id;
 
     /**
-     * 用户ID
+     *  用户ID
      */
     private Long userId;
 
     /**
-     * 计划名
+     *  计划名
      */
     private String planName;
 
     /**
-     * 计划进度
+     *  计划进度
      */
     private Integer taskProgress;
 
     /**
-     * 总任务数
+     *  总任务数
      */
     private Integer taskTotal;
 
     /**
-     * 周期类型 1 每天 2 隔天
+     *  周期类型 1 每天 2 隔天
      */
     private Integer cycleType;
 
     /**
-     * 计划类型 1 预设 2 循环
+     *  计划类型 1 预设 2 循环
      */
     private Integer planType;
 
@@ -60,11 +59,12 @@ public class PlanEntity {
     private String description;
 
     /**
+     * 删除时间
+     */
+    private Integer deletedTime;
+
+    /**
      * 预期完成时间
      */
     private Integer expectedTime;
-
-    @TableLogic(value = "0", delval = "unix_timestamp()")
-    @TableField(select = false)
-    private Integer deletedTime;
 }

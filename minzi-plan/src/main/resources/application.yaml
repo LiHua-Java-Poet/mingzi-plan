@@ -5,6 +5,8 @@ mybatis-plus:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 # application.yml
 spring:
+  main:
+    allow-bean-definition-overriding: true
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://112.74.191.203:3306/tip?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
@@ -28,4 +30,4 @@ minio:
   secretKey: minioadmin
 
 
-filter.passage: "/user/login,/user/reg"
+filter.passage: "/user/login,/user/reg,/doc.html,/swagger-ui.html"

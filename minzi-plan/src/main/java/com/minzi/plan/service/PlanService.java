@@ -1,12 +1,12 @@
 package com.minzi.plan.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
+import com.minzi.common.service.BaseService;
 import com.minzi.plan.model.entity.PlanEntity;
+import com.minzi.plan.model.to.plan.PlanInfoTo;
 import com.minzi.plan.model.to.plan.PlanListTo;
+import com.minzi.plan.model.vo.plan.PlanSaveVo;
+import com.minzi.plan.model.vo.plan.PlanUpdateVo;
 
-import java.util.List;
 
-public interface PlanService extends IService<PlanEntity> {
-
-    List<PlanListTo> getList();
+public interface PlanService extends BaseService<PlanEntity,PlanListTo,PlanInfoTo, PlanSaveVo, PlanUpdateVo> {
 }

@@ -14,7 +14,7 @@ public class EntityUtils<K, T> {
         Map<K, T> result = new HashMap<>();
         list.forEach(item -> {
             Object apply = function.apply(item);
-            result.put((K) apply,item);
+            result.put((K) apply, item);
         });
         return result;
     }
@@ -27,6 +27,7 @@ public class EntityUtils<K, T> {
      * @throws IllegalAccessException 如果字段无法访问
      */
     public static void copySameFields(Object source, Object target) {
+        if (source == null) return;
         // 获取源对象和目标对象的 Class 对象
         Class<?> sourceClass = source.getClass();
         Class<?> targetClass = target.getClass();
