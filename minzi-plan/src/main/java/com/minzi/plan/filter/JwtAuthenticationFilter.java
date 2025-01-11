@@ -4,12 +4,14 @@ package com.minzi.plan.filter;
 import com.alibaba.fastjson.JSON;
 import com.minzi.common.core.R;
 import com.minzi.common.utils.AppJwtUtil;
+import com.minzi.plan.common.UserContext;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 
+import javax.annotation.Resource;
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
@@ -23,11 +25,14 @@ import java.util.Set;
 
 
 @Log
-@WebFilter(filterName = "jwtAuthenticationFilter", urlPatterns = {"/*"})
+@WebFilter(filterName = "jwtAuthenticationFilter", urlPatterns = {"/app/*"})
 public class JwtAuthenticationFilter implements Filter {
 
     @Value("${filter.passage}")
     private String passageUriArray;
+
+    @Resource
+    private UserContext userContext;
 
     private Set<String> passageUri = new HashSet<>();
 
@@ -84,6 +89,7 @@ public class JwtAuthenticationFilter implements Filter {
             Claims claims = jws.getBody();
             int i = AppJwtUtil.verifyToken(claims);
             if (i < 1) {
+                userContext.setUserInfo(claims.get("name",String.class),claims.get("userName",String.class),claims.get("id",Long.class));
                 return true;
             }
         } catch (Exception e) {

@@ -2,17 +2,14 @@ package com.minzi.plan.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.minzi.common.service.BaseService;
 import com.minzi.common.utils.EntityUtils;
+import com.minzi.plan.common.UserContext;
 import com.minzi.plan.dao.PlanDao;
 import com.minzi.plan.model.entity.PlanEntity;
-import com.minzi.plan.model.to.plan.PlanInfoTo;
+import com.minzi.plan.model.entity.UserEntity;
 import com.minzi.plan.model.to.plan.PlanListTo;
 import com.minzi.plan.model.vo.plan.PlanSaveVo;
-import com.minzi.plan.model.vo.plan.PlanUpdateVo;
 import com.minzi.plan.service.PlanService;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -28,13 +25,21 @@ public class PlanServiceImpl extends ServiceImpl<PlanDao, PlanEntity> implements
     @Resource
     private PlanService planService;
 
+    @Resource
+    private UserContext userContext;
+
 
     @Override
     public Wrapper<PlanEntity> getListCondition(Map<String, Object> params) {
         LambdaQueryWrapper<PlanEntity> wrapper = new LambdaQueryWrapper<>();
 
         Object id = params.get("id");
-        wrapper.eq(!StringUtils.isEmpty(id),PlanEntity::getId,id);
+        wrapper.eq(!StringUtils.isEmpty(id), PlanEntity::getId, id);
+
+        UserEntity userInfo = userContext.getUserInfo();
+        if (userInfo != null){
+            wrapper.eq( PlanEntity::getUserId, userInfo.getId());
+        }
 
         return wrapper;
     }
@@ -43,7 +48,7 @@ public class PlanServiceImpl extends ServiceImpl<PlanDao, PlanEntity> implements
     public List<PlanListTo> formatList(List<PlanEntity> list) {
         return list.stream().map(item -> {
             PlanListTo to = new PlanListTo();
-            EntityUtils.copySameFields(item,to);
+            EntityUtils.copySameFields(item, to);
             return to;
         }).collect(Collectors.toList());
     }
