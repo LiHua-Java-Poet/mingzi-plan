@@ -11,6 +11,7 @@ import com.minzi.plan.model.entity.UserEntity;
 import com.minzi.plan.model.to.plan.PlanInfoTo;
 import com.minzi.plan.model.to.plan.PlanListTo;
 import com.minzi.plan.model.vo.plan.PlanSaveVo;
+import com.minzi.plan.model.vo.plan.PlanUpdateVo;
 import com.minzi.plan.service.PlanService;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -75,5 +76,10 @@ public class PlanServiceImpl extends ServiceImpl<PlanDao, PlanEntity> implements
         PlanInfoTo to=new PlanInfoTo();
         EntityUtils.copySameFields(entity,to);
         return to;
+    }
+
+    @Override
+    public void update(PlanUpdateVo planUpdateVo) {
+
     }
 }
