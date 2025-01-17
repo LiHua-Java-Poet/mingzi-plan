@@ -3,11 +3,12 @@ package com.minzi.plan.controller;
 
 import com.minzi.common.core.PageUtils;
 import com.minzi.common.core.R;
-import com.minzi.plan.model.to.plan.PlanInfoTo;
-import com.minzi.plan.model.to.plan.PlanListTo;
-import com.minzi.plan.model.vo.plan.PlanSaveVo;
-import com.minzi.plan.service.PlanService;
-import io.swagger.annotations.*;
+import com.minzi.plan.model.to.task.TaskInfoTo;
+import com.minzi.plan.model.to.task.TaskListTo;
+import com.minzi.plan.model.vo.task.TaskSaveVo;
+import com.minzi.plan.service.TaskService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,38 +17,36 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/app/plan")
-@Api(tags = "计划管理")
-public class PlanController {
+@RequestMapping("/app/task")
+@Api(tags = "任务管理")
+public class TaskController {
 
     @Resource
-    private PlanService planService;
+    private TaskService taskService;
 
 
-    @ApiOperation(value = "获取到用户的计划列表", response = PlanListTo.class)
+    @ApiOperation(value = "获取到用户的计划列表", response = TaskListTo.class)
     @GetMapping("/list")
     public R list(@RequestParam Map<String,Object> params) {
         if (StringUtils.isEmpty(params.get("page"))){
-            List<PlanListTo> all = planService.all(params);
+            List<TaskListTo> all = taskService.all(params);
             return R.ok().setData(all);
         }
-        PageUtils pageUtils = planService.queryPage(params);
+        PageUtils pageUtils = taskService.queryPage(params);
         return R.ok().setData(pageUtils);
     }
 
     @ApiOperation(value = "获取到计划的信息", notes = "获取到计划的信息")
     @GetMapping("/info")
     public R info(@RequestParam Long id) {
-        PlanInfoTo one = planService.getOne(id);
+        TaskInfoTo one = taskService.getOne(id);
         return R.ok().setData(one);
     }
 
     @ApiOperation(value = "保存新增计划", notes = "获取到计划的信息")
     @PostMapping("/save")
-    public R save(@RequestBody PlanSaveVo vo) {
-        planService.add(vo);
+    public R save(@RequestBody TaskSaveVo vo) {
+        taskService.add(vo);
         return R.ok().setData(null);
     }
-
-
 }
