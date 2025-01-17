@@ -35,6 +35,8 @@ filter.passage: "/app/user/login,/app/user/reg"
 knife4j:
   enable: true # 启用 Knife4j
   production: false # 是否为生产环境，生产环境建议设置为 true
+  setting:
+    enableSwaggerModels: true
 springfox:
   documentation:
     swagger-ui:

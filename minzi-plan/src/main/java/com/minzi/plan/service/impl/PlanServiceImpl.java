@@ -8,6 +8,7 @@ import com.minzi.plan.common.UserContext;
 import com.minzi.plan.dao.PlanDao;
 import com.minzi.plan.model.entity.PlanEntity;
 import com.minzi.plan.model.entity.UserEntity;
+import com.minzi.plan.model.to.plan.PlanInfoTo;
 import com.minzi.plan.model.to.plan.PlanListTo;
 import com.minzi.plan.model.vo.plan.PlanSaveVo;
 import com.minzi.plan.service.PlanService;
@@ -56,5 +57,23 @@ public class PlanServiceImpl extends ServiceImpl<PlanDao, PlanEntity> implements
     @Override
     public void add(PlanSaveVo planSaveVo) {
 
+    }
+
+    @Override
+    public Wrapper<PlanEntity> getOneCondition(Map<String, Object> params) {
+        LambdaQueryWrapper<PlanEntity> wrapper = new LambdaQueryWrapper<>();
+
+        Object id = params.get("id");
+        wrapper.eq(!StringUtils.isEmpty(id), PlanEntity::getId, id);
+
+        wrapper.last("limit 1");
+        return wrapper;
+    }
+
+    @Override
+    public PlanInfoTo formatOne(PlanEntity entity) {
+        PlanInfoTo to=new PlanInfoTo();
+        EntityUtils.copySameFields(entity,to);
+        return to;
     }
 }

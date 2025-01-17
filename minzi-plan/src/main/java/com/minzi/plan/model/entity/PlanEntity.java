@@ -62,6 +62,16 @@ public class PlanEntity {
     /**
      * 预期完成时间
      */
+    private Integer startTime;
+
+    /**
+     * 计划状态 1 进行中 2 已完成 3 已取消
+     */
+    private Integer status;
+
+    /**
+     * 预期完成时间
+     */
     private Integer expectedTime;
 
     @TableLogic(value = "0", delval = "unix_timestamp()")

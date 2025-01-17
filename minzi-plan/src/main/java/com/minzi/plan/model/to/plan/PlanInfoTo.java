@@ -10,7 +10,6 @@ public class PlanInfoTo {
     /**
      * 主键
      */
-    @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
     /**
@@ -67,4 +66,14 @@ public class PlanInfoTo {
      * 预期完成时间
      */
     private Integer expectedTime;
+
+    /**
+     * 预期完成时间
+     */
+    private Integer startTime;
+
+    /**
+     * 计划状态 1 进行中 2 已完成 3 已取消
+     */
+    private Integer status;
 }
