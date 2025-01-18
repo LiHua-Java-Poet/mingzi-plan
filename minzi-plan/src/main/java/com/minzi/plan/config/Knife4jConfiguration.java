@@ -11,10 +11,7 @@ import springfox.documentation.spi.service.contexts.SecurityContext;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.schema.ModelRef;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 import static javax.accessibility.AccessibleRole.HEADER;
 
@@ -31,13 +28,12 @@ public class Knife4jConfiguration {
                 .in("header")
                 .required(true)
                 .build();
-        return new Docket(DocumentationType.SWAGGER_2)
+        return new Docket(DocumentationType.OAS_30)
                 .apiInfo(apiInfo())
                 .select()
-                .apis(RequestHandlerSelectors.withMethodAnnotation(ApiOperation.class))
                 .apis(RequestHandlerSelectors.basePackage("com.minzi.plan.controller")) // 替换为你的包路径
                 .paths(PathSelectors.any())
-                .build()
+                .build().ignoredParameterTypes(Map.class)
                 .globalRequestParameters(Arrays.asList(tokenHeader));
     }
 

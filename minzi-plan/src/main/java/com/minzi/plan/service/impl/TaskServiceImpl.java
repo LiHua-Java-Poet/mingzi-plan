@@ -4,8 +4,11 @@ import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.minzi.common.utils.EntityUtils;
+import com.minzi.plan.common.UserContext;
 import com.minzi.plan.dao.TaskDao;
+import com.minzi.plan.model.entity.PlanEntity;
 import com.minzi.plan.model.entity.TaskEntity;
+import com.minzi.plan.model.entity.UserEntity;
 import com.minzi.plan.model.to.task.TaskInfoTo;
 import com.minzi.plan.model.to.task.TaskListTo;
 import com.minzi.plan.model.vo.task.TaskSaveVo;
@@ -28,6 +31,9 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, TaskEntity> implements
     @Resource
     private TaskService taskService;
 
+    @Resource
+    private UserContext userContext;
+
     @Override
     public Wrapper<TaskEntity> getOneCondition(Map<String, Object> params) {
         return null;
@@ -42,8 +48,14 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, TaskEntity> implements
     public Wrapper<TaskEntity> getListCondition(Map<String, Object> params) {
         LambdaQueryWrapper<TaskEntity> wrapper = new LambdaQueryWrapper<>();
 
-        Object userId = params.get("userId");
-        wrapper.eq(!StringUtils.isEmpty(userId), TaskEntity::getUserId, userId);
+        UserEntity userInfo = userContext.getUserInfo();
+        if (userInfo != null) {
+            wrapper.eq(TaskEntity::getUserId, userInfo.getId());
+        }
+
+        Object status = params.get("status");
+        wrapper.eq(!StringUtils.isEmpty(status),TaskEntity::getStatus, status);
+
 
         return wrapper;
     }

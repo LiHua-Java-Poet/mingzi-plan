@@ -8,6 +8,8 @@ import com.minzi.plan.model.to.task.TaskListTo;
 import com.minzi.plan.model.vo.task.TaskSaveVo;
 import com.minzi.plan.service.TaskService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +27,11 @@ public class TaskController {
     private TaskService taskService;
 
 
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "page",value = "页码",required = false,dataType = "int",paramType = "query"),
+            @ApiImplicitParam(name = "limit",value = "大小",required = false,dataType = "int",paramType = "query"),
+            @ApiImplicitParam(name = "status",value = "状态",required = false,dataType = "int",paramType = "query")
+    })
     @ApiOperation(value = "获取到用户的计划列表", response = TaskListTo.class)
     @GetMapping("/list")
     public R list(@RequestParam Map<String,Object> params) {
