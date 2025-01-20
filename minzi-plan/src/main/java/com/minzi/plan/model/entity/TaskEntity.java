@@ -49,6 +49,12 @@ public class TaskEntity {
     private Integer lockTime;
 
     /**
+     * 创建时间
+     */
+    @TableField(fill = FieldFill.INSERT) // 插入时自动填充
+    private Integer createTime;
+
+    /**
      * 删除时间
      */
     @TableLogic(value = "0", delval = "unix_timestamp()")

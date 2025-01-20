@@ -52,6 +52,7 @@ public class UserEntity {
     /**
      * 创建时间
      */
+    @TableField(fill = FieldFill.INSERT) // 插入时自动填充
     private Integer createTime;
 
     @TableLogic(value = "0", delval = "unix_timestamp()")

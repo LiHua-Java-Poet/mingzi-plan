@@ -8,4 +8,16 @@ import com.minzi.plan.model.vo.task.TaskSaveVo;
 import com.minzi.plan.model.vo.task.TaskUpdateVo;
 
 public interface TaskService extends BaseService<TaskEntity, TaskListTo, TaskInfoTo, TaskSaveVo, TaskUpdateVo> {
+    /**
+     * 完成任务
+     * @param ids 完成的任务ID
+     */
+    void completeTask(String[] ids);
+
+
+    /**
+     * 取消任务
+     * @param ids 任务ID
+     */
+    void cancelTask(String[] ids);
 }

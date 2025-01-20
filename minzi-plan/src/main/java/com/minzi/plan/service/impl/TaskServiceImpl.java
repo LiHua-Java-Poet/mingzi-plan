@@ -41,12 +41,15 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, TaskEntity> implements
 
     @Override
     public TaskInfoTo formatOne(TaskEntity entity) {
-        return null;
+        TaskInfoTo to = new TaskInfoTo();
+        EntityUtils.copySameFields(entity, to);
+        return to;
     }
 
     @Override
     public Wrapper<TaskEntity> getListCondition(Map<String, Object> params) {
         LambdaQueryWrapper<TaskEntity> wrapper = new LambdaQueryWrapper<>();
+        wrapper.orderByDesc(TaskEntity::getId);
 
         UserEntity userInfo = userContext.getUserInfo();
         if (userInfo != null) {
@@ -54,7 +57,7 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, TaskEntity> implements
         }
 
         Object status = params.get("status");
-        wrapper.eq(!StringUtils.isEmpty(status),TaskEntity::getStatus, status);
+        wrapper.eq(!StringUtils.isEmpty(status), TaskEntity::getStatus, status);
 
 
         return wrapper;
@@ -73,10 +76,35 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, TaskEntity> implements
     public void add(TaskSaveVo taskSaveVo) {
         TaskEntity save = new TaskEntity();
         EntityUtils.copySameFields(taskSaveVo, save);
+
+        UserEntity userInfo = userContext.getUserInfo();
+        save.setUserId(userInfo.getId());
+        save.setStatus(1);
         taskService.save(save);
     }
 
     @Override
     public void update(TaskUpdateVo taskUpdateVo) {
+
+    }
+
+    @Override
+    public void completeTask(String[] ids) {
+        //完成任务
+        List<TaskEntity> taskEntityList = taskService.list(new LambdaQueryWrapper<TaskEntity>().in(TaskEntity::getId, ids));
+        taskEntityList.forEach(item->{
+            item.setStatus(2);
+        });
+        taskService.updateBatchById(taskEntityList);
+    }
+
+    @Override
+    public void cancelTask(String[] ids) {
+        //完成任务
+        List<TaskEntity> taskEntityList = taskService.list(new LambdaQueryWrapper<TaskEntity>().in(TaskEntity::getId, ids));
+        taskEntityList.forEach(item->{
+            item.setStatus(3);
+        });
+        taskService.updateBatchById(taskEntityList);
     }
 }

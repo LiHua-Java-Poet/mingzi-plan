@@ -32,7 +32,7 @@ public class TaskController {
             @ApiImplicitParam(name = "limit",value = "大小",required = false,dataType = "int",paramType = "query"),
             @ApiImplicitParam(name = "status",value = "状态",required = false,dataType = "int",paramType = "query")
     })
-    @ApiOperation(value = "获取到用户的计划列表", response = TaskListTo.class)
+    @ApiOperation(value = "获取到用户的任务列表", response = TaskListTo.class)
     @GetMapping("/list")
     public R list(@RequestParam Map<String,Object> params) {
         if (StringUtils.isEmpty(params.get("page"))){
@@ -43,17 +43,31 @@ public class TaskController {
         return R.ok().setData(pageUtils);
     }
 
-    @ApiOperation(value = "获取到计划的信息", notes = "获取到计划的信息")
+    @ApiOperation(value = "获取到任务信息", notes = "获取到计划的信息")
     @GetMapping("/info")
     public R info(@RequestParam Long id) {
         TaskInfoTo one = taskService.getOne(id);
         return R.ok().setData(one);
     }
 
-    @ApiOperation(value = "保存新增计划", notes = "获取到计划的信息")
+    @ApiOperation(value = "保存新增任务")
     @PostMapping("/save")
     public R save(@RequestBody TaskSaveVo vo) {
         taskService.add(vo);
-        return R.ok().setData(null);
+        return R.ok();
+    }
+
+    @ApiOperation(value = "完成任务")
+    @PostMapping("/completeTask")
+    public R completeTask(@RequestBody String[] ids) {
+        taskService.completeTask(ids);
+        return R.ok();
+    }
+
+    @ApiOperation(value = "取消任务")
+    @PostMapping("/cancelTask")
+    public R cancelTask(@RequestBody String[] ids) {
+        taskService.cancelTask(ids);
+        return R.ok();
     }
 }
