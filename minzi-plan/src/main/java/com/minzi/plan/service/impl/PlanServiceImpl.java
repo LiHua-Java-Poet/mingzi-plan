@@ -82,4 +82,9 @@ public class PlanServiceImpl extends ServiceImpl<PlanDao, PlanEntity> implements
     public void update(PlanUpdateVo planUpdateVo) {
 
     }
+
+    @Override
+    public void delete(String[] ids) {
+
+    }
 }

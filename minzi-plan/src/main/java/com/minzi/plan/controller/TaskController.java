@@ -57,6 +57,13 @@ public class TaskController {
         return R.ok();
     }
 
+    @ApiOperation(value = "删除任务")
+    @PostMapping("/delete")
+    public R delete(@RequestBody String[] ids) {
+        taskService.delete(ids);
+        return R.ok();
+    }
+
     @ApiOperation(value = "完成任务")
     @PostMapping("/completeTask")
     public R completeTask(@RequestBody String[] ids) {

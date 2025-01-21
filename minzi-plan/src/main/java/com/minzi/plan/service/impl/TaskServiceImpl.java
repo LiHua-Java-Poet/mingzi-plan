@@ -6,7 +6,6 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.minzi.common.utils.EntityUtils;
 import com.minzi.plan.common.UserContext;
 import com.minzi.plan.dao.TaskDao;
-import com.minzi.plan.model.entity.PlanEntity;
 import com.minzi.plan.model.entity.TaskEntity;
 import com.minzi.plan.model.entity.UserEntity;
 import com.minzi.plan.model.to.task.TaskInfoTo;
@@ -19,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -106,5 +106,10 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, TaskEntity> implements
             item.setStatus(3);
         });
         taskService.updateBatchById(taskEntityList);
+    }
+
+    @Override
+    public void delete(String[] ids) {
+        taskService.removeByIds(Arrays.asList(ids));
     }
 }
