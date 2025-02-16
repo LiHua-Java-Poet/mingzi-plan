@@ -8,6 +8,14 @@ import lombok.Data;
 @TableName("plan")
 public class PlanEntity {
 
+    public PlanEntity(Long id, String planName) {
+        this.id = id;
+        this.planName = planName;
+    }
+
+    public PlanEntity() {
+    }
+
     /**
      * 主键
      */
@@ -40,7 +48,7 @@ public class PlanEntity {
     private Integer cycleType;
 
     /**
-     * 计划类型 1 预设 2 循环
+     * 计划类型 1 学习 2 锻炼 3 写作 4 阅读 5 影视
      */
     private Integer planType;
 
@@ -68,6 +76,11 @@ public class PlanEntity {
      * 计划状态 1 进行中 2 已完成 3 已取消
      */
     private Integer status;
+
+    /**
+     * 任务规则
+     */
+    private String taskRule;
 
     /**
      * 预期完成时间

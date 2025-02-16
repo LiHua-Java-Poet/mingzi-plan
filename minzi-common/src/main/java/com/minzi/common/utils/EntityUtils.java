@@ -9,7 +9,6 @@ import java.util.function.Function;
 
 public class EntityUtils<K, T> {
 
-
     public Map<K, T> get(List<T> list, Function function) {
         Map<K, T> result = new HashMap<>();
         list.forEach(item -> {

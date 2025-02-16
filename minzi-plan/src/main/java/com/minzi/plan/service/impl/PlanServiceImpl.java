@@ -39,8 +39,8 @@ public class PlanServiceImpl extends ServiceImpl<PlanDao, PlanEntity> implements
         wrapper.eq(!StringUtils.isEmpty(id), PlanEntity::getId, id);
 
         UserEntity userInfo = userContext.getUserInfo();
-        if (userInfo != null){
-            wrapper.eq( PlanEntity::getUserId, userInfo.getId());
+        if (userInfo != null) {
+            wrapper.eq(PlanEntity::getUserId, userInfo.getId());
         }
 
         return wrapper;
@@ -57,7 +57,9 @@ public class PlanServiceImpl extends ServiceImpl<PlanDao, PlanEntity> implements
 
     @Override
     public void add(PlanSaveVo planSaveVo) {
-
+        PlanEntity entity = new PlanEntity();
+        EntityUtils.copySameFields(planSaveVo,entity);
+        planService.save(entity);
     }
 
     @Override
@@ -73,8 +75,8 @@ public class PlanServiceImpl extends ServiceImpl<PlanDao, PlanEntity> implements
 
     @Override
     public PlanInfoTo formatOne(PlanEntity entity) {
-        PlanInfoTo to=new PlanInfoTo();
-        EntityUtils.copySameFields(entity,to);
+        PlanInfoTo to = new PlanInfoTo();
+        EntityUtils.copySameFields(entity, to);
         return to;
     }
 
