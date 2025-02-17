@@ -3,7 +3,6 @@ package com.minzi.plan.scheduled;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.minzi.common.utils.DateUtils;
-import com.minzi.common.utils.EntityUtils;
 import com.minzi.common.utils.ObjectUtils;
 import com.minzi.plan.model.entity.PlanEntity;
 import com.minzi.plan.model.entity.TaskEntity;
@@ -13,7 +12,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
