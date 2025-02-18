@@ -3,6 +3,8 @@ package com.minzi.plan.config;
 import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
+import com.minzi.common.tools.EntityAct;
+import com.minzi.common.tools.impl.EntityActImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -52,5 +54,10 @@ public class Config {
         // 添加分页插件
         interceptor.addInnerInterceptor(new PaginationInnerInterceptor(DbType.MYSQL)); // 根据数据库类型调整
         return interceptor;
+    }
+
+    @Bean
+    public EntityAct getEntityAct(){
+        return new EntityActImpl();
     }
 }

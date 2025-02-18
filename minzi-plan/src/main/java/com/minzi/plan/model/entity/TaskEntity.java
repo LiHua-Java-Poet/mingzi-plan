@@ -1,6 +1,8 @@
 package com.minzi.plan.model.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
+import com.minzi.common.annotation.OneToOne;
+import com.minzi.plan.service.PlanService;
 import lombok.Data;
 
 @Data
@@ -60,4 +62,9 @@ public class TaskEntity {
     @TableLogic(value = "0", delval = "unix_timestamp()")
     @TableField(select = false)
     private Integer deleteTime;
+
+    @OneToOne(localKey = "plan_id", foreignKey = "id", targetService = PlanService.class)
+    @TableField(exist = false)
+    private PlanEntity planEntity;
+
 }

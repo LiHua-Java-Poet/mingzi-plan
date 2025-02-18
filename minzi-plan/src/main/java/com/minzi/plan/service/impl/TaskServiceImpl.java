@@ -3,6 +3,7 @@ package com.minzi.plan.service.impl;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.minzi.common.tools.EntityAct;
 import com.minzi.common.utils.EntityUtils;
 import com.minzi.plan.common.UserContext;
 import com.minzi.plan.dao.TaskDao;
@@ -39,6 +40,9 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, TaskEntity> implements
     @Resource
     private PlanService planService;
 
+    @Resource
+    private EntityAct entityAct;
+
     @Override
     public Wrapper<TaskEntity> getOneCondition(Map<String, Object> params) {
         return null;
@@ -70,9 +74,12 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, TaskEntity> implements
 
     @Override
     public List<TaskListTo> formatList(List<TaskEntity> list) {
+
+        entityAct.OneToOne(list,TaskEntity::getPlanEntity);
         return list.stream().map(item -> {
             TaskListTo to = new TaskListTo();
             EntityUtils.copySameFields(item, to);
+
             return to;
         }).collect(Collectors.toList());
     }

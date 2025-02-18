@@ -3,6 +3,7 @@ package com.minzi.plan.scheduled;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.minzi.common.utils.DateUtils;
+import com.minzi.common.utils.EntityUtils;
 import com.minzi.common.utils.ObjectUtils;
 import com.minzi.plan.model.entity.PlanEntity;
 import com.minzi.plan.model.entity.TaskEntity;
@@ -33,7 +34,7 @@ public class DailyPlan {
 // 这里是任务的具体逻辑
         //拿到所有进行中的计划
         List<PlanEntity> planEntityList = planService.list(new LambdaQueryWrapper<PlanEntity>().eq(PlanEntity::getStatus, 1));
-        Map<Long, PlanEntity> planIdEntityMap = ObjectUtils.convert(planEntityList, PlanEntity::getId);
+        Map<Long, PlanEntity> planIdEntityMap = EntityUtils.resortEntityByColumnLevel1(planEntityList, PlanEntity::getId);
 
         //拿到目前没有进行中的任务的计划
         List<Long> underPlanIdList = planEntityList.stream().map(PlanEntity::getId).collect(Collectors.toList());
