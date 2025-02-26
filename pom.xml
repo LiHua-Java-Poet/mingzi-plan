@@ -30,7 +30,12 @@
                 <!--在引用时请在maven中央仓库搜索2.X最新版本号-->
                 <version>2.0.9</version>
             </dependency>
-
+            <!--使用redisson作为分布式锁-->
+            <dependency>
+                <groupId>org.redisson</groupId>
+                <artifactId>redisson</artifactId>
+                <version>3.16.8</version>
+            </dependency>
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-parent</artifactId>
@@ -73,11 +78,7 @@
                 <artifactId>minio</artifactId>
                 <version>3.0.10</version>
             </dependency>
-            <!-- thymeleaf模板引擎 -->
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-thymeleaf</artifactId>
-            </dependency>
+
             <!--druid-->
             <dependency>
                 <groupId>com.alibaba</groupId>

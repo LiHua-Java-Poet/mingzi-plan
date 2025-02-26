@@ -1,5 +1,6 @@
 package com.minzi.plan.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.minzi.common.core.R;
@@ -8,14 +9,19 @@ import com.minzi.common.utils.DateUtils;
 import com.minzi.common.utils.EntityUtils;
 import com.minzi.plan.dao.UserDao;
 import com.minzi.plan.model.entity.UserEntity;
+import com.minzi.plan.model.to.user.UserInfoTo;
+import com.minzi.plan.model.to.user.UserListTo;
 import com.minzi.plan.model.to.user.UserLoginTo;
 import com.minzi.plan.model.vo.user.UserRegVo;
+import com.minzi.plan.model.vo.user.UserSaveVo;
+import com.minzi.plan.model.vo.user.UserUpdateVo;
 import com.minzi.plan.service.UserService;
 import lombok.extern.java.Log;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 
 import static com.minzi.common.utils.MD5Utils.MD5Upper;
 
@@ -69,5 +75,40 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
         userEntity.setStatus(1);
         userEntity.setCreateTime(currentTime);
         userService.save(userEntity);
+    }
+
+    @Override
+    public void delete(String[] ids) {
+
+    }
+
+    @Override
+    public Wrapper<UserEntity> getOneCondition(Map<String, Object> params) {
+        return null;
+    }
+
+    @Override
+    public UserInfoTo formatOne(UserEntity entity) {
+        return null;
+    }
+
+    @Override
+    public Wrapper<UserEntity> getListCondition(Map<String, Object> params) {
+        return null;
+    }
+
+    @Override
+    public List<UserListTo> formatList(List<UserEntity> list) {
+        return null;
+    }
+
+    @Override
+    public void add(UserSaveVo userSaveVo) {
+
+    }
+
+    @Override
+    public void update(UserUpdateVo userUpdateVo) {
+
     }
 }
