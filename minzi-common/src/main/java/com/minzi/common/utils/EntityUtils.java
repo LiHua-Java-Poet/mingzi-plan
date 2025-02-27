@@ -4,6 +4,7 @@ package com.minzi.common.utils;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -72,13 +73,14 @@ public class EntityUtils<K, T> {
     /**
      * 将对象列表转换为以指定属性值为键的 Map
      *
-     * @param list           对象列表
-     * @param methodReference 指定属性的 getter 方法引用
+     * @param list     对象列表
+     * @param keyField 指定属性的 getter 方法引用
      * @return Map<属性值类型, 对象>
      */
-    public static <T, R> Map<R, T> resortEntityByColumnLevel1(List<T> list, PropertyFunc<T, R> methodReference) {
-        String fieldValue = ObjectUtils.getFieldValue(methodReference);
+    public static <T, R> Map<R, T> resortEntityByColumnLevel1(List<T> list, PropertyFunc<T, R> keyField) {
+        String fieldValue = ObjectUtils.getFieldValue(keyField);
         Map<R, T> resultMap = new HashMap<>();
+        if (list == null || list.isEmpty()) return resultMap;
         for (T obj : list) {
             R key = getPropertyValue(obj, fieldValue);
             resultMap.put(key, obj);
@@ -86,11 +88,70 @@ public class EntityUtils<K, T> {
         return resultMap;
     }
 
-    public static <T, R> Map<R, T> resortEntityByColumnLevel1(List<T> list, String methodReference) {
+    public static <T, R> Map<R, T> resortEntityByColumnLevel1(List<T> list, String keyField) {
         Map<R, T> resultMap = new HashMap<>();
+        if (list == null || list.isEmpty()) return resultMap;
         for (T obj : list) {
-            R key = getPropertyValue(obj, StringUtils.underscoreToCamelCase(methodReference));
+            R key = getPropertyValue(obj, StringUtils.underscoreToCamelCase(keyField));
             resultMap.put(key, obj);
+        }
+        return resultMap;
+    }
+
+    public static <T, R> Map<R, List<T>> resortEntityByColumnLevel2(List<T> list, PropertyFunc<T, R> keyField) {
+        Map<R, List<T>> resultMap = new HashMap<>();
+        if (list == null || list.isEmpty()) return resultMap;
+        String fieldValue = ObjectUtils.getFieldValue(keyField);
+        return getrListMap(list, resultMap, fieldValue);
+    }
+
+    public static <T, R> Map<R, List<T>> resortEntityByColumnLevel2(List<T> list, String keyField) {
+        Map<R, List<T>> resultMap = new HashMap<>();
+        if (list == null || list.isEmpty()) return resultMap;
+        return getrListMap(list, resultMap, keyField);
+    }
+
+    public static <T, K, V> Map<K, V> resortEntityByColumnLevel3(List<T> list, PropertyFunc<T, K> keyField, PropertyFunc<T, V> valueField) {
+        String keyFieldValue = ObjectUtils.getFieldValue(keyField);
+        String valueFieldValue = ObjectUtils.getFieldValue(valueField);
+
+        Map<K, V> resultMap = new HashMap<>();
+        if (list == null || list.isEmpty()) return resultMap;
+        for (T obj : list) {
+            K key = getPropertyValue(obj, keyFieldValue);
+            V value = getPropertyValue(obj, valueFieldValue);
+            resultMap.put(key, value);
+        }
+        return resultMap;
+    }
+
+    public static <T, K,V> Map<K, List<V>> resortEntityByColumnLevel4(List<T> list, PropertyFunc<T, K> keyField, PropertyFunc<T, V> valueField) {
+        Map<K, List<V>> resultMap = new HashMap<>();
+        if (list == null || list.isEmpty()) return resultMap;
+        String keyFieldValue = ObjectUtils.getFieldValue(keyField);
+        String valueFieldValue = ObjectUtils.getFieldValue(valueField);
+        for (T obj : list) {
+            K key = getPropertyValue(obj, StringUtils.underscoreToCamelCase(keyFieldValue));
+            V value = getPropertyValue(obj, valueFieldValue);
+            List<V> ts = resultMap.get(key);
+            if (ts == null) {
+                ts = new ArrayList<>();
+            }
+            ts.add(value);
+            resultMap.put(key, ts);
+        }
+        return resultMap;
+    }
+
+    private static <T, R> Map<R, List<T>> getrListMap(List<T> list, Map<R, List<T>> resultMap, String fieldValue) {
+        for (T obj : list) {
+            R key = getPropertyValue(obj, StringUtils.underscoreToCamelCase(fieldValue));
+            List<T> ts = resultMap.get(key);
+            if (ts == null) {
+                ts = new ArrayList<>();
+            }
+            ts.add(obj);
+            resultMap.put(key, ts);
         }
         return resultMap;
     }

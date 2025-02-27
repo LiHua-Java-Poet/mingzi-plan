@@ -67,21 +67,11 @@
             <artifactId>mybatis-plus-core</artifactId>
             <version>3.4.1</version>
         </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.12</version>
-        </dependency>
         <!-- minio 相关依赖 -->
         <dependency>
             <groupId>io.minio</groupId>
             <artifactId>minio</artifactId>
             <version>3.0.10</version>
-        </dependency>
-        <!-- thymeleaf模板引擎 -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
         <!--druid-->
         <dependency>
