@@ -4,7 +4,9 @@ import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import com.minzi.common.tools.EntityAct;
+import com.minzi.common.tools.SlidingWindow;
 import com.minzi.common.tools.impl.EntityActImpl;
+import com.minzi.common.tools.impl.SlidingWindowImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -59,5 +61,10 @@ public class Config {
     @Bean
     public EntityAct getEntityAct(){
         return new EntityActImpl();
+    }
+
+    @Bean
+    public SlidingWindow getSlidingWindow(){
+        return new SlidingWindowImpl();
     }
 }

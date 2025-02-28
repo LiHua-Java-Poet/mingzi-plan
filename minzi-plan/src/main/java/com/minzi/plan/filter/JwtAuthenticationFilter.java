@@ -3,6 +3,7 @@ package com.minzi.plan.filter;
 
 import com.alibaba.fastjson.JSON;
 import com.minzi.common.core.R;
+import com.minzi.common.tools.SlidingWindow;
 import com.minzi.common.utils.AppJwtUtil;
 import com.minzi.plan.common.UserContext;
 import io.jsonwebtoken.Claims;
@@ -32,6 +33,9 @@ public class JwtAuthenticationFilter implements Filter {
     private String passageUriArray;
 
     @Resource
+    private SlidingWindow slidingWindow;
+
+    @Resource
     private UserContext userContext;
 
     private Set<String> passageUri = new HashSet<>();
@@ -58,23 +62,31 @@ public class JwtAuthenticationFilter implements Filter {
         HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
         //请求的接口地址
         String requestURI = httpServletRequest.getRequestURI();
+        servletResponse.setCharacterEncoding("UTF-8");
+        servletResponse.setContentType("application/json");
+        //流量限制
+        if (!slidingWindow.allowRequest(httpServletRequest.getRequestURI())) {
+            PrintWriter writer = httpServletResponse.getWriter();
+            httpServletResponse.setHeader("Access-Control-Allow-Origin", "*");
+            writer.write(JSON.toJSONString(R.error(-407, "服务器繁忙，请稍后再试")));
+            return;
+        }
+
         if (!HttpMethod.OPTIONS.toString().equals(((HttpServletRequest) servletRequest).getMethod()) && !passageUri.contains(requestURI)) {
             //鉴权
             String token = httpServletRequest.getHeader("Token");
-            servletResponse.setCharacterEncoding("UTF-8");
-            servletResponse.setContentType("application/json");
 
             if (token == null) {
                 PrintWriter writer = httpServletResponse.getWriter();
-                httpServletResponse.setHeader("Access-Control-Allow-Origin","*");
-                writer.write(JSON.toJSONString(R.error(402, "token为空，请检查")));
+                httpServletResponse.setHeader("Access-Control-Allow-Origin", "*");
+                writer.write(JSON.toJSONString(R.error(-402, "token为空，请检查")));
                 return;
             }
             //鉴权
             if (!validateToken(token)) {
                 PrintWriter writer = servletResponse.getWriter();
-                httpServletResponse.setHeader("Access-Control-Allow-Origin","*");
-                writer.write(JSON.toJSONString(R.error(402, "token无效")));
+                httpServletResponse.setHeader("Access-Control-Allow-Origin", "*");
+                writer.write(JSON.toJSONString(R.error(-402, "token无效")));
                 return;
             }
             filterChain.doFilter(servletRequest, servletResponse);
@@ -89,7 +101,7 @@ public class JwtAuthenticationFilter implements Filter {
             Claims claims = jws.getBody();
             int i = AppJwtUtil.verifyToken(claims);
             if (i < 1) {
-                userContext.setUserInfo(claims.get("name",String.class),claims.get("userName",String.class),claims.get("id",Long.class));
+                userContext.setUserInfo(claims.get("name", String.class), claims.get("userName", String.class), claims.get("id", Long.class));
                 return true;
             }
         } catch (Exception e) {

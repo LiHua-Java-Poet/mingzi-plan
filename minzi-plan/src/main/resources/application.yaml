@@ -24,6 +24,7 @@ spring:
     host: 112.74.191.203
     port: 6379
     password: redis123
+    database: 0
 minio:
   endpoint: http://112.74.191.203:9000
   accesskey: minioadmin
@@ -31,6 +32,7 @@ minio:
 
 
 filter.passage: "/app/user/login,/app/user/reg"
+window.limit: 10
 
 knife4j:
   enable: true # 启用 Knife4j
