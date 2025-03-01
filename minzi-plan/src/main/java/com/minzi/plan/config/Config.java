@@ -58,13 +58,4 @@ public class Config {
         return interceptor;
     }
 
-    @Bean
-    public EntityAct getEntityAct(){
-        return new EntityActImpl();
-    }
-
-    @Bean
-    public SlidingWindow getSlidingWindow(){
-        return new SlidingWindowImpl();
-    }
 }
