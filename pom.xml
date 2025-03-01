@@ -23,14 +23,12 @@
     </modules>
     <dependencyManagement>
         <dependencies>
-            <!--引入Knife4j的官方start包,该指南选择Spring Boot版本<3.0,开发者需要注意-->
+            <!-- ShardingSphere -->
             <dependency>
-                <groupId>com.github.xiaoymin</groupId>
-                <artifactId>knife4j-spring-boot-starter</artifactId>
-                <!--在引用时请在maven中央仓库搜索2.X最新版本号-->
-                <version>2.0.9</version>
+                <groupId>org.apache.shardingsphere</groupId>
+                <artifactId>sharding-jdbc-spring-boot-starter</artifactId>
+                <version>4.1.1</version> <!-- 根据实际版本选择 -->
             </dependency>
-            <!--使用redisson作为分布式锁-->
             <dependency>
                 <groupId>org.redisson</groupId>
                 <artifactId>redisson</artifactId>

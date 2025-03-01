@@ -10,8 +10,10 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 
+import javax.annotation.Priority;
 import javax.annotation.Resource;
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
@@ -26,6 +28,7 @@ import java.util.Set;
 
 
 @Log
+@Priority(50)
 @WebFilter(filterName = "jwtAuthenticationFilter", urlPatterns = {"/app/*"})
 public class JwtAuthenticationFilter implements Filter {
 
@@ -86,7 +89,7 @@ public class JwtAuthenticationFilter implements Filter {
             if (!validateToken(token)) {
                 PrintWriter writer = servletResponse.getWriter();
                 httpServletResponse.setHeader("Access-Control-Allow-Origin", "*");
-                writer.write(JSON.toJSONString(R.error(-402, "token无效")));
+                writer.write(JSON.toJSONString(R.error(-406, "token无效")));
                 return;
             }
             filterChain.doFilter(servletRequest, servletResponse);
