@@ -6,6 +6,7 @@ import com.minzi.common.utils.DateUtils;
 import com.minzi.plan.dao.RequestLogDao;
 import com.minzi.plan.model.entity.RequestLogEntity;
 import lombok.extern.java.Log;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.core.annotation.Order;
 
 import javax.annotation.Priority;
@@ -25,9 +26,8 @@ import java.util.Map;
 @WebFilter(filterName = "requestLogFilter", urlPatterns = {"/*"})
 public class RequestLogFilter implements Filter {
 
-
     @Resource
-    private RequestLogDao requestLogDao;
+    private RabbitTemplate rabbitTemplate;
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
@@ -57,7 +57,7 @@ public class RequestLogFilter implements Filter {
 
         // 打印日志或存储到数据库
         RequestLogEntity requestLogEntity = logRequest(requestMethod, requestURL, requestHeaders, requestParams, requestBody, responseStatus, responseData, duration, startTime, remoteHost + ":" + remotePort);
-        requestLogDao.insert(requestLogEntity);
+        rabbitTemplate.convertAndSend("direct_exchange","requestLogKey",JSON.toJSONString(requestLogEntity));
 
         // 将响应数据写回客户端
         servletResponse.getOutputStream().write(responseWrapper.getResponseData());

@@ -3,7 +3,6 @@ server:
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-# application.yml
 spring:
   main:
     allow-bean-definition-overriding: true
@@ -25,14 +24,21 @@ spring:
     port: 6379
     password: redis123
     database: 0
+  rabbitmq:
+    host: 112.74.191.203
+    port: 5672
+    username: lihua
+    password: 123456
 minio:
   endpoint: http://112.74.191.203:9000
   accesskey: minioadmin
   secretKey: minioadmin
 
 
+
+
 filter.passage: "/app/user/login,/app/user/reg"
-window.limit: 10
+window.limit: 100
 
 knife4j:
   enable: true # 启用 Knife4j

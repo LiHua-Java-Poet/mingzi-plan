@@ -4,9 +4,11 @@ package com.minzi.plan.model.entity;
 import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Data
 @TableName("request_log")
-public class RequestLogEntity {
+public class RequestLogEntity implements Serializable {
 
     /**
      * 主键
