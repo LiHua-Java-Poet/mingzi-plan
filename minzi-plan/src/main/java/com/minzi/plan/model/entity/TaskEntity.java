@@ -5,6 +5,8 @@ import com.minzi.common.annotation.OneToOne;
 import com.minzi.plan.service.PlanService;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 @Data
 @TableName("task")
 public class TaskEntity {
@@ -39,6 +41,16 @@ public class TaskEntity {
      * 任务状态 1 进行中 2 已完成 3 已取消
      */
     private Integer status;
+
+    /**
+     * 备注
+     */
+    private String remark;
+
+    /**
+     * 评分
+     */
+    private BigDecimal score;
 
     /**
      * 计划用时

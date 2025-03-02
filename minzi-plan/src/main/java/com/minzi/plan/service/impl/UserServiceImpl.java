@@ -49,6 +49,10 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
         UserEntity userEntity = list.get(0);
         String newPassword = MD5Upper(password, userEntity.getCreateTime().toString());
 
+        if (userEntity.getStatus() == 2) {
+            return R.error(-402, "该账号已停用");
+        }
+
         String password1 = userEntity.getPassword();
         if (!password1.equals(newPassword)) {
             return R.error(406, "密码错误");
@@ -57,7 +61,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
         //颁发token
         String token = AppJwtUtil.getToken(userEntity.getId(), userEntity.getName(), userEntity.getUserName());
         UserLoginTo to = new UserLoginTo();
-        EntityUtils.copySameFields(userEntity,to);
+        EntityUtils.copySameFields(userEntity, to);
         to.setToken(token);
         return R.ok().setData(to);
     }
