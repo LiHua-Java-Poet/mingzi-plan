@@ -1,6 +1,5 @@
 package com.minzi.common.tools.impl;
 
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.minzi.common.annotation.OneToOne;
 import com.minzi.common.service.BaseService;
@@ -19,7 +18,7 @@ import java.util.Set;
 
 
 @Component
-public class EntityActImpl implements EntityAct {
+public class EntityActImpl  implements EntityAct{
 
     @Resource
     private ApplicationContext applicationContext;
