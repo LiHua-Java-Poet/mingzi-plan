@@ -6,11 +6,37 @@ mybatis-plus:
 spring:
   main:
     allow-bean-definition-overriding: true
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://112.74.191.203:3306/tip?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
-    username: root
-    password: abcd+7523-
+  shardingsphere:
+    datasource:
+      names: db0,db1
+      db0:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://112.74.191.203:3306/tip?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
+        username: root
+        password: abcd+7523-
+      db1:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://112.74.191.203:3306/tip_log?useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC
+        username: root
+        password: abcd+7523-
+    rules:
+      sharding:
+        tables:
+          request_log:  # 配置 request_log 表的路由规则
+            actual-data-nodes: db1.request_log # 所有操作都路由到 db1 的 tip_log 表
+        default-database-strategy:  # 默认数据库路由规则
+          standard:
+            sharding-column: id
+            sharding-algorithm-name: default-db-algorithm
+        sharding-algorithms:
+          default-db-algorithm:
+            type: INLINE
+            props:
+              algorithm-expression: db0
+    props:
+      sql-show: true
   resources:
     static-locations: classpath:/static/
   cors:

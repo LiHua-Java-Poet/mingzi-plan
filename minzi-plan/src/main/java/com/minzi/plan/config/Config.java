@@ -7,6 +7,8 @@ import com.minzi.common.tools.EntityAct;
 import com.minzi.common.tools.SlidingWindow;
 import com.minzi.common.tools.impl.EntityActImpl;
 import com.minzi.common.tools.impl.SlidingWindowImpl;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
