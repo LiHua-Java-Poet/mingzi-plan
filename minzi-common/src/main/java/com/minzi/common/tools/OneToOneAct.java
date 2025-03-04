@@ -14,7 +14,6 @@ import java.util.*;
 
 public interface OneToOneAct {
 
-
     default <T> void oneToOne(T item, PropertyFunc<T, ?> mapFieldFunc) {
         if (item == null ) return;
         String fieldValue = ObjectUtils.getFieldName(mapFieldFunc);
@@ -44,13 +43,13 @@ public interface OneToOneAct {
         }
     }
 
-    default <T> void oneToOneSetValue(List<T> itemList, OneToOne annotation, Class<?> targetService, Field declaredField){
+    default <T> void oneToOneSetValue(List<T> itemList, OneToOne annotation, Class<?> targetService, Field targetEntity){
         try {
-            Object bean = SpringContextUtils.getBean(targetService);
+            Object beanService = SpringContextUtils.getBean(targetService);
             String localKey = annotation.localKey();
             String foreignKey = annotation.foreignKey();
             //通过这个declaredField来为列表对象赋值查询到的对象
-            declaredField.setAccessible(true);
+            targetEntity.setAccessible(true);
             Class<?> itemClass = itemList.get(0).getClass();
             Field localField = itemClass.getDeclaredField(StringUtils.underscoreToCamelCase(localKey));
             localField.setAccessible(true);
@@ -61,12 +60,12 @@ public interface OneToOneAct {
             QueryWrapper<T> tQueryWrapper = new QueryWrapper();
             tQueryWrapper.in(foreignKey, ids);
 
-            BaseService foreignServiceBean = (BaseService) bean;
+            BaseService foreignServiceBean = (BaseService) beanService;
             List<T> list = foreignServiceBean.list(tQueryWrapper);
-            Map<Object, T> objectTMap = EntityUtils.resortEntityByColumnLevel1(list, foreignKey);
+            Map<Object, T> objectTMap = EntityUtils.resortEntityByColumnLevel1(list, StringUtils.underscoreToCamelCase(foreignKey));
 
             for (T t : itemList) {
-                declaredField.set(t,objectTMap.get(localField.get(t)));
+                targetEntity.set(t,objectTMap.get(localField.get(t)));
             }
         }catch (Exception e){
             e.printStackTrace();

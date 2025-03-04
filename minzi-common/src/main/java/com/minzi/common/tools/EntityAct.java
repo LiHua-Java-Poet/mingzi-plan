@@ -7,7 +7,7 @@ import javax.annotation.Resource;
 
 
 @Component
-public class EntityAct implements OneToOneAct {
+public class EntityAct implements OneToOneAct, OneToManyAct {
 
     @Resource
     private ApplicationContext applicationContext;

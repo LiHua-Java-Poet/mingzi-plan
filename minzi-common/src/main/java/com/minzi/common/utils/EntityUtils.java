@@ -92,7 +92,7 @@ public class EntityUtils<K, T> {
         Map<R, T> resultMap = new HashMap<>();
         if (list == null || list.isEmpty()) return resultMap;
         for (T obj : list) {
-            R key = getPropertyValue(obj, StringUtils.underscoreToCamelCase(keyField));
+            R key = getPropertyValue(obj, keyField);
             resultMap.put(key, obj);
         }
         return resultMap;
@@ -145,7 +145,7 @@ public class EntityUtils<K, T> {
 
     private static <T, R> Map<R, List<T>> getrListMap(List<T> list, Map<R, List<T>> resultMap, String fieldValue) {
         for (T obj : list) {
-            R key = getPropertyValue(obj, StringUtils.underscoreToCamelCase(fieldValue));
+            R key = getPropertyValue(obj, fieldValue);
             List<T> ts = resultMap.get(key);
             if (ts == null) {
                 ts = new ArrayList<>();

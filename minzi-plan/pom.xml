@@ -160,6 +160,9 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <finalName>minzi_plan_8081</finalName>
+                </configuration>
             </plugin>
         </plugins>
     </build>

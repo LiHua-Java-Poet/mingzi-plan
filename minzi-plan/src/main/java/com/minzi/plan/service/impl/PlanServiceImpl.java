@@ -3,6 +3,7 @@ package com.minzi.plan.service.impl;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.minzi.common.tools.EntityAct;
 import com.minzi.common.utils.EntityUtils;
 import com.minzi.plan.common.UserContext;
 import com.minzi.plan.dao.PlanDao;
@@ -29,6 +30,9 @@ public class PlanServiceImpl extends ServiceImpl<PlanDao, PlanEntity> implements
 
     @Resource
     private UserContext userContext;
+
+    @Resource
+    private EntityAct entityAct;
 
 
     @Override
@@ -76,6 +80,7 @@ public class PlanServiceImpl extends ServiceImpl<PlanDao, PlanEntity> implements
     @Override
     public PlanInfoTo formatOne(PlanEntity entity) {
         PlanInfoTo to = new PlanInfoTo();
+        entityAct.oneToMany(entity,PlanEntity::getTaskEntityList);
         EntityUtils.copySameFields(entity, to);
         return to;
     }

@@ -2,6 +2,11 @@ package com.minzi.common.utils;
 
 public class StringUtils {
 
+    /**
+     * 下划线转小驼峰
+     * @param str 字符串
+     * @return 返回的内容
+     */
     public static String underscoreToCamelCase(String str) {
         // 处理空字符串的情况
         if (str == null || str.isEmpty()) {
