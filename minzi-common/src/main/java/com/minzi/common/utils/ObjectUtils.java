@@ -1,37 +1,41 @@
 package com.minzi.common.utils;
 
 import com.baomidou.mybatisplus.extension.api.R;
+import com.minzi.common.exception.BaseRuntimeException;
 
 import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class ObjectUtils {
 
-    /**
-     * 判断列表是否为null
-     *
-     * @return 返回结果
-     */
-    static public boolean listIsNull(List<?> list) {
-        return list == null || list.isEmpty();
+    private ObjectUtils() {
     }
-
 
     /**
      * 判断对象是否为null
      *
      * @return 返回结果
      */
-    boolean objectIsNull(Object o) {
+    public static <T> boolean objectIsNull(T o) {
         return o == null;
     }
 
-    public static <T, R> String getFieldValue(PropertyFunc<T, R> methodReference) {
+    /**
+     * 判断对象是否为null
+     *
+     * @return 返回结果
+     */
+    public static <T> boolean objectIsNull(Collection<T> o) {
+        return o == null || o.isEmpty();
+    }
+
+    public static <T, R> String getFieldName(PropertyFunc<T, R> methodReference) {
         try {
             // 获取序列化的Lambda
             Method writeReplace = methodReference.getClass().getDeclaredMethod("writeReplace");
@@ -48,8 +52,23 @@ public class ObjectUtils {
             // 将首字母小写以符合 JavaBean 规范
             return Character.toLowerCase(methodName.charAt(0)) + methodName.substring(1);
         } catch (Exception e) {
-            throw new RuntimeException("Failed to extract property name from getter", e);
+            throw new BaseRuntimeException("Failed to extract property name from getter", e);
         }
+    }
+
+
+    public static <T, R> Object getFieldValue(Object obj, PropertyFunc<T, R> methodReference) {
+        if (obj == null) return null;
+        String fieldName = getFieldName(methodReference);
+        Class<?> aClass = obj.getClass();
+        try {
+            Field field = aClass.getField(fieldName);
+            field.setAccessible(true);
+            return field.get(obj);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 }

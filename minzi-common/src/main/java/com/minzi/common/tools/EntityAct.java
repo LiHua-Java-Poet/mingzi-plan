@@ -1,5 +1,16 @@
 package com.minzi.common.tools;
 
-public interface EntityAct extends OneToOneAct,OneToManyAct{
+import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.Resource;
+
+
+@Component
+public class EntityAct implements OneToOneAct {
+
+    @Resource
+    private ApplicationContext applicationContext;
+
 
 }

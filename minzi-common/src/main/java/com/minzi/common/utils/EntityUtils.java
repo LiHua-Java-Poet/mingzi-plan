@@ -78,7 +78,7 @@ public class EntityUtils<K, T> {
      * @return Map<属性值类型, 对象>
      */
     public static <T, R> Map<R, T> resortEntityByColumnLevel1(List<T> list, PropertyFunc<T, R> keyField) {
-        String fieldValue = ObjectUtils.getFieldValue(keyField);
+        String fieldValue = ObjectUtils.getFieldName(keyField);
         Map<R, T> resultMap = new HashMap<>();
         if (list == null || list.isEmpty()) return resultMap;
         for (T obj : list) {
@@ -101,7 +101,7 @@ public class EntityUtils<K, T> {
     public static <T, R> Map<R, List<T>> resortEntityByColumnLevel2(List<T> list, PropertyFunc<T, R> keyField) {
         Map<R, List<T>> resultMap = new HashMap<>();
         if (list == null || list.isEmpty()) return resultMap;
-        String fieldValue = ObjectUtils.getFieldValue(keyField);
+        String fieldValue = ObjectUtils.getFieldName(keyField);
         return getrListMap(list, resultMap, fieldValue);
     }
 
@@ -112,8 +112,8 @@ public class EntityUtils<K, T> {
     }
 
     public static <T, K, V> Map<K, V> resortEntityByColumnLevel3(List<T> list, PropertyFunc<T, K> keyField, PropertyFunc<T, V> valueField) {
-        String keyFieldValue = ObjectUtils.getFieldValue(keyField);
-        String valueFieldValue = ObjectUtils.getFieldValue(valueField);
+        String keyFieldValue = ObjectUtils.getFieldName(keyField);
+        String valueFieldValue = ObjectUtils.getFieldName(valueField);
 
         Map<K, V> resultMap = new HashMap<>();
         if (list == null || list.isEmpty()) return resultMap;
@@ -128,8 +128,8 @@ public class EntityUtils<K, T> {
     public static <T, K,V> Map<K, List<V>> resortEntityByColumnLevel4(List<T> list, PropertyFunc<T, K> keyField, PropertyFunc<T, V> valueField) {
         Map<K, List<V>> resultMap = new HashMap<>();
         if (list == null || list.isEmpty()) return resultMap;
-        String keyFieldValue = ObjectUtils.getFieldValue(keyField);
-        String valueFieldValue = ObjectUtils.getFieldValue(valueField);
+        String keyFieldValue = ObjectUtils.getFieldName(keyField);
+        String valueFieldValue = ObjectUtils.getFieldName(valueField);
         for (T obj : list) {
             K key = getPropertyValue(obj, StringUtils.underscoreToCamelCase(keyFieldValue));
             V value = getPropertyValue(obj, valueFieldValue);

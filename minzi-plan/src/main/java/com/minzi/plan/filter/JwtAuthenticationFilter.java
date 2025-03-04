@@ -3,14 +3,13 @@ package com.minzi.plan.filter;
 
 import com.alibaba.fastjson.JSON;
 import com.minzi.common.core.R;
-import com.minzi.common.tools.SlidingWindow;
+import com.minzi.common.tools.SlidingWindowUtils;
 import com.minzi.common.utils.AppJwtUtil;
 import com.minzi.plan.common.UserContext;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 
 import javax.annotation.Priority;
@@ -22,7 +21,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Arrays;
-import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -36,7 +34,7 @@ public class JwtAuthenticationFilter implements Filter {
     private String passageUriArray;
 
     @Resource
-    private SlidingWindow slidingWindow;
+    private SlidingWindowUtils slidingWindow;
 
     @Resource
     private UserContext userContext;

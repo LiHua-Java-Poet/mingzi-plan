@@ -1,7 +1,6 @@
-package com.minzi.common.tools.impl;
+package com.minzi.common.tools;
 
 
-import com.minzi.common.tools.SlidingWindow;
 import com.minzi.common.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -11,7 +10,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 
 @Component
-public class SlidingWindowImpl implements SlidingWindow {
+public class SlidingWindowUtils  {
 
     @Value("${window.limit}")
     private Integer limit;
@@ -19,7 +18,7 @@ public class SlidingWindowImpl implements SlidingWindow {
     @Resource
     private RedisTemplate<String, String> redisTemplate;
 
-    @Override
+
     public boolean allowRequest(String key) {
         if (limit == null) limit = 100;
         ZSetOperations<String, String> stringStringZSetOperations = redisTemplate.opsForZSet();
