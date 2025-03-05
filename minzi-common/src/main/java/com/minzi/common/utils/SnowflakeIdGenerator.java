@@ -3,46 +3,46 @@ package com.minzi.common.utils;
 public class SnowflakeIdGenerator {
 
     // 起始时间戳（2023-01-01 00:00:00）
-    private final long twepoch = 1672531200000L;
+    private static final long twepoch = 1672531200000L;
 
     // 机器ID所占的位数
-    private final long workerIdBits = 5L;
+    private static final long workerIdBits = 5L;
 
     // 数据中心ID所占的位数
-    private final long datacenterIdBits = 5L;
+    private static final long datacenterIdBits = 5L;
 
     // 支持的最大机器ID，结果是31
-    private final long maxWorkerId = ~(-1L << workerIdBits);
+    private static final long maxWorkerId = ~(-1L << workerIdBits);
 
     // 支持的最大数据中心ID，结果是31
-    private final long maxDatacenterId = ~(-1L << datacenterIdBits);
+    private static final long maxDatacenterId = ~(-1L << datacenterIdBits);
 
     // 序列号所占的位数
-    private final long sequenceBits = 12L;
+    private static final long sequenceBits = 12L;
 
     // 机器ID向左移12位
-    private final long workerIdShift = sequenceBits;
+    private static final long workerIdShift = sequenceBits;
 
     // 数据中心ID向左移17位（12+5）
-    private final long datacenterIdShift = sequenceBits + workerIdBits;
+    private static final long datacenterIdShift = sequenceBits + workerIdBits;
 
     // 时间戳向左移22位（12+5+5）
-    private final long timestampLeftShift = sequenceBits + workerIdBits + datacenterIdBits;
+    private static final long timestampLeftShift = sequenceBits + workerIdBits + datacenterIdBits;
 
     // 生成序列的掩码，这里为4095（0b111111111111=0xfff=4095）
-    private final long sequenceMask = ~(-1L << sequenceBits);
+    private static final long sequenceMask = ~(-1L << sequenceBits);
 
     // 工作机器ID（0~31）
-    private long workerId;
+    private static long workerId;
 
     // 数据中心ID（0~31）
-    private long datacenterId;
+    private static long datacenterId;
 
     // 毫秒内序列（0~4095）
-    private long sequence = 0L;
+    private static long sequence = 0L;
 
     // 上次生成ID的时间戳
-    private long lastTimestamp = -1L;
+    private static long lastTimestamp = -1L;
 
     public SnowflakeIdGenerator(long workerId, long datacenterId) {
         if (workerId > maxWorkerId || workerId < 0) {
@@ -55,7 +55,7 @@ public class SnowflakeIdGenerator {
         this.datacenterId = datacenterId;
     }
 
-    public synchronized long nextId() {
+    public static synchronized long nextId() {
         long timestamp = timeGen();
 
         // 如果当前时间小于上一次ID生成的时间戳，说明系统时钟回退过，此时应当抛出异常
@@ -86,7 +86,7 @@ public class SnowflakeIdGenerator {
                 | sequence;
     }
 
-    protected long tilNextMillis(long lastTimestamp) {
+    protected static long tilNextMillis(long lastTimestamp) {
         long timestamp = timeGen();
         while (timestamp <= lastTimestamp) {
             timestamp = timeGen();
@@ -94,7 +94,7 @@ public class SnowflakeIdGenerator {
         return timestamp;
     }
 
-    protected long timeGen() {
+    protected static long timeGen() {
         return System.currentTimeMillis();
     }
 
