@@ -8,6 +8,7 @@ import com.minzi.common.utils.EntityUtils;
 import com.minzi.plan.common.UserContext;
 import com.minzi.plan.dao.PlanDao;
 import com.minzi.plan.model.entity.PlanEntity;
+import com.minzi.plan.model.entity.TaskEntity;
 import com.minzi.plan.model.entity.UserEntity;
 import com.minzi.plan.model.to.plan.PlanInfoTo;
 import com.minzi.plan.model.to.plan.PlanListTo;
@@ -82,6 +83,10 @@ public class PlanServiceImpl extends ServiceImpl<PlanDao, PlanEntity> implements
         PlanInfoTo to = new PlanInfoTo();
         entityAct.oneToMany(entity,PlanEntity::getTaskEntityList);
         EntityUtils.copySameFields(entity, to);
+        List<TaskEntity> taskEntityList = entity.getTaskEntityList();
+
+        //拿到进行中的任务数
+        to.setTowardProgress((int) taskEntityList.stream().filter(b -> b.getStatus() == 1).count());
         return to;
     }
 

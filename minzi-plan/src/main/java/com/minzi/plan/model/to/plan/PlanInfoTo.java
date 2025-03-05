@@ -33,6 +33,11 @@ public class PlanInfoTo {
     private Integer taskTotal;
 
     /**
+     * 当前进行数
+     */
+    private Integer towardProgress;
+
+    /**
      *  周期类型 1 每天 2 隔天
      */
     private Integer cycleType;
