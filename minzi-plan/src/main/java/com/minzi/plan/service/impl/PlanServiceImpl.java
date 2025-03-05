@@ -3,7 +3,9 @@ package com.minzi.plan.service.impl;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.minzi.common.core.R;
 import com.minzi.common.tools.EntityAct;
+import com.minzi.common.utils.DateUtils;
 import com.minzi.common.utils.EntityUtils;
 import com.minzi.plan.common.UserContext;
 import com.minzi.plan.dao.PlanDao;
@@ -15,6 +17,7 @@ import com.minzi.plan.model.to.plan.PlanListTo;
 import com.minzi.plan.model.vo.plan.PlanSaveVo;
 import com.minzi.plan.model.vo.plan.PlanUpdateVo;
 import com.minzi.plan.service.PlanService;
+import com.minzi.plan.service.TaskService;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -34,6 +37,9 @@ public class PlanServiceImpl extends ServiceImpl<PlanDao, PlanEntity> implements
 
     @Resource
     private EntityAct entityAct;
+
+    @Resource
+    private TaskService taskService;
 
 
     @Override
@@ -98,5 +104,24 @@ public class PlanServiceImpl extends ServiceImpl<PlanDao, PlanEntity> implements
     @Override
     public void delete(String[] ids) {
 
+    }
+
+    @Override
+    public void deliver(Long id) {
+        PlanEntity plan = planService.getById(id);
+        R.dataValueAssert(plan==null,"计划不存在，请检查上传的ID");
+        entityAct.oneToMany(plan,PlanEntity::getTaskEntityList);
+
+        List<TaskEntity> taskEntityList = plan.getTaskEntityList();
+        int size = (int) taskEntityList.stream().filter(b -> b.getStatus() != 3).count();
+
+        //按照这个计划生成任务
+        TaskEntity task = new TaskEntity();
+        task.setStatus(1);
+        task.setTaskName(plan.getTaskRule() + " 第" + (size + 1 )+ "次");
+        task.setTaskTime(DateUtils.currentDateTime());
+        task.setUserId(plan.getUserId());
+        task.setPlanId(plan.getId());
+        taskService.save(task);
     }
 }

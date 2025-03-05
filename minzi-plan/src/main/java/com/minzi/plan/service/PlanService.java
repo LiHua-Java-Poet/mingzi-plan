@@ -9,4 +9,11 @@ import com.minzi.plan.model.vo.plan.PlanUpdateVo;
 
 
 public interface PlanService extends BaseService<PlanEntity,PlanListTo,PlanInfoTo, PlanSaveVo, PlanUpdateVo> {
+
+    /**
+     * 下发任务
+     * @param id 计划ID
+     */
+    void deliver(Long id);
+
 }

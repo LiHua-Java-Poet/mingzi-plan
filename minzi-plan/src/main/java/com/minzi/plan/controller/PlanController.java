@@ -26,8 +26,8 @@ public class PlanController {
 
     @ApiOperation(value = "获取到用户的计划列表", response = PlanListTo.class)
     @GetMapping("/list")
-    public R list(@RequestParam Map<String,Object> params) {
-        if (StringUtils.isEmpty(params.get("page"))){
+    public R list(@RequestParam Map<String, Object> params) {
+        if (StringUtils.isEmpty(params.get("page"))) {
             List<PlanListTo> all = planService.all(params);
             return R.ok().setData(all);
         }
@@ -46,6 +46,14 @@ public class PlanController {
     @PostMapping("/save")
     public R save(@RequestBody PlanSaveVo vo) {
         planService.add(vo);
+        return R.ok();
+    }
+
+    @ApiOperation(value = "下发多个任务", notes = "下发多个任务")
+    @PostMapping("/deliver")
+    public R deliver(@RequestBody String[] ids) {
+        Long id = Long.parseLong(ids[0]);
+        planService.deliver(id);
         return R.ok().setData(null);
     }
 
