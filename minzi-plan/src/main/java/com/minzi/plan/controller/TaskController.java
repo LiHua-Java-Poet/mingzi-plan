@@ -77,4 +77,11 @@ public class TaskController {
         taskService.cancelTask(ids);
         return R.ok();
     }
+
+    @ApiOperation(value = "获取到唯一码")
+    @GetMapping("/getUniqueCode")
+    public R getUniqueCode() {
+        String one = taskService.getUniqueCode();
+        return R.ok().setData(one);
+    }
 }

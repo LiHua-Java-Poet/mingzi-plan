@@ -1,10 +1,8 @@
 package com.minzi.plan.controller;
 
 
-import com.minzi.common.core.BaseController;
 import com.minzi.common.core.R;
 import com.minzi.plan.model.entity.UserEntity;
-import com.minzi.plan.model.to.plan.PlanListTo;
 import com.minzi.plan.model.to.user.UserLoginTo;
 import com.minzi.plan.model.vo.user.UserLoginVo;
 import com.minzi.plan.model.vo.user.UserRegVo;

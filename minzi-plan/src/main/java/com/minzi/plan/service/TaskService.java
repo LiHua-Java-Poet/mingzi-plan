@@ -20,4 +20,10 @@ public interface TaskService extends BaseService<TaskEntity, TaskListTo, TaskInf
      * @param ids 任务ID
      */
     void cancelTask(String[] ids);
+
+    /***
+     * 获取到唯一码
+     * @return 返回的唯一码
+     */
+    String getUniqueCode();
 }

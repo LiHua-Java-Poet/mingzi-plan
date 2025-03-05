@@ -25,4 +25,9 @@ public class TaskSaveVo {
      */
     private Integer lockTime;
 
+    /**
+     * 唯一码
+     */
+    private String uniqueCode;
+
 }

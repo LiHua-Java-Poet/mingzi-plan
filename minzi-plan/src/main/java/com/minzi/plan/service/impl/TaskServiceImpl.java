@@ -3,8 +3,10 @@ package com.minzi.plan.service.impl;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.minzi.common.core.R;
 import com.minzi.common.tools.EntityAct;
 import com.minzi.common.utils.EntityUtils;
+import com.minzi.common.utils.SnowflakeIdGenerator;
 import com.minzi.plan.common.UserContext;
 import com.minzi.plan.dao.TaskDao;
 import com.minzi.plan.model.entity.PlanEntity;
@@ -17,6 +19,9 @@ import com.minzi.plan.model.vo.task.TaskUpdateVo;
 import com.minzi.plan.service.PlanService;
 import com.minzi.plan.service.TaskService;
 import lombok.extern.java.Log;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.SetOperations;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -42,6 +47,9 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, TaskEntity> implements
 
     @Resource
     private EntityAct entityAct;
+
+    @Resource
+    private RedisTemplate<String, String> redisTemplate;
 
     @Override
     public Wrapper<TaskEntity> getOneCondition(Map<String, Object> params) {
@@ -75,7 +83,7 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, TaskEntity> implements
     @Override
     public List<TaskListTo> formatList(List<TaskEntity> list) {
 
-        entityAct.oneToOne(list,TaskEntity::getPlanEntity);
+        entityAct.oneToOne(list, TaskEntity::getPlanEntity);
         return list.stream().map(item -> {
             TaskListTo to = new TaskListTo();
             EntityUtils.copySameFields(item, to);
@@ -92,6 +100,12 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, TaskEntity> implements
         UserEntity userInfo = userContext.getUserInfo();
         save.setUserId(userInfo.getId());
         save.setStatus(1);
+        String uniqueCode = taskSaveVo.getUniqueCode();
+        R.dataValueAssert(uniqueCode == null, "校验码不能为空");
+        ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
+        String value = valueOperations.get(uniqueCode);
+        R.dataValueAssert(value == null , "请不要重复提交");
+        redisTemplate.delete(uniqueCode);
         taskService.save(save);
     }
 
@@ -103,7 +117,7 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, TaskEntity> implements
     @Override
     public void completeTask(String[] ids) {
         //完成任务
-        List<TaskEntity> taskEntityList = taskService.list(new LambdaQueryWrapper<TaskEntity>().eq(TaskEntity::getStatus,1).in(TaskEntity::getId, ids));
+        List<TaskEntity> taskEntityList = taskService.list(new LambdaQueryWrapper<TaskEntity>().eq(TaskEntity::getStatus, 1).in(TaskEntity::getId, ids));
         taskEntityList.forEach(item -> item.setStatus(2));
 
         //拿到对于的计划任务集合
@@ -114,8 +128,8 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, TaskEntity> implements
             item.setTaskProgress(item.getTaskProgress() + 1);
             item.setStatus(item.getTaskTotal() <= item.getTaskProgress() ? 2 : 1);
         });
-        if (!planEntityList.isEmpty()){
-            planService.updateBatchById( planEntityList);
+        if (!planEntityList.isEmpty()) {
+            planService.updateBatchById(planEntityList);
         }
         taskService.updateBatchById(taskEntityList);
     }
@@ -126,6 +140,14 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, TaskEntity> implements
         List<TaskEntity> taskEntityList = taskService.list(new LambdaQueryWrapper<TaskEntity>().in(TaskEntity::getId, ids));
         taskEntityList.forEach(item -> item.setStatus(3));
         taskService.updateBatchById(taskEntityList);
+    }
+
+    @Override
+    public String getUniqueCode() {
+        ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
+        String uniqueCode = SnowflakeIdGenerator.nextId() + "";
+        valueOperations.set(uniqueCode, uniqueCode, 30);
+        return uniqueCode;
     }
 
     @Override
