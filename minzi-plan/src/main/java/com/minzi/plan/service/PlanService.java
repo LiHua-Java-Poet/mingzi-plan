@@ -16,4 +16,9 @@ public interface PlanService extends BaseService<PlanEntity,PlanListTo,PlanInfoT
      */
     void deliver(Long id);
 
+    /**
+     * 取消计划
+     * @param ids 计划的id集合
+     */
+    void cancelPlan(String[] ids);
 }

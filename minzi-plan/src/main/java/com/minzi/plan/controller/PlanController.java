@@ -6,6 +6,7 @@ import com.minzi.common.core.R;
 import com.minzi.plan.model.to.plan.PlanInfoTo;
 import com.minzi.plan.model.to.plan.PlanListTo;
 import com.minzi.plan.model.vo.plan.PlanSaveVo;
+import com.minzi.plan.model.vo.plan.PlanUpdateVo;
 import com.minzi.plan.service.PlanService;
 import io.swagger.annotations.*;
 import org.springframework.util.StringUtils;
@@ -46,6 +47,20 @@ public class PlanController {
     @PostMapping("/save")
     public R save(@RequestBody PlanSaveVo vo) {
         planService.add(vo);
+        return R.ok();
+    }
+
+    @ApiOperation(value = "更新计划", notes = "更新计划")
+    @PostMapping("/update")
+    public R update(@RequestBody PlanUpdateVo vo) {
+        planService.update(vo);
+        return R.ok();
+    }
+
+    @ApiOperation(value = "取消计划", notes = "更新计划")
+    @PostMapping("/cancelPlan")
+    public R cancelPlan(@RequestBody String[] ids) {
+        planService.cancelPlan(ids);
         return R.ok();
     }
 

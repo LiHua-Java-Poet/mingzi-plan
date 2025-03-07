@@ -101,10 +101,10 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, TaskEntity> implements
         save.setUserId(userInfo.getId());
         save.setStatus(1);
         String uniqueCode = taskSaveVo.getUniqueCode();
-        R.dataValueAssert(uniqueCode == null, "校验码不能为空");
+        R.dataParamsAssert(uniqueCode == null, "校验码不能为空");
         ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
         String value = valueOperations.get(uniqueCode);
-        R.dataValueAssert(value == null , "请不要重复提交");
+        R.dataParamsAssert(value == null , "请不要重复提交");
         redisTemplate.delete(uniqueCode);
         taskService.save(save);
     }

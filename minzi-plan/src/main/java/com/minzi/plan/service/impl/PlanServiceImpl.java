@@ -19,6 +19,7 @@ import com.minzi.plan.model.vo.plan.PlanUpdateVo;
 import com.minzi.plan.service.PlanService;
 import com.minzi.plan.service.TaskService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
@@ -49,6 +50,9 @@ public class PlanServiceImpl extends ServiceImpl<PlanDao, PlanEntity> implements
         Object id = params.get("id");
         wrapper.eq(!StringUtils.isEmpty(id), PlanEntity::getId, id);
 
+        Object status = params.get("status");
+        wrapper.eq(!StringUtils.isEmpty(status), PlanEntity::getStatus, status);
+
         UserEntity userInfo = userContext.getUserInfo();
         if (userInfo != null) {
             wrapper.eq(PlanEntity::getUserId, userInfo.getId());
@@ -69,7 +73,7 @@ public class PlanServiceImpl extends ServiceImpl<PlanDao, PlanEntity> implements
     @Override
     public void add(PlanSaveVo planSaveVo) {
         PlanEntity entity = new PlanEntity();
-        EntityUtils.copySameFields(planSaveVo,entity);
+        EntityUtils.copySameFields(planSaveVo, entity);
         planService.save(entity);
     }
 
@@ -87,7 +91,7 @@ public class PlanServiceImpl extends ServiceImpl<PlanDao, PlanEntity> implements
     @Override
     public PlanInfoTo formatOne(PlanEntity entity) {
         PlanInfoTo to = new PlanInfoTo();
-        entityAct.oneToMany(entity,PlanEntity::getTaskEntityList);
+        entityAct.oneToMany(entity, PlanEntity::getTaskEntityList);
         EntityUtils.copySameFields(entity, to);
         List<TaskEntity> taskEntityList = entity.getTaskEntityList();
 
@@ -109,8 +113,8 @@ public class PlanServiceImpl extends ServiceImpl<PlanDao, PlanEntity> implements
     @Override
     public void deliver(Long id) {
         PlanEntity plan = planService.getById(id);
-        R.dataValueAssert(plan==null,"计划不存在，请检查上传的ID");
-        entityAct.oneToMany(plan,PlanEntity::getTaskEntityList);
+        R.dataParamsAssert(plan == null, "计划不存在，请检查上传的ID");
+        entityAct.oneToMany(plan, PlanEntity::getTaskEntityList);
 
         List<TaskEntity> taskEntityList = plan.getTaskEntityList();
         int size = (int) taskEntityList.stream().filter(b -> b.getStatus() != 3).count();
@@ -118,10 +122,24 @@ public class PlanServiceImpl extends ServiceImpl<PlanDao, PlanEntity> implements
         //按照这个计划生成任务
         TaskEntity task = new TaskEntity();
         task.setStatus(1);
-        task.setTaskName(plan.getTaskRule() + " 第" + (size + 1 )+ "次");
+        task.setTaskName(plan.getTaskRule() + " 第" + (size + 1) + "次");
         task.setTaskTime(DateUtils.currentDateTime());
         task.setUserId(plan.getUserId());
         task.setPlanId(plan.getId());
         taskService.save(task);
+    }
+
+    @Transactional
+    @Override
+    public void cancelPlan(String[] ids) {
+        PlanEntity one = planService.getOne(new LambdaQueryWrapper<PlanEntity>().in(PlanEntity::getId, ids).last("limit 1"));
+        R.dataParamsAssert(one == null, "请传入正确的计划Id");
+        R.dataParamsAssert(one.getStatus() == 2, "已完成的任务不能取消");
+        one.setStatus(3);
+        entityAct.oneToMany(one,PlanEntity::getTaskEntityList);
+        List<TaskEntity> taskEntityList = one.getTaskEntityList();
+        List<TaskEntity> taskEntities = taskEntityList.stream().filter(b -> b.getStatus() == 1).peek(item -> item.setStatus(3)).collect(Collectors.toList());
+        taskService.updateBatchById(taskEntities);
+        planService.updateById(one);
     }
 }

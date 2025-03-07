@@ -13,17 +13,17 @@ import com.minzi.common.utils.StringUtils;
 import java.lang.reflect.Field;
 import java.util.*;
 
-public interface OneToManyAct{
+public interface OneToManyAct {
 
     default <T> void oneToMany(T item, PropertyFunc<T, ?> mapFieldFunc) {
-        if (item == null ) return;
+        if (item == null) return;
         String fieldValue = ObjectUtils.getFieldName(mapFieldFunc);
         try {
             Class<?> target = item.getClass();
             Field declaredField = target.getDeclaredField(fieldValue);
             OneToMany annotation = declaredField.getAnnotation(OneToMany.class);
             Class<?> targetService = annotation.targetService();
-            this.oneToManySetValue(Arrays.asList(item), annotation, targetService, declaredField);
+            this.oneToManySetValue(Collections.singletonList(item), annotation, targetService, declaredField);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -68,9 +68,9 @@ public interface OneToManyAct{
             Map<Object, List<T>> targetTMap = EntityUtils.resortEntityByColumnLevel2(targetEntityList, StringUtils.underscoreToCamelCase(foreignKey));
 
             for (T t : itemList) {
-                targetEntity.set(t,targetTMap.get(localField.get(t)));
+                targetEntity.set(t, targetTMap.get(localField.get(t)) == null ? new ArrayList<T>() : targetTMap.get(localField.get(t)));
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

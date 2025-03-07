@@ -64,7 +64,7 @@ public class R extends HashMap<String, Object> {
         return this;
     }
 
-    public static void dataValueAssert(boolean condition,String message){
+    public static void dataParamsAssert(boolean condition,String message){
         if (condition){
             throw new RuntimeException(message);
         }
