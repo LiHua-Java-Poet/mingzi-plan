@@ -26,4 +26,10 @@ public interface TaskService extends BaseService<TaskEntity, TaskListTo, TaskInf
      * @return 返回的唯一码
      */
     String getUniqueCode();
+
+    /**
+     * 更新用户的备注
+     * @param updateVo 更新备注
+     */
+    void updateRemark(TaskUpdateVo updateVo);
 }

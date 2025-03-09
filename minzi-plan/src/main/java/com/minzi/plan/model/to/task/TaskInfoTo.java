@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.minzi.plan.model.to.plan.PlanInfoTo;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -24,6 +25,11 @@ public class TaskInfoTo {
      * 所属计划ID
      */
     private Long planId;
+
+    /**
+     * 计划信息
+     */
+    private PlanInfoTo planInfoTo;
 
     /**
      * 任务名

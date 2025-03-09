@@ -11,6 +11,11 @@ public class TaskSaveVo {
     private String taskName;
 
     /**
+     * 任务名
+     */
+    private String remark;
+
+    /**
      * 任务时间
      */
     private Integer taskTime;

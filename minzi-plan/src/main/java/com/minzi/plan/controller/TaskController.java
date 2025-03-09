@@ -6,6 +6,7 @@ import com.minzi.common.core.R;
 import com.minzi.plan.model.to.task.TaskInfoTo;
 import com.minzi.plan.model.to.task.TaskListTo;
 import com.minzi.plan.model.vo.task.TaskSaveVo;
+import com.minzi.plan.model.vo.task.TaskUpdateVo;
 import com.minzi.plan.service.TaskService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -83,5 +84,12 @@ public class TaskController {
     public R getUniqueCode() {
         String one = taskService.getUniqueCode();
         return R.ok().setData(one);
+    }
+
+    @ApiOperation(value = "更新任务的备注内容")
+    @PostMapping("/updateRemark")
+    public R updateRemark(@RequestBody TaskUpdateVo updateVo) {
+        taskService.updateRemark(updateVo);
+        return R.ok();
     }
 }

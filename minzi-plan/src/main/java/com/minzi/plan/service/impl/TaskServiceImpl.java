@@ -12,6 +12,7 @@ import com.minzi.plan.dao.TaskDao;
 import com.minzi.plan.model.entity.PlanEntity;
 import com.minzi.plan.model.entity.TaskEntity;
 import com.minzi.plan.model.entity.UserEntity;
+import com.minzi.plan.model.to.plan.PlanInfoTo;
 import com.minzi.plan.model.to.task.TaskInfoTo;
 import com.minzi.plan.model.to.task.TaskListTo;
 import com.minzi.plan.model.vo.task.TaskSaveVo;
@@ -29,6 +30,7 @@ import javax.annotation.Resource;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -60,6 +62,14 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, TaskEntity> implements
     public TaskInfoTo formatOne(TaskEntity entity) {
         TaskInfoTo to = new TaskInfoTo();
         EntityUtils.copySameFields(entity, to);
+
+        //补充计划的信息
+        entityAct.oneToOne(entity, TaskEntity::getPlanEntity);
+        Optional.ofNullable(entity.getPlanEntity()).ifPresent(value -> {
+            PlanInfoTo planInfoTo = new PlanInfoTo();
+            EntityUtils.copySameFields(value, planInfoTo);
+            to.setPlanInfoTo(planInfoTo);
+        });
         return to;
     }
 
@@ -104,7 +114,7 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, TaskEntity> implements
         R.dataParamsAssert(uniqueCode == null, "校验码不能为空");
         ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
         String value = valueOperations.get(uniqueCode);
-        R.dataParamsAssert(value == null , "请不要重复提交");
+        R.dataParamsAssert(value == null, "请不要重复提交");
         redisTemplate.delete(uniqueCode);
         taskService.save(save);
     }
@@ -148,6 +158,14 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, TaskEntity> implements
         String uniqueCode = SnowflakeIdGenerator.nextId() + "";
         valueOperations.set(uniqueCode, uniqueCode, 30);
         return uniqueCode;
+    }
+
+    @Override
+    public void updateRemark(TaskUpdateVo updateVo) {
+        TaskEntity byId = taskService.getById(updateVo.getId());
+        R.dataParamsAssert(byId == null, "请传入正确的任务ID");
+        byId.setRemark(updateVo.getRemark());
+        taskService.updateById(byId);
     }
 
     @Override
