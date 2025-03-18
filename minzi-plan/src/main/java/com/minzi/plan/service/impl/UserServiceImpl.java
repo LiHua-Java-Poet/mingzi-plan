@@ -3,7 +3,7 @@ package com.minzi.plan.service.impl;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.minzi.common.core.R;
+import com.minzi.common.core.query.R;
 import com.minzi.common.utils.AppJwtUtil;
 import com.minzi.common.utils.DateUtils;
 import com.minzi.common.utils.EntityUtils;

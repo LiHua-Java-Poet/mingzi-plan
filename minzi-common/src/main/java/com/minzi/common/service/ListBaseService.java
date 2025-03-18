@@ -3,8 +3,8 @@ package com.minzi.common.service;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.minzi.common.core.PageUtils;
-import com.minzi.common.core.Query;
+import com.minzi.common.core.query.PageUtils;
+import com.minzi.common.core.query.Query;
 
 import java.util.List;
 import java.util.Map;

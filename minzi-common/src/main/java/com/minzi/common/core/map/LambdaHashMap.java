@@ -1,4 +1,4 @@
-package com.minzi.common.core;
+package com.minzi.common.core.map;
 
 
 import com.minzi.common.utils.ObjectUtils;

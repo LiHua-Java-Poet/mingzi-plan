@@ -2,7 +2,7 @@ package com.minzi.plan.filter;
 
 
 import com.alibaba.fastjson.JSON;
-import com.minzi.common.core.R;
+import com.minzi.common.core.query.R;
 import com.minzi.common.tools.SlidingWindowUtils;
 import com.minzi.common.utils.AppJwtUtil;
 import com.minzi.plan.common.UserContext;

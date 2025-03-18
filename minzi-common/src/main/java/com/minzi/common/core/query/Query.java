@@ -1,4 +1,4 @@
-package com.minzi.common.core;
+package com.minzi.common.core.query;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;

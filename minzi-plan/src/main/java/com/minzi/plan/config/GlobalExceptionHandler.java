@@ -1,6 +1,6 @@
 package com.minzi.plan.config;
 
-import com.minzi.common.core.R;
+import com.minzi.common.core.query.R;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

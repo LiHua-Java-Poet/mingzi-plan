@@ -1,7 +1,5 @@
-package com.minzi.common.core;
+package com.minzi.common.core.query;
 
-
-import com.minzi.common.exception.BaseRuntimeException;
 
 import java.util.HashMap;
 import java.util.Map;

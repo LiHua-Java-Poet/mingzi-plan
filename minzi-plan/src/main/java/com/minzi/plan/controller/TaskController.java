@@ -1,8 +1,8 @@
 package com.minzi.plan.controller;
 
 
-import com.minzi.common.core.PageUtils;
-import com.minzi.common.core.R;
+import com.minzi.common.core.query.PageUtils;
+import com.minzi.common.core.query.R;
 import com.minzi.plan.model.to.task.TaskInfoTo;
 import com.minzi.plan.model.to.task.TaskListTo;
 import com.minzi.plan.model.vo.task.TaskSaveVo;
@@ -55,6 +55,13 @@ public class TaskController {
     @PostMapping("/save")
     public R save(@RequestBody TaskSaveVo vo) {
         taskService.add(vo);
+        return R.ok();
+    }
+
+    @ApiOperation(value = "保存新增任务")
+    @PostMapping("/update")
+    public R update(@RequestBody TaskUpdateVo vo) {
+        taskService.update(vo);
         return R.ok();
     }
 

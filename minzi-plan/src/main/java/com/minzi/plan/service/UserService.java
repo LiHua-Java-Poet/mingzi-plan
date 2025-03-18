@@ -1,6 +1,6 @@
 package com.minzi.plan.service;
 
-import com.minzi.common.core.R;
+import com.minzi.common.core.query.R;
 import com.minzi.common.service.BaseService;
 import com.minzi.plan.model.entity.UserEntity;
 import com.minzi.plan.model.to.user.UserListTo;

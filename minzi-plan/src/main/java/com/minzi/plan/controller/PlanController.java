@@ -1,8 +1,8 @@
 package com.minzi.plan.controller;
 
 
-import com.minzi.common.core.PageUtils;
-import com.minzi.common.core.R;
+import com.minzi.common.core.query.PageUtils;
+import com.minzi.common.core.query.R;
 import com.minzi.plan.model.to.plan.PlanInfoTo;
 import com.minzi.plan.model.to.plan.PlanListTo;
 import com.minzi.plan.model.vo.plan.PlanSaveVo;

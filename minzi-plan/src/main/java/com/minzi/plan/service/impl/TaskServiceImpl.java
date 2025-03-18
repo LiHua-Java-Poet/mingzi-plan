@@ -3,7 +3,10 @@ package com.minzi.plan.service.impl;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.minzi.common.core.R;
+import com.minzi.common.core.map.ConsumerMap;
+import com.minzi.common.core.map.LambdaHashMap;
+import com.minzi.common.core.map.ParamsContext;
+import com.minzi.common.core.query.R;
 import com.minzi.common.tools.EntityAct;
 import com.minzi.common.utils.EntityUtils;
 import com.minzi.common.utils.SnowflakeIdGenerator;
@@ -21,7 +24,6 @@ import com.minzi.plan.service.PlanService;
 import com.minzi.plan.service.TaskService;
 import lombok.extern.java.Log;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.SetOperations;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -31,6 +33,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 
@@ -75,6 +78,7 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, TaskEntity> implements
 
     @Override
     public Wrapper<TaskEntity> getListCondition(Map<String, Object> params) {
+        LambdaHashMap<String, Object> lambdaHashMap = new LambdaHashMap<>(params);
         LambdaQueryWrapper<TaskEntity> wrapper = new LambdaQueryWrapper<>();
         wrapper.orderByDesc(TaskEntity::getId);
 
@@ -83,7 +87,12 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, TaskEntity> implements
             wrapper.eq(TaskEntity::getUserId, userInfo.getId());
         }
 
-        Object status = params.get("status");
+        //查询 - Id
+        Object id = lambdaHashMap.get(TaskEntity::getId);
+        wrapper.eq(!StringUtils.isEmpty(id), TaskEntity::getId, id);
+
+        //查询 - 状态
+        Object status = lambdaHashMap.get(TaskEntity::getStatus);
         wrapper.eq(!StringUtils.isEmpty(status), TaskEntity::getStatus, status);
 
 
