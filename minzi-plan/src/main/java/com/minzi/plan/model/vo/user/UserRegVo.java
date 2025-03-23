@@ -19,7 +19,7 @@ public class UserRegVo {
     @ApiModelProperty("密码")
     private String password;
 
-    @ApiModelProperty("账号")
+    @ApiModelProperty("手机号")
     private String phone;
 
 }

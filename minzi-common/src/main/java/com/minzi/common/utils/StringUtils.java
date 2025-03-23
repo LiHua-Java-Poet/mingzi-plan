@@ -41,4 +41,27 @@ public class StringUtils {
         return word.substring(0, 1).toUpperCase() + word.substring(1).toLowerCase();
     }
 
+    /**
+     * 获取文件名的后缀
+     *
+     * @param fileName 文件名（例如：out.png）
+     * @return 文件后缀（例如：png），如果没有后缀则返回空字符串
+     */
+    public static String getFileExtension(String fileName) {
+        if (fileName == null || fileName.isEmpty()) {
+            return ""; // 如果文件名为空，返回空字符串
+        }
+
+        // 查找最后一个点的位置
+        int lastDotIndex = fileName.lastIndexOf('.');
+
+        // 如果没有点或者点是最后一个字符，返回空字符串
+        if (lastDotIndex == -1 || lastDotIndex == fileName.length() - 1) {
+            return "";
+        }
+
+        // 截取点后面的部分作为后缀
+        return fileName.substring(lastDotIndex + 1);
+    }
+
 }

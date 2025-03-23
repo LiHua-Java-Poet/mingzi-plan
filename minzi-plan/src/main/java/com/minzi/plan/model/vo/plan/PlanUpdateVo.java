@@ -9,6 +9,10 @@ import lombok.Data;
 @Data
 public class PlanUpdateVo {
 
+    /**
+     * id
+     */
+    private Long id;
 
     /**
      *  计划名

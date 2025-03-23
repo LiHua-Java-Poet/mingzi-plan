@@ -7,10 +7,14 @@ import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.minzi.plan.model.to.plan.PlanInfoTo;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Data
-public class TaskInfoTo {
+public class TaskInfoTo implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     /**
      * 主键
      */

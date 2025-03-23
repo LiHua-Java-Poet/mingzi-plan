@@ -102,12 +102,14 @@ public class PlanServiceImpl extends ServiceImpl<PlanDao, PlanEntity> implements
 
     @Override
     public void update(PlanUpdateVo planUpdateVo) {
-
+        PlanEntity entity = planService.getById(planUpdateVo.getId());
+        EntityUtils.copySameFields(planUpdateVo, entity);
+        planService.updateById(entity);
     }
 
     @Override
     public void delete(String[] ids) {
-
+        planService.remove(new LambdaQueryWrapper<PlanEntity>().in(PlanEntity::getId,ids));
     }
 
     @Override

@@ -23,8 +23,8 @@ import java.util.Map;
 
 @Log
 @Priority(100)
-@WebFilter(filterName = "requestLogFilter", urlPatterns = {"/*"})
-public class RequestLogFilter implements Filter {
+@WebFilter(filterName = "requestLogFilter", urlPatterns = {"/app"})
+public class RequestLogFilter  implements Filter{
 
     @Resource
     private RabbitTemplate rabbitTemplate;
