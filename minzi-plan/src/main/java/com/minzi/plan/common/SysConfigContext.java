@@ -1,6 +1,7 @@
 package com.minzi.plan.common;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.minzi.plan.controller.SysConfigController;
 import com.minzi.plan.dao.SysConfigDao;
 import com.minzi.plan.model.entity.SysConfigEntity;
 import lombok.extern.slf4j.Slf4j;

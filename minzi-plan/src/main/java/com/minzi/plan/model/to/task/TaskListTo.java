@@ -3,6 +3,8 @@ package com.minzi.plan.model.to.task;
 
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class TaskListTo {
 
@@ -35,6 +37,11 @@ public class TaskListTo {
      * 任务状态 1 进行中 2 已完成 3 已取消
      */
     private Integer status;
+
+    /**
+     * 任务项的内容
+     */
+    private List<TaskItemTo> itemToList;
 
     /**
      * 计划用时

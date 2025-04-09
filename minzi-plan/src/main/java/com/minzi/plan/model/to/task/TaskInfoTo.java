@@ -9,6 +9,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.List;
 
 @Data
 public class TaskInfoTo implements Serializable {
@@ -54,6 +55,11 @@ public class TaskInfoTo implements Serializable {
      * 备注
      */
     private String remark;
+
+    /**
+     * 任务项的内容
+     */
+    private List<TaskItemTo> itemToList;
 
     /**
      * 评分

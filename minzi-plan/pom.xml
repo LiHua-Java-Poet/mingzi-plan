@@ -38,6 +38,12 @@
             <version>3.0.0</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.openjdk.jol</groupId>
+            <artifactId>jol-core</artifactId>
+            <version>0.10</version>
+        </dependency>
+
         <!-- Knife4j 依赖 -->
         <dependency>
             <groupId>com.github.xiaoymin</groupId>

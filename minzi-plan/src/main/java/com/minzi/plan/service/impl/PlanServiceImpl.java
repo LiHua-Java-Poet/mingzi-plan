@@ -74,6 +74,15 @@ public class PlanServiceImpl extends ServiceImpl<PlanDao, PlanEntity> implements
     public void add(PlanSaveVo planSaveVo) {
         PlanEntity entity = new PlanEntity();
         EntityUtils.copySameFields(planSaveVo, entity);
+
+        //初始化计划信息
+        UserEntity userInfo = userContext.getUserInfo();
+        entity.setUserId(userInfo.getId());
+        entity.setCycleType(1);
+        entity.setStartTime(DateUtils.currentDateTime());
+        entity.setStatus(1);
+        entity.setPlanType(planSaveVo.getPlanType());
+        entity.setTaskProgress(0);
         planService.save(entity);
     }
 

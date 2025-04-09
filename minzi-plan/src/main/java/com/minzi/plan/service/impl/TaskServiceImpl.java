@@ -1,11 +1,10 @@
 package com.minzi.plan.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.minzi.common.core.map.ConsumerMap;
 import com.minzi.common.core.map.LambdaHashMap;
-import com.minzi.common.core.map.ParamsContext;
 import com.minzi.common.core.query.R;
 import com.minzi.common.tools.EntityAct;
 import com.minzi.common.utils.EntityUtils;
@@ -17,6 +16,7 @@ import com.minzi.plan.model.entity.TaskEntity;
 import com.minzi.plan.model.entity.UserEntity;
 import com.minzi.plan.model.to.plan.PlanInfoTo;
 import com.minzi.plan.model.to.task.TaskInfoTo;
+import com.minzi.plan.model.to.task.TaskItemTo;
 import com.minzi.plan.model.to.task.TaskListTo;
 import com.minzi.plan.model.vo.task.TaskSaveVo;
 import com.minzi.plan.model.vo.task.TaskUpdateVo;
@@ -33,7 +33,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 
@@ -73,6 +72,9 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, TaskEntity> implements
             EntityUtils.copySameFields(value, planInfoTo);
             to.setPlanInfoTo(planInfoTo);
         });
+        //将得到的任务备注格式化为对象
+        List<TaskItemTo> taskItemTos = JSON.parseArray(entity.getRemark(), TaskItemTo.class);
+        to.setItemToList(taskItemTos);
         return to;
     }
 
@@ -106,6 +108,8 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, TaskEntity> implements
         return list.stream().map(item -> {
             TaskListTo to = new TaskListTo();
             EntityUtils.copySameFields(item, to);
+            List<TaskItemTo> taskItemTos = JSON.parseArray(item.getRemark(), TaskItemTo.class);
+            to.setItemToList(taskItemTos);
 
             return to;
         }).collect(Collectors.toList());
@@ -124,6 +128,7 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, TaskEntity> implements
         ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
         String value = valueOperations.get(uniqueCode);
         R.dataParamsAssert(value == null, "请不要重复提交");
+        save.setRemark(JSON.toJSONString(taskSaveVo.getItemToList()));
         redisTemplate.delete(uniqueCode);
         taskService.save(save);
     }
@@ -173,7 +178,7 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, TaskEntity> implements
     public void updateRemark(TaskUpdateVo updateVo) {
         TaskEntity byId = taskService.getById(updateVo.getId());
         R.dataParamsAssert(byId == null, "请传入正确的任务ID");
-        byId.setRemark(updateVo.getRemark());
+        byId.setRemark(JSON.toJSONString(updateVo.getItemToList()));
         taskService.updateById(byId);
     }
 

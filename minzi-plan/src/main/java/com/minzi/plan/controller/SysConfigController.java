@@ -26,7 +26,6 @@ public class SysConfigController {
     @Resource
     private SysConfigContext sysConfigContext;
 
-
     @GetMapping("/list")
     public R list(@RequestParam Map<String, Object> params) {
         if (StringUtils.isEmpty(params.get("page"))) {
