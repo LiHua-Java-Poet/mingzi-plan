@@ -103,7 +103,6 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, TaskEntity> implements
 
     @Override
     public List<TaskListTo> formatList(List<TaskEntity> list) {
-
         entityAct.oneToOne(list, TaskEntity::getPlanEntity);
         return list.stream().map(item -> {
             TaskListTo to = new TaskListTo();

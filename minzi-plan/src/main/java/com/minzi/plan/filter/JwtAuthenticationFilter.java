@@ -6,6 +6,7 @@ import com.minzi.common.core.query.R;
 import com.minzi.common.tools.SlidingWindowUtils;
 import com.minzi.common.utils.AppJwtUtil;
 import com.minzi.plan.common.UserContext;
+import com.minzi.plan.model.entity.UserEntity;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import lombok.extern.java.Log;

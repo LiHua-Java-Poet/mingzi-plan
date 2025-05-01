@@ -25,6 +25,11 @@
             <artifactId>minzi-common</artifactId>
             <version>1.0.0</version>
         </dependency>
+        <!-- Spring AOP 支持 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
 <!--        OOS-->
         <dependency>
             <groupId>com.aliyun.oss</groupId>
