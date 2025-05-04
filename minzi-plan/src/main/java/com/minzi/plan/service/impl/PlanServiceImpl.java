@@ -42,7 +42,6 @@ public class PlanServiceImpl extends ServiceImpl<PlanDao, PlanEntity> implements
     @Resource
     private TaskService taskService;
 
-
     @Override
     public Wrapper<PlanEntity> getListCondition(Map<String, Object> params) {
         LambdaQueryWrapper<PlanEntity> wrapper = new LambdaQueryWrapper<>();

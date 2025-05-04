@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.minzi.common.core.map.LambdaHashMap;
 import com.minzi.common.core.query.R;
 import com.minzi.common.tools.EntityAct;
+import com.minzi.common.tools.lock.DistributedLock;
 import com.minzi.common.utils.EntityUtils;
 import com.minzi.common.utils.SnowflakeIdGenerator;
 import com.minzi.plan.common.UserContext;
@@ -173,6 +174,7 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, TaskEntity> implements
         return uniqueCode;
     }
 
+    @DistributedLock(prefixKey = "updateRemark")
     @Override
     public void updateRemark(TaskUpdateVo updateVo) {
         TaskEntity byId = taskService.getById(updateVo.getId());

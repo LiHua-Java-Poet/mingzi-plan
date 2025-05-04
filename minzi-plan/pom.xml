@@ -56,6 +56,8 @@
             <version>2.0.9</version>
         </dependency>
 
+        <!-- Spring Boot Redis Starter (可选，Redisson 已包含 Redis 基础支持) -->
+
 <!--        消息队列-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -158,6 +160,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+        <!-- Redisson -->
+        <dependency>
+            <groupId>org.redisson</groupId>
+            <artifactId>redisson-spring-boot-starter</artifactId>
+            <version>3.16.0</version> <!-- 适配 Spring Boot 2.3.x -->
         </dependency>
         <!-- minio 相关依赖 -->
         <dependency>

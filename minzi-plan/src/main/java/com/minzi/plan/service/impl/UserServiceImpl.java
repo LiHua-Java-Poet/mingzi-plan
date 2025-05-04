@@ -17,6 +17,7 @@ import com.minzi.plan.model.vo.user.UserSaveVo;
 import com.minzi.plan.model.vo.user.UserUpdateVo;
 import com.minzi.plan.service.UserService;
 import lombok.extern.java.Log;
+import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -33,9 +34,11 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
     @Resource
     private UserService userService;
 
+
+    private RedissonClient redissonClient;
+
     @Override
     public List<UserEntity> getList() {
-        List<UserEntity> list = userService.list();
         return userService.list();
     }
 

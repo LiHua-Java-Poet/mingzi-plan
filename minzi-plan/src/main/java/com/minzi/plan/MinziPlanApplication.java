@@ -7,7 +7,7 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 @ServletComponentScan
 @SpringBootApplication
-@EnableAspectJAutoProxy
+@EnableAspectJAutoProxy(exposeProxy = true)
 public class MinziPlanApplication {
 
     public static void main(String[] args) {
