@@ -12,5 +12,4 @@ public class EntityAct implements OneToOneAct, OneToManyAct {
     @Resource
     private ApplicationContext applicationContext;
 
-
 }

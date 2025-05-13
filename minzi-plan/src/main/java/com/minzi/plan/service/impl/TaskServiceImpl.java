@@ -30,10 +30,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.locks.Lock;
 import java.util.stream.Collectors;
 
 
@@ -174,7 +172,7 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, TaskEntity> implements
         return uniqueCode;
     }
 
-    @DistributedLock(prefixKey = "updateRemark")
+    @DistributedLock(prefixKey = "updateRemark",key = "updateVo")
     @Override
     public void updateRemark(TaskUpdateVo updateVo) {
         TaskEntity byId = taskService.getById(updateVo.getId());
