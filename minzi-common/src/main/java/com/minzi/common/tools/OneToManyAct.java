@@ -2,7 +2,6 @@ package com.minzi.common.tools;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.minzi.common.annotation.OneToMany;
-import com.minzi.common.annotation.OneToOne;
 import com.minzi.common.service.BaseService;
 import com.minzi.common.tools.utils.SpringContextUtils;
 import com.minzi.common.utils.EntityUtils;
