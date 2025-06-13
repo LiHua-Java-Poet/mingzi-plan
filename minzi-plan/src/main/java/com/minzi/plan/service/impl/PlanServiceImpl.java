@@ -53,9 +53,7 @@ public class PlanServiceImpl extends ServiceImpl<PlanDao, PlanEntity> implements
         wrapper.eq(!StringUtils.isEmpty(status), PlanEntity::getStatus, status);
 
         UserEntity userInfo = userContext.getUserInfo();
-        if (userInfo != null) {
-            wrapper.eq(PlanEntity::getUserId, userInfo.getId());
-        }
+        wrapper.eq(userInfo != null, PlanEntity::getUserId, userInfo.getId());
 
         return wrapper;
     }
@@ -117,7 +115,7 @@ public class PlanServiceImpl extends ServiceImpl<PlanDao, PlanEntity> implements
 
     @Override
     public void delete(String[] ids) {
-        planService.remove(new LambdaQueryWrapper<PlanEntity>().in(PlanEntity::getId,ids));
+        planService.remove(new LambdaQueryWrapper<PlanEntity>().in(PlanEntity::getId, ids));
     }
 
     @Override
@@ -146,7 +144,7 @@ public class PlanServiceImpl extends ServiceImpl<PlanDao, PlanEntity> implements
         R.dataParamsAssert(one == null, "请传入正确的计划Id");
         R.dataParamsAssert(one.getStatus() == 2, "已完成的任务不能取消");
         one.setStatus(3);
-        entityAct.oneToMany(one,PlanEntity::getTaskEntityList);
+        entityAct.oneToMany(one, PlanEntity::getTaskEntityList);
         List<TaskEntity> taskEntityList = one.getTaskEntityList();
         List<TaskEntity> taskEntities = taskEntityList.stream().filter(b -> b.getStatus() == 1).peek(item -> item.setStatus(3)).collect(Collectors.toList());
         taskService.updateBatchById(taskEntities);
