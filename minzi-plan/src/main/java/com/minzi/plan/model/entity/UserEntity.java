@@ -50,6 +50,11 @@ public class UserEntity {
     private String name;
 
     /**
+     * 用户类型 1 普通用户 2 管理员
+     */
+    private Integer type;
+
+    /**
      * 创建时间
      */
     @TableField(fill = FieldFill.INSERT) // 插入时自动填充
