@@ -51,10 +51,6 @@ public class TaskInfoTo implements Serializable {
      */
     private Integer status;
 
-    /**
-     * 备注
-     */
-    private String remark;
 
     /**
      * 任务项的内容

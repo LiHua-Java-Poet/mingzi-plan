@@ -56,7 +56,6 @@
             <version>2.0.9</version>
         </dependency>
 
-        <!-- Spring Boot Redis Starter (可选，Redisson 已包含 Redis 基础支持) -->
 
 <!--        消息队列-->
         <dependency>

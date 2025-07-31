@@ -135,10 +135,12 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, TaskEntity> implements
 
     }
 
+    @DistributedLock(prefixKey = "task:", key = "#ids")
     @Override
     public void completeTask(String[] ids) {
         //完成任务
         List<TaskEntity> taskEntityList = taskService.list(new LambdaQueryWrapper<TaskEntity>().eq(TaskEntity::getStatus, 1).in(TaskEntity::getId, ids));
+        taskEntityList = taskEntityList.stream().filter(r -> r.getStatus() == 1).collect(Collectors.toList());
         taskEntityList.forEach(item -> item.setStatus(2));
 
         //拿到对于的计划任务集合
@@ -171,7 +173,7 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, TaskEntity> implements
         return uniqueCode;
     }
 
-    @DistributedLock(prefixKey = "updateRemark",key = "updateVo")
+    @DistributedLock(prefixKey = "updateRemark", key = "updateVo")
     @Override
     public void updateRemark(TaskUpdateVo updateVo) {
         TaskEntity byId = taskService.getById(updateVo.getId());
