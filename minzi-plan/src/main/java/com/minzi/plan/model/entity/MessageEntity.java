@@ -40,12 +40,12 @@ public class MessageEntity {
     /**
      * 创建时间
      */
-			@TableField(fill = FieldFill.INSERT)
-			private Integer createTime;
+	@TableField(fill = FieldFill.INSERT)
+	private Integer createTime;
     /**
      * 删除时间
      */
-		@TableLogic(value = "0", delval = "unix_timestamp()")
+	@TableLogic(value = "0", delval = "unix_timestamp()")
 	@TableField(select = false)
-				private Integer deleteTime;
+	private Integer deleteTime;
 }

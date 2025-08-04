@@ -15,6 +15,8 @@ import com.minzi.plan.model.to.session.SessionListTo;
 import com.minzi.plan.model.vo.session.SessionSaveVo;
 import com.minzi.plan.model.vo.session.SessionUpdateVo;
 import com.minzi.plan.service.SessionService;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -29,7 +31,13 @@ public class SessionServiceImpl extends ServiceImpl<SessionDao,SessionEntity> im
     private SessionService sessionService;
 
     @Resource
+    private UserContext userContext;
+
+    @Resource
     private EntityAct entityAct;
+
+    @Resource
+    private RedisTemplate<String, String> redisTemplate;
 
     @Override
     public Wrapper<SessionEntity> getListCondition(Map<String, Object> params) {
@@ -49,8 +57,13 @@ public class SessionServiceImpl extends ServiceImpl<SessionDao,SessionEntity> im
 
     @Override
     public void add(SessionSaveVo sessionSaveVo) {
+        ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
+        String uniqueCode = valueOperations.get(sessionSaveVo.getUniqueCode());
+        R.dataParamsAssert(uniqueCode == null, "请不要重复提交");
+        redisTemplate.delete(uniqueCode);
         SessionEntity entity = new SessionEntity();
         EntityUtils.copySameFields(sessionSaveVo, entity);
+        entity.setUserId(userContext.getUserId());
         sessionService.save(entity);
     }
 

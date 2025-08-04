@@ -13,7 +13,7 @@ import lombok.Data;
 public class SessionEntity {
 
     /**
-     * id
+     * ID
      */
 				@TableId(value = "id", type = IdType.AUTO)
 		private Long id;
@@ -29,9 +29,11 @@ public class SessionEntity {
      * 创建时间
      */
 			@TableField(fill = FieldFill.INSERT)
-			private Long createTime;
+			private Integer createTime;
     /**
      * 删除时间
      */
-				private Long deteleId;
+		@TableLogic(value = "0", delval = "unix_timestamp()")
+	@TableField(select = false)
+				private Integer deleteTime;
 }

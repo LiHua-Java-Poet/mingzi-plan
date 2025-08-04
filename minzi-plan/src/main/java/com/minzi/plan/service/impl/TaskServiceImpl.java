@@ -123,10 +123,10 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, TaskEntity> implements
         String uniqueCode = taskSaveVo.getUniqueCode();
         R.dataParamsAssert(uniqueCode == null, "校验码不能为空");
         ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
+        redisTemplate.delete(uniqueCode);
         String value = valueOperations.get(uniqueCode);
         R.dataParamsAssert(value == null, "请不要重复提交");
         save.setRemark(JSON.toJSONString(taskSaveVo.getItemToList()));
-        redisTemplate.delete(uniqueCode);
         taskService.save(save);
     }
 

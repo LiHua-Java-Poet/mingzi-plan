@@ -16,7 +16,7 @@ public class SessionUpdateVo implements Serializable {
 	private static final long serialVersionUID = 1L;
 
     /**
-     * id
+     * ID
      */
 	private Long id;
     /**
@@ -34,5 +34,5 @@ public class SessionUpdateVo implements Serializable {
     /**
      * 删除时间
      */
-	private Long deteleId;
+	private Long deleteTime;
 }

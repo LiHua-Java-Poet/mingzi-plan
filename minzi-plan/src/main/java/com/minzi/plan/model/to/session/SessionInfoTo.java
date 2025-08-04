@@ -17,7 +17,7 @@ public class SessionInfoTo implements Serializable {
 
 
 	    /**
-     * id
+     * ID
      */
 	private Long id;
     /**
@@ -35,5 +35,5 @@ public class SessionInfoTo implements Serializable {
     /**
      * 删除时间
      */
-	private Long deteleId;
+	private Long deleteTime;
 }
