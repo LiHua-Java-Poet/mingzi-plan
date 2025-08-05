@@ -3,13 +3,17 @@ package com.minzi.plan.service.impl;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.minzi.common.core.map.LambdaHashMap;
 import com.minzi.common.core.query.R;
 import com.minzi.common.tools.EntityAct;
+import com.minzi.common.tools.lock.DistributedLock;
 import com.minzi.common.utils.DateUtils;
 import com.minzi.common.utils.EntityUtils;
 import com.minzi.plan.common.UserContext;
 import com.minzi.plan.dao.SessionDao;
+import com.minzi.plan.model.entity.MessageEntity;
 import com.minzi.plan.model.entity.SessionEntity;
+import com.minzi.plan.model.entity.UserEntity;
 import com.minzi.plan.model.to.session.SessionInfoTo;
 import com.minzi.plan.model.to.session.SessionListTo;
 import com.minzi.plan.model.vo.session.SessionSaveVo;
@@ -25,7 +29,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
-public class SessionServiceImpl extends ServiceImpl<SessionDao,SessionEntity> implements SessionService{
+public class SessionServiceImpl extends ServiceImpl<SessionDao, SessionEntity> implements SessionService {
 
     @Resource
     private SessionService sessionService;
@@ -41,7 +45,12 @@ public class SessionServiceImpl extends ServiceImpl<SessionDao,SessionEntity> im
 
     @Override
     public Wrapper<SessionEntity> getListCondition(Map<String, Object> params) {
+        LambdaHashMap<String, Object> lambdaHashMap = new LambdaHashMap<>(params);
         LambdaQueryWrapper<SessionEntity> wrapper = new LambdaQueryWrapper<>();
+        wrapper.orderByDesc(SessionEntity::getId);
+
+        UserEntity userInfo = userContext.getUserInfo();
+        wrapper.eq(userInfo != null, SessionEntity::getUserId, userInfo.getId());
 
         return wrapper;
     }
@@ -55,12 +64,15 @@ public class SessionServiceImpl extends ServiceImpl<SessionDao,SessionEntity> im
         }).collect(Collectors.toList());
     }
 
+    @DistributedLock(prefixKey = "session:", key = "#ids")
     @Override
     public void add(SessionSaveVo sessionSaveVo) {
+        String uniqueCode = sessionSaveVo.getUniqueCode();
+        R.dataParamsAssert(uniqueCode == null, "校验码不能为空");
         ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
-        String uniqueCode = valueOperations.get(sessionSaveVo.getUniqueCode());
-        R.dataParamsAssert(uniqueCode == null, "请不要重复提交");
+        String value = valueOperations.get(uniqueCode);
         redisTemplate.delete(uniqueCode);
+        R.dataParamsAssert(value == null, "请不要重复提交");
         SessionEntity entity = new SessionEntity();
         EntityUtils.copySameFields(sessionSaveVo, entity);
         entity.setUserId(userContext.getUserId());
@@ -91,6 +103,6 @@ public class SessionServiceImpl extends ServiceImpl<SessionDao,SessionEntity> im
 
     @Override
     public void delete(String[] ids) {
-        sessionService.remove(new LambdaQueryWrapper<SessionEntity>().in(SessionEntity::getId,ids));
+        sessionService.remove(new LambdaQueryWrapper<SessionEntity>().in(SessionEntity::getId, ids));
     }
 }

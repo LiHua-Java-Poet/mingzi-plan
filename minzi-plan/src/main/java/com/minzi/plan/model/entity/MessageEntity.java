@@ -3,6 +3,8 @@ package com.minzi.plan.model.entity;
 import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * 消息表
  *
@@ -10,7 +12,7 @@ import lombok.Data;
  */
 @Data
 @TableName("message")
-public class MessageEntity {
+public class MessageEntity implements Serializable {
 
     /**
      * ID

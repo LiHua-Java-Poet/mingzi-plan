@@ -3,19 +3,20 @@ package com.minzi.plan.service.impl;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.minzi.common.core.query.R;
+import com.minzi.common.core.map.LambdaHashMap;
 import com.minzi.common.tools.EntityAct;
-import com.minzi.common.utils.DateUtils;
 import com.minzi.common.utils.EntityUtils;
 import com.minzi.plan.common.UserContext;
 import com.minzi.plan.dao.MessageDao;
 import com.minzi.plan.model.entity.MessageEntity;
+import com.minzi.plan.model.entity.UserEntity;
 import com.minzi.plan.model.to.message.MessageInfoTo;
 import com.minzi.plan.model.to.message.MessageListTo;
 import com.minzi.plan.model.vo.message.MessageSaveVo;
 import com.minzi.plan.model.vo.message.MessageUpdateVo;
 import com.minzi.plan.service.MessageService;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -23,7 +24,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
-public class MessageServiceImpl extends ServiceImpl<MessageDao,MessageEntity> implements MessageService{
+public class MessageServiceImpl extends ServiceImpl<MessageDao, MessageEntity> implements MessageService {
 
     @Resource
     private MessageService messageService;
@@ -31,9 +32,20 @@ public class MessageServiceImpl extends ServiceImpl<MessageDao,MessageEntity> im
     @Resource
     private EntityAct entityAct;
 
+    @Resource
+    private UserContext userContext;
+
     @Override
     public Wrapper<MessageEntity> getListCondition(Map<String, Object> params) {
+        LambdaHashMap<String, Object> lambdaHashMap = new LambdaHashMap<>(params);
         LambdaQueryWrapper<MessageEntity> wrapper = new LambdaQueryWrapper<>();
+        wrapper.orderByDesc(MessageEntity::getId);
+
+        UserEntity userInfo = userContext.getUserInfo();
+        wrapper.eq(MessageEntity::getUserId, userInfo.getId());
+
+        Object sessionId = lambdaHashMap.get(MessageEntity::getSessionId);
+        wrapper.eq(!StringUtils.isEmpty(sessionId), MessageEntity::getSessionId, sessionId);
 
         return wrapper;
     }
@@ -49,8 +61,10 @@ public class MessageServiceImpl extends ServiceImpl<MessageDao,MessageEntity> im
 
     @Override
     public void add(MessageSaveVo messageSaveVo) {
+        UserEntity userInfo = userContext.getUserInfo();
         MessageEntity entity = new MessageEntity();
         EntityUtils.copySameFields(messageSaveVo, entity);
+        entity.setUserId(userInfo.getId());
         messageService.save(entity);
     }
 
@@ -78,6 +92,6 @@ public class MessageServiceImpl extends ServiceImpl<MessageDao,MessageEntity> im
 
     @Override
     public void delete(String[] ids) {
-        messageService.remove(new LambdaQueryWrapper<MessageEntity>().in(MessageEntity::getId,ids));
+        messageService.remove(new LambdaQueryWrapper<MessageEntity>().in(MessageEntity::getId, ids));
     }
 }
