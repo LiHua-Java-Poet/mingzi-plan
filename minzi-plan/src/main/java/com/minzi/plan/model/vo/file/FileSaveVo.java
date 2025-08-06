@@ -21,11 +21,6 @@ public class FileSaveVo implements Serializable {
 	private Long pid;
 
 	/**
-	 * 用户ID
-	*/
-	private Long userId;
-
-	/**
 	 * 文件名
 	*/
 	private String name;
@@ -36,18 +31,8 @@ public class FileSaveVo implements Serializable {
 	private Integer fileType;
 
 	/**
-	 * 文档内容
-	*/
-	private String content;
-
-	/**
-	 * 创建时间
-	*/
-	private Integer createTime;
-
-	/**
-	 * 删除时间
-	*/
-	private Integer deleteTime;
+	 * 唯一码
+	 */
+	private String uniqueCode;
 
 }
