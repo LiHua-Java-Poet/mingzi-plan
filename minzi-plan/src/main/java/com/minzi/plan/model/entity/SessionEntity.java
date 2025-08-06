@@ -15,12 +15,14 @@ public class SessionEntity {
     /**
      * ID
      */
-				@TableId(value = "id", type = IdType.AUTO)
-		private Long id;
+	@TableId(value = "id", type = IdType.AUTO)
+	private Long id;
+
     /**
      * 标题
      */
-				private String title;
+	private String title;
+
     /**
      * 用户ID
      */
