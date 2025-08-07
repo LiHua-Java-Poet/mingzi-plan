@@ -15,6 +15,6 @@ public class GlobalExceptionHandler {
     public ResponseEntity<R> handleAllExceptions(Exception ex) {
         ex.printStackTrace();
         // 返回统一的错误响应
-        return new ResponseEntity<>(R.error(500,ex.toString()), HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(R.error(504,ex.getMessage()), HttpStatus.OK);
     }
 }

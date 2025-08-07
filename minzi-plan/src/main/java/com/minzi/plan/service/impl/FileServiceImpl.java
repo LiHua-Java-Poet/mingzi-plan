@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.minzi.common.core.query.R;
 import com.minzi.common.tools.EntityAct;
 import com.minzi.common.tools.lock.DistributedLock;
+import com.minzi.common.tools.resubmit.Resubmit;
 import com.minzi.common.utils.DateUtils;
 import com.minzi.common.utils.EntityUtils;
 import com.minzi.common.core.map.LambdaHashMap;
@@ -69,14 +70,9 @@ public class FileServiceImpl extends ServiceImpl<FileDao, FileEntity> implements
     }
 
     @DistributedLock(prefixKey = "file:", key = "#ids")
+    @Resubmit(voClass = FileSaveVo.class)
     @Override
     public void add(FileSaveVo fileSaveVo) {
-        String uniqueCode = fileSaveVo.getUniqueCode();
-        R.dataParamsAssert(uniqueCode == null, "校验码不能为空");
-        ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
-        String value = valueOperations.get(uniqueCode);
-        redisTemplate.delete(uniqueCode);
-        R.dataParamsAssert(value == null, "请不要重复提交");
         UserEntity userInfo = userContext.getUserInfo();
         FileEntity entity = new FileEntity();
         EntityUtils.copySameFields(fileSaveVo, entity);

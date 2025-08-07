@@ -8,6 +8,7 @@ import com.minzi.common.core.map.LambdaHashMap;
 import com.minzi.common.core.query.R;
 import com.minzi.common.tools.EntityAct;
 import com.minzi.common.tools.lock.DistributedLock;
+import com.minzi.common.tools.resubmit.Resubmit;
 import com.minzi.common.utils.EntityUtils;
 import com.minzi.common.utils.SnowflakeIdGenerator;
 import com.minzi.plan.common.UserContext;
@@ -19,6 +20,7 @@ import com.minzi.plan.model.to.plan.PlanInfoTo;
 import com.minzi.plan.model.to.task.TaskInfoTo;
 import com.minzi.plan.model.to.task.TaskItemTo;
 import com.minzi.plan.model.to.task.TaskListTo;
+import com.minzi.plan.model.vo.file.FileSaveVo;
 import com.minzi.plan.model.vo.task.TaskSaveVo;
 import com.minzi.plan.model.vo.task.TaskUpdateVo;
 import com.minzi.plan.service.PlanService;
@@ -112,6 +114,7 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, TaskEntity> implements
         }).collect(Collectors.toList());
     }
 
+    @Resubmit(voClass = TaskSaveVo.class)
     @Override
     public void add(TaskSaveVo taskSaveVo) {
         TaskEntity save = new TaskEntity();
@@ -120,12 +123,6 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, TaskEntity> implements
         UserEntity userInfo = userContext.getUserInfo();
         save.setUserId(userInfo.getId());
         save.setStatus(1);
-        String uniqueCode = taskSaveVo.getUniqueCode();
-        R.dataParamsAssert(uniqueCode == null, "校验码不能为空");
-        ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
-        String value = valueOperations.get(uniqueCode);
-        redisTemplate.delete(uniqueCode);
-        R.dataParamsAssert(value == null, "请不要重复提交");
         save.setRemark(JSON.toJSONString(taskSaveVo.getItemToList()));
         taskService.save(save);
     }

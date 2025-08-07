@@ -1,6 +1,8 @@
 package com.minzi.common.core.query;
 
 
+import com.minzi.common.exception.BaseRuntimeException;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -64,7 +66,7 @@ public class R extends HashMap<String, Object> {
 
     public static void dataParamsAssert(boolean condition,String message){
         if (condition){
-            throw new RuntimeException(message);
+            throw new BaseRuntimeException(message);
         }
     }
 }
