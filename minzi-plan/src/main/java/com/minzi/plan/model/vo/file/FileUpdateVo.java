@@ -45,14 +45,4 @@ public class FileUpdateVo implements Serializable {
      */
 	private String content;
 
-    /**
-     * 创建时间
-     */
-	private Integer createTime;
-
-    /**
-     * 删除时间
-     */
-	private Integer deleteTime;
-
 }

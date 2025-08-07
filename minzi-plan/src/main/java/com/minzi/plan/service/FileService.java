@@ -9,4 +9,10 @@ import com.minzi.plan.model.vo.file.FileUpdateVo;
 
 
 public interface FileService extends BaseService<FileEntity,FileListTo,FileInfoTo, FileSaveVo, FileUpdateVo> {
+
+    /**
+     * 保存文档
+     * @param vo 上传的文档内容
+     */
+    void saveDocument(FileUpdateVo vo);
 }

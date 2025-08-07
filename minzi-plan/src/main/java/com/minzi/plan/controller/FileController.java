@@ -50,4 +50,11 @@ public class FileController {
         fileService.update(vo);
         return R.ok();
     }
+
+    @PostMapping("/saveDocument")
+    public R saveDocument(@RequestBody FileUpdateVo vo) {
+        fileService.saveDocument(vo);
+        return R.ok();
+    }
+
 }
