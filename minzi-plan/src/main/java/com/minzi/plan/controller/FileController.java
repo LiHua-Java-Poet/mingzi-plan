@@ -8,6 +8,7 @@ import com.minzi.plan.model.to.file.FileListTo;
 import com.minzi.plan.model.vo.file.FileSaveVo;
 import com.minzi.plan.model.vo.file.FileUpdateVo;
 import com.minzi.plan.service.FileService;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -54,6 +55,13 @@ public class FileController {
     @PostMapping("/saveDocument")
     public R saveDocument(@RequestBody FileUpdateVo vo) {
         fileService.saveDocument(vo);
+        return R.ok();
+    }
+
+    @ApiOperation(value = "删除文件")
+    @PostMapping("/delete")
+    public R delete(@RequestBody String[] ids) {
+        fileService.delete(ids);
         return R.ok();
     }
 

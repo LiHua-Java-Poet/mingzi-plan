@@ -23,9 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -55,6 +53,9 @@ public class FileServiceImpl extends ServiceImpl<FileDao, FileEntity> implements
 
         Object pid = lambdaHashMap.get(FileEntity::getPid);
         wrapper.eq(!StringUtils.isEmpty(pid), FileEntity::getPid, pid);
+
+        Object name = lambdaHashMap.get(FileEntity::getName);
+        wrapper.like(!StringUtils.isEmpty(name), FileEntity::getName, name);
 
         return wrapper;
     }
@@ -108,7 +109,42 @@ public class FileServiceImpl extends ServiceImpl<FileDao, FileEntity> implements
 
     @Override
     public void delete(String[] ids) {
-        fileService.remove(new LambdaQueryWrapper<FileEntity>().in(FileEntity::getId, ids));
+        // 1. 获取当前用户 ID
+        Long userId = userContext.getUserId();
+
+        // 2. 获取用户所有文件（用于构造 pid -> List<FileEntity> 映射）
+        List<FileEntity> userFileList = fileService.list(
+                new LambdaQueryWrapper<FileEntity>().eq(FileEntity::getUserId, userId)
+        );
+
+        // 3. 构建 pid -> List<FileEntity> 的映射
+        Map<Long, List<FileEntity>> pidListMap = EntityUtils.resortEntityByColumnLevel2(userFileList, FileEntity::getPid);
+
+        // 4. 用于记录所有要删除的文件 ID
+        Set<Long> deleteIdSet = new HashSet<>();
+
+        // 5. 遍历每一个传入的文件/文件夹 ID，递归查找所有子文件 ID
+        for (String idStr : ids) {
+            Long id = Long.parseLong(idStr);
+            collectAllChildIds(id, pidListMap, deleteIdSet);
+        }
+
+        // . 执行删除
+        fileService.remove(new LambdaQueryWrapper<FileEntity>().in(FileEntity::getId, deleteIdSet));
+    }
+
+    /**
+     * 递归收集所有子文件/子文件夹的 ID
+     */
+    private void collectAllChildIds(Long parentId, Map<Long, List<FileEntity>> pidMap, Set<Long> result) {
+        result.add(parentId); // 加入当前 ID
+
+        List<FileEntity> children = pidMap.get(parentId);
+        if (children != null) {
+            for (FileEntity child : children) {
+                collectAllChildIds(child.getId(), pidMap, result); // 递归添加
+            }
+        }
     }
 
     @Override
