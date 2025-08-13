@@ -2,6 +2,7 @@ package com.minzi.plan.model.to.plan;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.minzi.common.core.model.AnnexFile;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -67,4 +68,9 @@ public class PlanListTo {
      * 删除时间
      */
     private Integer deletedTime;
+
+    /**
+     * 附件内容
+     */
+    private AnnexFile annexFile;
 }

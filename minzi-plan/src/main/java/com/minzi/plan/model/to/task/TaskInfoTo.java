@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.minzi.common.core.model.AnnexFile;
 import com.minzi.plan.model.to.plan.PlanInfoTo;
 import lombok.Data;
 
@@ -71,6 +72,16 @@ public class TaskInfoTo implements Serializable {
      * 锁机用时
      */
     private Integer lockTime;
+
+    /**
+     * 计划类型 1 学习 2 锻炼 3 写作 4 阅读 5 影视
+     */
+    private Integer planType;
+
+    /**
+     * 附件内容
+     */
+    private AnnexFile annexFile;
 
     /**
      * 删除时间

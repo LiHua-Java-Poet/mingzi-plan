@@ -2,6 +2,7 @@ package com.minzi.plan.model.vo.plan;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.minzi.common.core.model.AnnexFile;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -51,5 +52,10 @@ public class PlanSaveVo {
      */
     @ApiModelProperty(value = "计划信息")
     private String taskRule;
+
+    /**
+     * 附件内容
+     */
+    private AnnexFile annexFile;
 
 }

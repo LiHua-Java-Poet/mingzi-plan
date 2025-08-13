@@ -1,6 +1,7 @@
 package com.minzi.plan.model.to.task;
 
 
+import com.minzi.common.core.model.AnnexFile;
 import lombok.Data;
 
 import java.util.List;
@@ -52,6 +53,16 @@ public class TaskListTo {
      * 锁机用时
      */
     private Integer lockTime;
+
+    /**
+     * 计划类型 1 学习 2 锻炼 3 写作 4 阅读 5 影视
+     */
+    private Integer planType;
+
+    /**
+     * 附件内容
+     */
+    private AnnexFile annexFile;
 
     /**
      * 删除时间

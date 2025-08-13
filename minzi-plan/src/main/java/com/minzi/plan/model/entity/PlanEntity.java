@@ -87,6 +87,11 @@ public class PlanEntity {
     private String taskRule;
 
     /**
+     * 附件内容
+     */
+    private String annexFile;
+
+    /**
      * 预期完成时间
      */
     private Integer expectedTime;

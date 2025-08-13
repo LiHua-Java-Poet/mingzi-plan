@@ -1,5 +1,6 @@
 package com.minzi.plan.model.to.plan;
 
+import com.minzi.common.core.model.AnnexFile;
 import lombok.Data;
 
 @Data
@@ -79,4 +80,9 @@ public class PlanInfoTo {
      * 计划状态 1 进行中 2 已完成 3 已取消
      */
     private Integer status;
+
+    /**
+     * 附件内容
+     */
+    private AnnexFile annexFile;
 }

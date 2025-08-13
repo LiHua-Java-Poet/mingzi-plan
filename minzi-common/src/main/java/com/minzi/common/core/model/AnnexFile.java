@@ -14,6 +14,11 @@ public class AnnexFile {
     private String fileName;
 
     /**
+     * 文件存储路径
+     */
+    private String filePath;
+
+    /**
      * 文件后缀类型
      */
     private String fileSuffix;

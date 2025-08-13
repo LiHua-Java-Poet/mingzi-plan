@@ -63,6 +63,16 @@ public class TaskEntity {
     private Integer lockTime;
 
     /**
+     * 附件内容
+     */
+    private String annexFile;
+
+    /**
+     * 计划类型 1 学习 2 锻炼 3 写作 4 阅读 5 影视
+     */
+    private Integer planType;
+
+    /**
      * 创建时间
      */
     @TableField(fill = FieldFill.INSERT) // 插入时自动填充
