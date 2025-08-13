@@ -57,14 +57,14 @@ public class ObjectUtils {
     }
 
 
-    public static <T, R> Object getFieldValue(Object obj, PropertyFunc<T, R> methodReference) {
+    public static <T, R> R getFieldValue(Object obj, PropertyFunc<T, R> methodReference) {
         if (obj == null) return null;
         String fieldName = getFieldName(methodReference);
-        Class<?> aClass = obj.getClass();
+        Class<?> targetClass = obj.getClass();
         try {
-            Field field = aClass.getField(fieldName);
+            Field field = targetClass.getDeclaredField(fieldName);
             field.setAccessible(true);
-            return field.get(obj);
+            return (R) field.get(obj);
         } catch (Exception e) {
             e.printStackTrace();
         }

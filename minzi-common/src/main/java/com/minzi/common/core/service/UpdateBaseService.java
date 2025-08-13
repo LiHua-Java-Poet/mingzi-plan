@@ -1,4 +1,4 @@
-package com.minzi.common.service;
+package com.minzi.common.core.service;
 
 public interface UpdateBaseService<UPDATE_VO> {
 

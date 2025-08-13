@@ -1,4 +1,4 @@
-package com.minzi.common.service.impl;
+package com.minzi.common.core.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;

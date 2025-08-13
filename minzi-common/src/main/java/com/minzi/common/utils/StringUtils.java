@@ -33,7 +33,12 @@ public class StringUtils {
         return camelCaseString.toString();
     }
 
-    private static String capitalizeFirstLetter(String word) {
+    /***
+     * 首字母转大写
+     * @param word 输入的原始文本
+     * @return 转换后的文本
+     */
+    public static String capitalizeFirstLetter(String word) {
         if (word == null || word.isEmpty()) {
             return word;
         }

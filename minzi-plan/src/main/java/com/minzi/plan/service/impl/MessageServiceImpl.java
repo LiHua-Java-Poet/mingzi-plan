@@ -6,9 +6,11 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.minzi.common.core.map.LambdaHashMap;
 import com.minzi.common.tools.EntityAct;
 import com.minzi.common.utils.EntityUtils;
+import com.minzi.common.utils.ObjectUtils;
 import com.minzi.plan.common.UserContext;
 import com.minzi.plan.dao.MessageDao;
 import com.minzi.plan.model.entity.MessageEntity;
+import com.minzi.plan.model.entity.SessionEntity;
 import com.minzi.plan.model.entity.UserEntity;
 import com.minzi.plan.model.to.message.MessageInfoTo;
 import com.minzi.plan.model.to.message.MessageListTo;
@@ -52,9 +54,11 @@ public class MessageServiceImpl extends ServiceImpl<MessageDao, MessageEntity> i
 
     @Override
     public List<MessageListTo> formatList(List<MessageEntity> list) {
+        entityAct.oneToOne(list,MessageEntity::getSessionEntity);
         return list.stream().map(item -> {
             MessageListTo to = new MessageListTo();
             EntityUtils.copySameFields(item, to);
+            to.setSessionTitle(ObjectUtils.getFieldValue(item.getSessionEntity(), SessionEntity::getTitle));
             return to;
         }).collect(Collectors.toList());
     }

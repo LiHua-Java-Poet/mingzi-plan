@@ -1,6 +1,6 @@
 package com.minzi.plan.service;
 
-import com.minzi.common.service.BaseService;
+import com.minzi.common.core.service.BaseService;
 import com.minzi.plan.model.entity.FileEntity;
 import com.minzi.plan.model.to.file.FileInfoTo;
 import com.minzi.plan.model.to.file.FileListTo;
