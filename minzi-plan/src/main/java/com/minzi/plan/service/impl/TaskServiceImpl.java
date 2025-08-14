@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.minzi.common.core.map.LambdaHashMap;
 import com.minzi.common.core.model.AnnexFile;
+import com.minzi.common.core.model.enums.AnnexFileEnum;
 import com.minzi.common.core.query.R;
 import com.minzi.common.tools.EntityAct;
 import com.minzi.common.tools.lock.DistributedLock;
@@ -27,6 +28,7 @@ import com.minzi.plan.model.vo.task.TaskUpdateVo;
 import com.minzi.plan.service.PlanService;
 import com.minzi.plan.service.TaskService;
 import lombok.extern.java.Log;
+import lombok.val;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
@@ -129,6 +131,18 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, TaskEntity> implements
         save.setUserId(userInfo.getId());
         save.setStatus(1);
         save.setRemark(JSON.toJSONString(taskSaveVo.getItemToList()));
+
+        //保存附件,先处理一下附件的格式
+        List<AnnexFile> annexFiles = taskSaveVo.getAnnexFiles();
+        Map<String, Integer> annexFileEnumMap = AnnexFileEnum.FileType.toMap(AnnexFileEnum.FileType::getName, AnnexFileEnum.FileType::getCode);
+        Optional.ofNullable(annexFiles).ifPresent(value->{
+            value.forEach(item->{
+                String fileSuffix = item.getFileSuffix();
+                Integer type = annexFileEnumMap.get(fileSuffix);
+                item.setFileType(type);
+            });
+            save.setAnnexFile(JSON.toJSONString(taskSaveVo.getAnnexFiles()));
+        });
         taskService.save(save);
     }
 
