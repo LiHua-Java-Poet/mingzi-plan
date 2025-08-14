@@ -15,11 +15,6 @@ public class TaskSaveVo {
     private String taskName;
 
     /**
-     * 任务名
-     */
-    private String remark;
-
-    /**
      * 任务项的内容
      */
     private List<TaskItemTo> itemToList;

@@ -68,9 +68,9 @@ public class TaskEntity {
     private String annexFile;
 
     /**
-     * 计划类型 1 学习 2 锻炼 3 写作 4 阅读 5 影视
+     * 任务类型 1 学习 2 锻炼 3 写作 4 阅读 5 影视
      */
-    private Integer planType;
+    private Integer taskType;
 
     /**
      * 创建时间

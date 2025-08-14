@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.minzi.common.core.map.LambdaHashMap;
+import com.minzi.common.core.model.AnnexFile;
 import com.minzi.common.core.query.R;
 import com.minzi.common.tools.EntityAct;
 import com.minzi.common.tools.lock.DistributedLock;
@@ -75,6 +76,10 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, TaskEntity> implements
         //将得到的任务备注格式化为对象
         List<TaskItemTo> taskItemTos = JSON.parseArray(entity.getRemark(), TaskItemTo.class);
         to.setItemToList(taskItemTos);
+
+        //将得到的任务附件格式化为对象
+        List<AnnexFile> annexFiles = JSON.parseArray(entity.getAnnexFile(), AnnexFile.class);
+        to.setAnnexFiles(annexFiles);
         return to;
     }
 

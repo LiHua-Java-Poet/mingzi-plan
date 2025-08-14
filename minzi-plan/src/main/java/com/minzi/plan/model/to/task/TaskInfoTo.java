@@ -81,7 +81,7 @@ public class TaskInfoTo implements Serializable {
     /**
      * 附件内容
      */
-    private AnnexFile annexFile;
+    private List<AnnexFile> annexFiles;
 
     /**
      * 删除时间

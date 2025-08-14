@@ -8,6 +8,7 @@ import com.minzi.plan.model.to.message.MessageListTo;
 import com.minzi.plan.model.vo.message.MessageSaveVo;
 import com.minzi.plan.model.vo.message.MessageUpdateVo;
 import com.minzi.plan.service.MessageService;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -48,6 +49,13 @@ public class MessageController {
     @PostMapping("/update")
     public R update(@RequestBody MessageUpdateVo vo) {
         messageService.update(vo);
+        return R.ok();
+    }
+
+    @ApiOperation(value = "删除消息")
+    @PostMapping("/delete")
+    public R delete(@RequestBody String[] ids) {
+        messageService.delete(ids);
         return R.ok();
     }
 }

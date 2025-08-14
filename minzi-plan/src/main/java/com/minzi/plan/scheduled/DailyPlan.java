@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.minzi.common.tools.EntityAct;
 import com.minzi.common.utils.DateUtils;
 import com.minzi.common.utils.EntityUtils;
-import com.minzi.common.utils.ObjectUtils;
 import com.minzi.plan.model.entity.PlanEntity;
 import com.minzi.plan.model.entity.TaskEntity;
 import com.minzi.plan.service.PlanService;
@@ -64,6 +63,7 @@ public class DailyPlan {
             task.setTaskTime(DateUtils.currentDateTime());
             task.setUserId(planEntity.getUserId());
             task.setPlanId(planEntity.getId());
+            task.setTaskType(planEntity.getPlanType());
             taskService.save(task);
         });
     }
