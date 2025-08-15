@@ -146,9 +146,31 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, TaskEntity> implements
         taskService.save(save);
     }
 
+    @Resubmit(voClass = TaskUpdateVo.class)
     @Override
     public void update(TaskUpdateVo taskUpdateVo) {
+        //更新任务的内容
+        TaskEntity update = new TaskEntity();
+        EntityUtils.copySameFields(taskUpdateVo, update);
 
+        UserEntity userInfo = userContext.getUserInfo();
+        update.setUserId(userInfo.getId());
+        update.setRemark(JSON.toJSONString(taskUpdateVo.getItemToList()));
+
+        //保存附件,先处理一下附件的格式
+        List<AnnexFile> annexFiles = taskUpdateVo.getAnnexFiles();
+        Map<String, Integer> annexFileEnumMap = AnnexFileEnum.FileType.toMap(AnnexFileEnum.FileType::getName, AnnexFileEnum.FileType::getCode);
+        Optional.ofNullable(annexFiles).ifPresent(value->{
+            value.forEach(item->{
+                String fileSuffix = item.getFileSuffix();
+                Integer type = annexFileEnumMap.get(fileSuffix);
+                item.setFileType(type);
+            });
+            update.setAnnexFile(JSON.toJSONString(taskUpdateVo.getAnnexFiles()));
+        });
+
+        //更新
+        taskService.updateById(update);
     }
 
     @DistributedLock(prefixKey = "task:", key = "#ids")

@@ -16,11 +16,6 @@ public class TaskUpdateVo {
     private Long id;
 
     /**
-     * 用户ID
-     */
-    private Long userId;
-
-    /**
      * 所属计划ID
      */
     private Long planId;
@@ -63,11 +58,16 @@ public class TaskUpdateVo {
     /**
      * 计划类型 1 学习 2 锻炼 3 写作 4 阅读 5 影视
      */
-    private Integer planType;
+    private Integer taskType;
 
     /**
      * 附件内容
      */
     private List<AnnexFile> annexFiles;
+
+    /**
+     * 唯一码
+     */
+    private String uniqueCode;
 
 }
