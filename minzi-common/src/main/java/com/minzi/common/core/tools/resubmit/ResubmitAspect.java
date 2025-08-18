@@ -1,7 +1,6 @@
-package com.minzi.common.tools.resubmit;
+package com.minzi.common.core.tools.resubmit;
 
 import com.minzi.common.core.query.R;
-import com.minzi.common.tools.lock.DistributedLock;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -28,7 +27,7 @@ public class ResubmitAspect {
     @Resource
     private RedissonClient redissonClient;
 
-    @Pointcut("@annotation(com.minzi.common.tools.resubmit.Resubmit)")
+    @Pointcut("@annotation(com.minzi.common.core.tools.resubmit.Resubmit)")
     public void autoFillPointCut() {
     }
 

@@ -1,4 +1,4 @@
-package com.minzi.common.tools.lock;
+package com.minzi.common.core.tools.lock;
 
 
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -24,7 +24,7 @@ public class DistributedLockAspect {
 
     private final LocalVariableTableParameterNameDiscoverer discoverer = new LocalVariableTableParameterNameDiscoverer();
 
-    @Pointcut("@annotation(com.minzi.common.tools.lock.DistributedLock)")//如果不加@annotation,那么拦截mapper包下所有的方法,加了就拦截这个包下的加了这个注解的方法
+    @Pointcut("@annotation(com.minzi.common.core.tools.lock.DistributedLock)")//如果不加@annotation,那么拦截mapper包下所有的方法,加了就拦截这个包下的加了这个注解的方法
     public void autoFillPointCut(){}
 
     @Around("autoFillPointCut()")

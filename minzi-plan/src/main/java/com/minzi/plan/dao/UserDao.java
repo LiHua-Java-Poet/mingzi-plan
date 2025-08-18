@@ -1,7 +1,7 @@
 package com.minzi.plan.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.minzi.plan.model.entity.UserEntity;
+import com.minzi.common.core.model.entity.UserEntity;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper

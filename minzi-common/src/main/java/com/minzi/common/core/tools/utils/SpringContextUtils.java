@@ -1,4 +1,4 @@
-package com.minzi.common.tools.utils;
+package com.minzi.common.core.tools.utils;
 
 import lombok.Getter;
 import lombok.NonNull;

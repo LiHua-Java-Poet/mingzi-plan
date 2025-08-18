@@ -3,12 +3,13 @@ package com.minzi.plan.service.impl;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.minzi.common.core.model.entity.UserEntity;
+import com.minzi.common.core.query.PageUtils;
 import com.minzi.common.core.query.R;
 import com.minzi.common.utils.AppJwtUtil;
 import com.minzi.common.utils.DateUtils;
 import com.minzi.common.utils.EntityUtils;
 import com.minzi.plan.dao.UserDao;
-import com.minzi.plan.model.entity.UserEntity;
 import com.minzi.plan.model.to.user.UserInfoTo;
 import com.minzi.plan.model.to.user.UserListTo;
 import com.minzi.plan.model.to.user.UserLoginTo;
@@ -87,6 +88,11 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
     @Override
     public void delete(String[] ids) {
 
+    }
+
+    @Override
+    public UserInfoTo getOne(Long id) {
+        return UserService.super.getOne(id);
     }
 
     @Override

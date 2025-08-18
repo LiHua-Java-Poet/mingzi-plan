@@ -1,7 +1,7 @@
-package com.minzi.plan.common;
+package com.minzi.common.core.tools;
 
 
-import com.minzi.plan.model.entity.UserEntity;
+import com.minzi.common.core.model.entity.UserEntity;
 import org.springframework.stereotype.Component;
 
 

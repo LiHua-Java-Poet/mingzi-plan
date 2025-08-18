@@ -1,4 +1,4 @@
-package com.minzi.common.tools.lock;
+package com.minzi.common.core.tools.lock;
 
 
 import java.lang.annotation.ElementType;
@@ -14,12 +14,12 @@ public @interface DistributedLock {
      * 用于表示前缀的字符串
      * @return
      */
-    public String prefixKey() default DistributedLockConstant.NONE_KEY;
+    String prefixKey() default DistributedLockConstant.NONE_KEY;
 
     /**
      * 锁定的key值，比如具体到某个数据
      * @return
      */
-    public String key() default DistributedLockConstant.NONE_KEY;
+    String key() default DistributedLockConstant.NONE_KEY;
 
 }

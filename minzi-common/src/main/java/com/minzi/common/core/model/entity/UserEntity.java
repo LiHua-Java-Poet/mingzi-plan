@@ -1,4 +1,4 @@
-package com.minzi.plan.model.entity;
+package com.minzi.common.core.model.entity;
 
 
 import com.baomidou.mybatisplus.annotation.*;
@@ -65,3 +65,4 @@ public class UserEntity {
     private Integer deletedTime;
 
 }
+

@@ -1,4 +1,4 @@
-package com.minzi.common.tools;
+package com.minzi.common.core.tools;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;

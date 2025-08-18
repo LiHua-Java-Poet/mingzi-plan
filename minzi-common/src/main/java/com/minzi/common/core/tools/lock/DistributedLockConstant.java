@@ -1,4 +1,4 @@
-package com.minzi.common.tools.lock;
+package com.minzi.common.core.tools.lock;
 
 public class DistributedLockConstant {
 

@@ -3,6 +3,7 @@ package com.minzi.plan.controller;
 
 import com.minzi.common.core.query.PageUtils;
 import com.minzi.common.core.query.R;
+import com.minzi.common.core.tools.cache.Cacheable;
 import com.minzi.plan.model.to.plan.PlanInfoTo;
 import com.minzi.plan.model.to.plan.PlanListTo;
 import com.minzi.plan.model.vo.plan.PlanSaveVo;
@@ -24,7 +25,7 @@ public class PlanController {
     @Resource
     private PlanService planService;
 
-
+    @Cacheable(business = "plan")
     @ApiOperation(value = "获取到用户的计划列表", response = PlanListTo.class)
     @GetMapping("/list")
     public R list(@RequestParam Map<String, Object> params) {
@@ -36,6 +37,7 @@ public class PlanController {
         return R.ok().setData(pageUtils);
     }
 
+    @Cacheable(business = "plan")
     @ApiOperation(value = "获取到计划的信息", notes = "获取到计划的信息")
     @GetMapping("/info")
     public R info(@RequestParam Long id) {

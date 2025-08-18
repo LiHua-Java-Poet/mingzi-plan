@@ -1,9 +1,9 @@
-package com.minzi.common.tools;
+package com.minzi.common.core.tools;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.minzi.common.annotation.OneToOne;
 import com.minzi.common.core.service.BaseService;
-import com.minzi.common.tools.utils.SpringContextUtils;
+import com.minzi.common.core.tools.utils.SpringContextUtils;
 import com.minzi.common.utils.EntityUtils;
 import com.minzi.common.utils.ObjectUtils;
 import com.minzi.common.utils.PropertyFunc;

@@ -1,7 +1,7 @@
 package com.minzi.plan.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.minzi.plan.common.UserContext;
+import com.minzi.common.core.tools.UserContext;
 import com.minzi.plan.model.entity.PlanEntity;
 import com.minzi.plan.model.entity.TaskEntity;
 import com.minzi.plan.model.to.publish.UserDataTo;

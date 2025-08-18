@@ -3,7 +3,7 @@ package com.minzi.plan.service.impl;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.minzi.common.tools.EntityAct;
+import com.minzi.common.core.tools.EntityAct;
 import com.minzi.common.utils.EntityUtils;
 import com.minzi.plan.dao.SysConfigDao;
 import com.minzi.plan.model.entity.SysConfigEntity;

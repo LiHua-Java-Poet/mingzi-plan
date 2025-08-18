@@ -2,7 +2,7 @@ package com.minzi.plan.scheduled;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.minzi.common.tools.EntityAct;
+import com.minzi.common.core.tools.EntityAct;
 import com.minzi.common.utils.DateUtils;
 import com.minzi.common.utils.EntityUtils;
 import com.minzi.plan.model.entity.PlanEntity;
