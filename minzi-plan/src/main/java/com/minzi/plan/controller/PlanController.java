@@ -59,6 +59,13 @@ public class PlanController {
         return R.ok();
     }
 
+    @ApiOperation(value = "删除计划")
+    @PostMapping("/delete")
+    public R delete(@RequestBody String[] ids) {
+        planService.delete(ids);
+        return R.ok();
+    }
+
     @ApiOperation(value = "取消计划", notes = "更新计划")
     @PostMapping("/cancelPlan")
     public R cancelPlan(@RequestBody String[] ids) {

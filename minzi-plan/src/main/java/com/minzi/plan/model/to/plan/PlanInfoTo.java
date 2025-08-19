@@ -3,6 +3,8 @@ package com.minzi.plan.model.to.plan;
 import com.minzi.common.core.model.AnnexFile;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class PlanInfoTo {
 
@@ -46,10 +48,11 @@ public class PlanInfoTo {
      */
     private Integer planType;
 
+
     /**
      * 计划信息
      */
-    private String planInfo;
+    private List<PlanItemTo> planInfo;
 
     /**
      * 图标
@@ -84,5 +87,5 @@ public class PlanInfoTo {
     /**
      * 附件内容
      */
-    private AnnexFile annexFile;
+    private List<AnnexFile> annexFiles;
 }

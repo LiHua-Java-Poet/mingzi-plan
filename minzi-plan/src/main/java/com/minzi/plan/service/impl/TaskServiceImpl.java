@@ -13,6 +13,7 @@ import com.minzi.common.core.tools.EntityAct;
 import com.minzi.common.core.tools.UserContext;
 import com.minzi.common.core.tools.lock.DistributedLock;
 import com.minzi.common.core.tools.resubmit.Resubmit;
+import com.minzi.common.core.tools.utils.AnnexFileUtils;
 import com.minzi.common.utils.EntityUtils;
 import com.minzi.common.utils.SnowflakeIdGenerator;
 import com.minzi.plan.dao.TaskDao;
@@ -131,16 +132,7 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, TaskEntity> implements
         save.setRemark(JSON.toJSONString(taskSaveVo.getItemToList()));
 
         //保存附件,先处理一下附件的格式
-        List<AnnexFile> annexFiles = taskSaveVo.getAnnexFiles();
-        Map<String, Integer> annexFileEnumMap = AnnexFileEnum.FileType.toMap(AnnexFileEnum.FileType::getName, AnnexFileEnum.FileType::getCode);
-        Optional.ofNullable(annexFiles).ifPresent(value->{
-            value.forEach(item->{
-                String fileSuffix = item.getFileSuffix();
-                Integer type = annexFileEnumMap.get(fileSuffix);
-                item.setFileType(type);
-            });
-            save.setAnnexFile(JSON.toJSONString(taskSaveVo.getAnnexFiles()));
-        });
+        AnnexFileUtils.fillAnnexFiles(taskSaveVo,save);
         taskService.save(save);
     }
 

@@ -1,18 +1,24 @@
 package com.minzi.plan.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.minzi.common.core.map.LambdaHashMap;
+import com.minzi.common.core.model.AnnexFile;
 import com.minzi.common.core.model.entity.UserEntity;
+import com.minzi.common.core.model.enums.AnnexFileEnum;
 import com.minzi.common.core.query.R;
 import com.minzi.common.core.tools.EntityAct;
 import com.minzi.common.core.tools.UserContext;
+import com.minzi.common.core.tools.utils.AnnexFileUtils;
 import com.minzi.common.utils.DateUtils;
 import com.minzi.common.utils.EntityUtils;
 import com.minzi.plan.dao.PlanDao;
 import com.minzi.plan.model.entity.PlanEntity;
 import com.minzi.plan.model.entity.TaskEntity;
 import com.minzi.plan.model.to.plan.PlanInfoTo;
+import com.minzi.plan.model.to.plan.PlanItemTo;
 import com.minzi.plan.model.to.plan.PlanListTo;
 import com.minzi.plan.model.vo.plan.PlanSaveVo;
 import com.minzi.plan.model.vo.plan.PlanUpdateVo;
@@ -25,6 +31,7 @@ import org.springframework.util.StringUtils;
 import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -44,12 +51,14 @@ public class PlanServiceImpl extends ServiceImpl<PlanDao, PlanEntity> implements
 
     @Override
     public Wrapper<PlanEntity> getListCondition(Map<String, Object> params) {
+        LambdaHashMap<String, Object> lambdaHashMap = new LambdaHashMap<>(params);
         LambdaQueryWrapper<PlanEntity> wrapper = new LambdaQueryWrapper<>();
+        wrapper.orderByDesc(PlanEntity::getId);
 
-        Object id = params.get("id");
+        Object id = lambdaHashMap.get(PlanEntity::getId);
         wrapper.eq(!StringUtils.isEmpty(id), PlanEntity::getId, id);
 
-        Object status = params.get("status");
+        Object status = lambdaHashMap.get(PlanEntity::getStatus);
         wrapper.eq(!StringUtils.isEmpty(status), PlanEntity::getStatus, status);
 
         UserEntity userInfo = userContext.getUserInfo();
@@ -80,6 +89,11 @@ public class PlanServiceImpl extends ServiceImpl<PlanDao, PlanEntity> implements
         entity.setStatus(1);
         entity.setPlanType(planSaveVo.getPlanType());
         entity.setTaskProgress(0);
+        //处理info信息
+        entity.setPlanInfo(JSON.toJSONString(planSaveVo.getItemToList()));
+
+        //保存附件,先处理一下附件的格式
+        AnnexFileUtils.fillAnnexFiles(planSaveVo, entity);
         planService.save(entity);
     }
 
@@ -103,6 +117,10 @@ public class PlanServiceImpl extends ServiceImpl<PlanDao, PlanEntity> implements
 
         //拿到进行中的任务数
         to.setTowardProgress((int) taskEntityList.stream().filter(b -> b.getStatus() == 1).count());
+
+        //处理返回的数据
+        to.setAnnexFiles(JSON.parseArray(entity.getAnnexFile(), AnnexFile.class));
+        to.setPlanInfo(JSON.parseArray(entity.getPlanInfo(), PlanItemTo.class));
         return to;
     }
 
