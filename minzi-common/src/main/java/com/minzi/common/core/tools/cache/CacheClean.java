@@ -6,11 +6,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 接口删除缓存
+ * 接口缓存更新
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface CacheUpdate {
+public @interface CacheClean {
 
     /**
      * 业务类型字符串
