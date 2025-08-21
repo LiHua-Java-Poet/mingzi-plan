@@ -29,11 +29,6 @@ public class UserController {
         return R.ok().setData(list);
     }
 
-    @GetMapping("/demo")
-    public String demo() {
-        return "hello";
-    }
-
     @PostMapping("/reg")
     public R reg(@RequestBody UserRegVo vo) {
         userService.reg(vo);

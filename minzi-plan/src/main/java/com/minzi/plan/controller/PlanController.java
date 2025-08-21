@@ -3,6 +3,7 @@ package com.minzi.plan.controller;
 
 import com.minzi.common.core.query.PageUtils;
 import com.minzi.common.core.query.R;
+import com.minzi.common.core.tools.cache.CacheClean;
 import com.minzi.common.core.tools.cache.Cacheable;
 import com.minzi.plan.model.to.plan.PlanInfoTo;
 import com.minzi.plan.model.to.plan.PlanListTo;
@@ -75,6 +76,7 @@ public class PlanController {
 
     @ApiOperation(value = "下发多个任务", notes = "下发多个任务")
     @PostMapping("/deliver")
+    @CacheClean(business = "plan")
     public R deliver(@RequestBody String[] ids) {
         Long id = Long.parseLong(ids[0]);
         planService.deliver(id);

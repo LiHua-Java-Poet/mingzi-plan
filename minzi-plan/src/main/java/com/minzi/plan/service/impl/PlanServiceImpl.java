@@ -152,6 +152,7 @@ public class PlanServiceImpl extends ServiceImpl<PlanDao, PlanEntity> implements
         task.setTaskTime(DateUtils.currentDateTime());
         task.setUserId(plan.getUserId());
         task.setPlanId(plan.getId());
+        task.setRemark(StringUtils.isEmpty(plan.getPlanInfo()) ? "[]" : plan.getPlanInfo());
         taskService.save(task);
     }
 
