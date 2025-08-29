@@ -61,8 +61,10 @@ minio:
   accesskey: minioadmin
   secretKey: minioadmin
 
-filter.passage: "/app/user/login,/app/user/reg"
-window.limit: 150
+filter:
+  passage: "/app/user/login,/app/user/reg,/app/script/demo"
+window:
+  limit: 150
 
 knife4j:
   enable: true # 启用 Knife4j
