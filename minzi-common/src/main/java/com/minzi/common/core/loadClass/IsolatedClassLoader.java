@@ -4,6 +4,7 @@ package com.minzi.common.core.loadClass;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.HashMap;
@@ -17,6 +18,9 @@ import java.util.jar.JarInputStream;
 public class IsolatedClassLoader extends URLClassLoader {
 
     private final Map<String, byte[]> memoryClasses = new HashMap<>();
+
+    private final Map<String, byte[]> resourcesMap = new HashMap<>();
+
 
     public IsolatedClassLoader(URL[] urls) {
         super(urls, null); // 断开父类委托
@@ -37,17 +41,25 @@ public class IsolatedClassLoader extends URLClassLoader {
         try (JarInputStream jis = new JarInputStream(new ByteArrayInputStream(jarBytes))) {
             JarEntry entry;
             while ((entry = jis.getNextJarEntry()) != null) {
-                if (!entry.isDirectory() && entry.getName().endsWith(".class")) {
-                    byte[] classData = readAllBytes(jis);
-                    String className = entry.getName()
-                            .replace('/', '.')
-                            .replace(".class", "");
-                    memoryClasses.put(className, classData);
+                if (entry.isDirectory()) continue;
+
+                byte[] entryData = readAllBytes(jis);
+                String entryName = entry.getName();
+
+                if (entryName.endsWith(".class")) {
+                    // 保存 class 数据
+                    String className = entryName.replace('/', '.').replace(".class", "");
+                    memoryClasses.put(className, entryData);
+                } else {
+                    // 保存资源文件
+                    resourcesMap.put(entryName, entryData); // 新增 map：entryName -> 内容
                 }
             }
         }
+
     }
 
+    //一次全部读取
     private byte[] readAllBytes(JarInputStream jis) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         byte[] buffer = new byte[8192];
@@ -90,5 +102,18 @@ public class IsolatedClassLoader extends URLClassLoader {
         }
 
         return clazz;
+    }
+
+    @Override
+    public InputStream getResourceAsStream(String name) {
+        // 1. 尝试系统 ClassLoader
+        InputStream is = super.getResourceAsStream(name);
+        if (is != null) return is;
+
+        // 2. 尝试从解密后的字节流查找资源
+        byte[] data = resourcesMap.get(name); // 你解密 JAR 时把非 class 文件放到 resourceMap
+        if (data != null) return new ByteArrayInputStream(data);
+
+        return null;
     }
 }

@@ -1,12 +1,13 @@
 package com.minzi.common.core.loadClass;
 
 import com.minzi.common.exception.BaseRuntimeException;
+import org.springframework.data.repository.init.ResourceReader;
+import org.springframework.util.StringUtils;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -23,10 +24,13 @@ public class LoadJarUtils {
     // 默认的类加载器（用于向后兼容）
     private static IsolatedClassLoader defaultClassLoader;
 
+    private static String password;
+
     /**
      * 动态加载本地jar，初始化类加载器
      */
     public static void loadJar(String jarPath) throws Exception {
+        doInitPassword();
         // 先判断是否存在对应的加密包
         String jarPathToLoad = resolveJarPath(jarPath);
 
@@ -46,7 +50,7 @@ public class LoadJarUtils {
         IsolatedClassLoader classLoader;
         if (jarPathToLoad.endsWith(".enc")) {
             // 加密包走解密加载逻辑
-            byte[] jarBytes = JarDecryptor.decryptJarToBytes(jarPathToLoad, "123456".toCharArray());
+            byte[] jarBytes = JarDecryptor.decryptJarToBytes(jarPathToLoad, password.toCharArray());
             classLoader = new IsolatedClassLoader(jarBytes);
         } else {
             // 普通 JAR
@@ -68,6 +72,33 @@ public class LoadJarUtils {
             }
         }
         return jarPath;
+    }
+
+    /**
+     * 初始化一次密文
+     */
+    public static void doInitPassword() {
+        if (!StringUtils.isEmpty(password)) return;
+        // 获取类加载器
+        ClassLoader classLoader = ResourceReader.class.getClassLoader();
+
+        // 从 resources 读取文件
+        try (InputStream inputStream = classLoader.getResourceAsStream("AccessKey.txt")) {
+            if (inputStream == null) {
+                throw new RuntimeException("文件不存在");
+            }
+
+            // 逐行读取
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
+            StringBuilder sb = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line);
+            }
+            password = sb.toString();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
 
