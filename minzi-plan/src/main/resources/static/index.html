@@ -1,54 +1,559 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
-    <meta charset="utf-8" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>我的博客</title>
-    <link rel="stylesheet" type="text/css" href="css/style.css"/>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        :root {
+            --primary-color: #4f46e5;
+            --secondary-color: #10b981;
+            --text-color: #333;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --header-bg: #ffffff;
+            --border-color: #e2e8f0;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .dark-mode {
+            --primary-color: #818cf8;
+            --secondary-color: #34d399;
+            --text-color: #e2e8f0;
+            --bg-color: #1a202c;
+            --card-bg: #2d3748;
+            --header-bg: #2d3748;
+            --border-color: #4a5568;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background-color: var(--header-bg);
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo i {
+            margin-right: 10px;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav li {
+            margin-left: 30px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 500;
+            font-size: 1.1rem;
+        }
+
+        nav a:hover {
+            color: var(--primary-color);
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 60px 0;
+            margin-bottom: 40px;
+        }
+
+        .hero h1 {
+            font-size: 2.8rem;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto;
+            color: var(--text-color);
+            opacity: 0.9;
+        }
+
+        .filters {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 8px 15px;
+            box-shadow: var(--shadow);
+            flex: 1;
+            max-width: 400px;
+        }
+
+        .search-box input {
+            border: none;
+            background: none;
+            outline: none;
+            color: var(--text-color);
+            font-size: 1rem;
+            width: 100%;
+            padding: 5px;
+        }
+
+        .categories {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .category-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 20px;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            cursor: pointer;
+            font-weight: 500;
+            box-shadow: var(--shadow);
+        }
+
+        .category-btn.active, .category-btn:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .blog-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s;
+        }
+
+        .blog-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-image {
+            height: 200px;
+            overflow: hidden;
+        }
+
+        .card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .blog-card:hover .card-image img {
+            transform: scale(1.05);
+        }
+
+        .card-content {
+            padding: 20px;
+        }
+
+        .card-category {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            font-size: 0.8rem;
+            padding: 4px 10px;
+            border-radius: 15px;
+            margin-bottom: 12px;
+        }
+
+        .card-title {
+            font-size: 1.4rem;
+            margin-bottom: 12px;
+            color: var(--text-color);
+        }
+
+        .card-excerpt {
+            color: var(--text-color);
+            opacity: 0.8;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .card-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+            color: var(--text-color);
+            opacity: 0.7;
+        }
+
+        .read-more {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .read-more i {
+            margin-left: 5px;
+            transition: transform 0.3s;
+        }
+
+        .read-more:hover i {
+            transform: translateX(3px);
+        }
+
+        footer {
+            background-color: var(--header-bg);
+            padding: 40px 0;
+            margin-top: 60px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 40px;
+        }
+
+        .footer-section {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .footer-section h3 {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+        }
+
+        .footer-section p, .footer-section a {
+            color: var(--text-color);
+            opacity: 0.8;
+            margin-bottom: 10px;
+            display: block;
+            text-decoration: none;
+        }
+
+        .footer-section a:hover {
+            color: var(--primary-color);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .social-links a {
+            font-size: 1.2rem;
+        }
+
+        .copyright {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-color);
+            opacity: 0.7;
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            nav ul {
+                margin-top: 20px;
+                justify-content: center;
+            }
+
+            nav li {
+                margin: 0 15px;
+            }
+
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+
+            .filters {
+                flex-direction: column;
+            }
+
+            .search-box {
+                max-width: 100%;
+            }
+
+            .categories {
+                justify-content: center;
+            }
+
+            .blog-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
-<div class="page">
-    <div class="nav">
-        <a href="index.html" class="logo fl">首页</a>
-        <ul class="fr">
-            <a href="index.html"><li>网站首页</li></a>
-            <a href="index.html"><li>我的散文</li></a>
-            <a href="index.html"><li>我的技能</li></a>
-            <a href="index.html"><li>我的作品</li></a>
-            <a href="index.html"><li>喜爱美食</li></a>
-            <a href="index.html"><li>留言交流</li></a>
-        </ul>
-    </div>
-    <div class="mid">
-        <div class="banner"><img src="images/1317509596.jpeg" alt=""></div>
-        <div class="left fl">
-            <p class="title">关于我</p>
-            <div class="jj">
-                <img src="images/1333939514.jpeg" alt="">
-                <p><b>姓名：</b>XXX</p>
-                <p><b>手机：</b>132****6547</p>
-                <p><b>邮箱：</b>123456789@qq.com</p>
-                <p><b>爱好：</b>音乐、动漫、游戏、运动</p>
-            </div>
-            <p class="title">欢迎登录</p>
-            <form action="" class="login" method="post">
-                <input type="text" placeholder="请输入用户名" value="" />
-                <input type="password" placeholder="请输入密码" name="" />
-                <button type="submit">登录</button>
-            </form>
-        </div>
-        <div class="right fl">
-            <p class="title">个人简介</p>
-            <div class="wz">
-                <img src="images/1519488245.jpeg" alt="">
-                <p>本人性格开朗、稳重、有活力,待人热情、真诚;工作认真负责,积极主动,能吃苦耐劳,用于承受压力, 勇訏创新;有很强的组织能力和团队协作精神,具有较强的适应能力;纪律性强,工作积极配合;意志坚强，具有较强的无私奉献精神。 对待工作认真负责,善于沟通、协调有较强的组织能力与团队精神;活泼开朗、乐观上进、有爱心并善于施教并行;上进心强、勤于学习能不断提高自身的能力与综合素质。在未来的工作中,我将以充沛的精力,刻苦钻研的精神来努力工作,稳定地提高自己的工作能力,与企业同步发展。</p>
+<div id="app">
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="#" class="logo">
+                    <i class="fas fa-blog"></i>我的博客
+                </a>
+                <nav>
+                    <ul>
+                        <li><a href="#">首页</a></li>
+                        <li><a href="#">文章</a></li>
+                        <li><a href="#">分类</a></li>
+                        <li><a href="#">关于</a></li>
+                        <li><a href="#">联系</a></li>
+                    </ul>
+                </nav>
+                <button class="theme-toggle" @click="toggleTheme">
+                    <i :class="darkMode ? 'fas fa-sun' : 'fas fa-moon'"></i>
+                </button>
             </div>
         </div>
-    </div>
-    <div class="foot">版权所属：XXX&emsp; 个人网页</div>
+    </header>
+
+    <main class="container">
+        <section class="hero">
+            <h1>分享知识与思考</h1>
+            <p>这里是我记录技术学习、生活感悟和创意想法的地方，欢迎阅读和讨论</p>
+        </section>
+
+        <section class="filters">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" v-model="searchQuery" placeholder="搜索文章...">
+            </div>
+            <div class="categories">
+                <button
+                        v-for="category in categories"
+                        :key="category"
+                        :class="['category-btn', { active: selectedCategory === category }]"
+                        @click="selectCategory(category)"
+                >
+                    {{ category }}
+                </button>
+            </div>
+        </section>
+
+        <section class="blog-grid">
+            <article v-for="post in filteredPosts" :key="post.id" class="blog-card">
+                <div class="card-image">
+                    <img :src="post.image" :alt="post.title">
+                </div>
+                <div class="card-content">
+                    <span class="card-category">{{ post.category }}</span>
+                    <h3 class="card-title">{{ post.title }}</h3>
+                    <p class="card-excerpt">{{ post.excerpt }}</p>
+                    <div class="card-meta">
+                        <span>{{ post.date }}</span>
+                        <a href="#" class="read-more">阅读更多 <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </article>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>关于博客</h3>
+                    <p>这个博客创建于2023年，旨在分享Web开发、编程技巧和科技相关的内容。</p>
+                </div>
+                <div class="footer-section">
+                    <h3>快速链接</h3>
+                    <a href="#">首页</a>
+                    <a href="#">文章</a>
+                    <a href="#">分类</a>
+                    <a href="#">关于我</a>
+                </div>
+                <div class="footer-section">
+                    <h3>联系我</h3>
+                    <p><i class="fas fa-envelope"></i> contact@myblog.com</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-github"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-weibo"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 我的博客. 保留所有权利.</p>
+            </div>
+        </div>
+    </footer>
 </div>
+
+<script>
+    const { createApp, ref, computed, onMounted } = Vue;
+
+    createApp({
+        setup() {
+            const darkMode = ref(false);
+            const searchQuery = ref('');
+            const selectedCategory = ref('全部');
+
+            const categories = ref(['全部', '前端开发', '后端技术', '用户体验', '编程语言', '生活随笔']);
+
+            const blogPosts = ref([
+                {
+                    id: 1,
+                    title: 'Vue 3 Composition API 完全指南',
+                    excerpt: '学习如何使用Vue 3的新特性Composition API来构建更灵活、可复用的组件。',
+                    category: '前端开发',
+                    date: '2023-10-15',
+                    image: 'https://images.unsplash.com/photo-1581278432015-78ef8ba42230?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80'
+                },
+                {
+                    id: 2,
+                    title: '深入理解JavaScript闭包',
+                    excerpt: '闭包是JavaScript中一个重要且强大的概念，本文将深入探讨其工作原理和实际应用。',
+                    category: '编程语言',
+                    date: '2023-10-10',
+                    image: 'https://images.unsplash.com/photo-1627398242454-45a1465c2479?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80'
+                },
+                {
+                    id: 3,
+                    title: 'CSS Grid布局实战',
+                    excerpt: '通过实际案例学习如何使用CSS Grid创建响应式网页布局，提高开发效率。',
+                    category: '前端开发',
+                    date: '2023-10-05',
+                    image: 'https://images.unsplash.com/photo-1643330683233-ff2ac89b002c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80'
+                },
+                {
+                    id: 4,
+                    title: 'Node.js性能优化技巧',
+                    excerpt: '分享一些实用的Node.js性能优化技巧，帮助您构建更高效的服务器端应用。',
+                    category: '后端技术',
+                    date: '2023-09-28',
+                    image: 'https://images.unsplash.com/photo-1607799279861-4dd421887fb3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80'
+                },
+                {
+                    id: 5,
+                    title: '用户体验设计原则',
+                    excerpt: '了解基本的用户体验设计原则，创建更易用、更吸引人的Web应用。',
+                    category: '用户体验',
+                    date: '2023-09-20',
+                    image: 'https://images.unsplash.com/photo-1586717791821-3f44a563fa4c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80'
+                },
+                {
+                    id: 6,
+                    title: 'Python数据分析入门',
+                    excerpt: '使用Python进行数据分析的基础知识，包括Pandas和NumPy的基本用法。',
+                    category: '编程语言',
+                    date: '2023-09-15',
+                    image: 'https://images.unsplash.com/photo-1522199755839-a2bacb67c546?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=600&q=80'
+                }
+            ]);
+
+            const toggleTheme = () => {
+                darkMode.value = !darkMode.value;
+                document.body.classList.toggle('dark-mode', darkMode.value);
+                localStorage.setItem('darkMode', darkMode.value);
+            };
+
+            const selectCategory = (category) => {
+                selectedCategory.value = category;
+            };
+
+            const filteredPosts = computed(() => {
+                return blogPosts.value.filter(post => {
+                    const matchesSearch = post.title.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+                        post.excerpt.toLowerCase().includes(searchQuery.value.toLowerCase());
+                    const matchesCategory = selectedCategory.value === '全部' || post.category === selectedCategory.value;
+
+                    return matchesSearch && matchesCategory;
+                });
+            });
+
+            onMounted(() => {
+                const savedDarkMode = localStorage.getItem('darkMode') === 'true';
+                darkMode.value = savedDarkMode;
+                document.body.classList.toggle('dark-mode', savedDarkMode);
+            });
+
+            return {
+                darkMode,
+                searchQuery,
+                selectedCategory,
+                categories,
+                blogPosts,
+                filteredPosts,
+                toggleTheme,
+                selectCategory
+            };
+        }
+    }).mount('#app');
+</script>
 </body>
 </html>
-
-
-
-
