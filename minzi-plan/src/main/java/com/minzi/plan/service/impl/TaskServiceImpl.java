@@ -35,6 +35,7 @@ import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 
@@ -91,9 +92,10 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, TaskEntity> implements
         wrapper.orderByDesc(TaskEntity::getId);
 
         UserEntity userInfo = userContext.getUserInfo();
-        if (userInfo != null) {
-            wrapper.eq(TaskEntity::getUserId, userInfo.getId());
-        }
+//        if (userInfo != null) {
+//            wrapper.eq(TaskEntity::getUserId, userInfo.getId());
+//        }
+        wrapper.eq(userInfo != null,TaskEntity::getUserId, userInfo.getId());
 
         //查询 - Id
         Object id = lambdaHashMap.get(TaskEntity::getId);

@@ -58,6 +58,7 @@ public class MessageController {
 
     @ApiOperation(value = "删除消息")
     @PostMapping("/delete")
+    @CacheClean(business = "message")
     public R delete(@RequestBody String[] ids) {
         messageService.delete(ids);
         return R.ok();
