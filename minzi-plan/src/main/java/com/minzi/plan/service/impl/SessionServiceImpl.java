@@ -43,6 +43,7 @@ public class SessionServiceImpl extends ServiceImpl<SessionDao, SessionEntity> i
     public Wrapper<SessionEntity> getListCondition(Map<String, Object> params) {
         LambdaHashMap<String, Object> lambdaHashMap = new LambdaHashMap<>(params);
         LambdaQueryWrapper<SessionEntity> wrapper = new LambdaQueryWrapper<>();
+        wrapper.orderByDesc(SessionEntity::getCreateTime);
         wrapper.orderByDesc(SessionEntity::getId);
 
         UserEntity userInfo = userContext.getUserInfo();

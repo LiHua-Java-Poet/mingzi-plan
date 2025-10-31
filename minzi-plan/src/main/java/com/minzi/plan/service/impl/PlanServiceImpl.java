@@ -63,7 +63,6 @@ public class PlanServiceImpl extends ServiceImpl<PlanDao, PlanEntity> implements
 
         UserEntity userInfo = userContext.getUserInfo();
         wrapper.eq(userInfo != null, PlanEntity::getUserId, userInfo.getId());
-
         return wrapper;
     }
 
