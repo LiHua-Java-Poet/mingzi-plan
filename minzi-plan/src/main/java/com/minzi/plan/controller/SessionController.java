@@ -3,11 +3,13 @@ package com.minzi.plan.controller;
 
 import com.minzi.common.core.query.PageUtils;
 import com.minzi.common.core.query.R;
+import com.minzi.common.core.tools.cache.CacheClean;
 import com.minzi.plan.model.to.session.SessionInfoTo;
 import com.minzi.plan.model.to.session.SessionListTo;
 import com.minzi.plan.model.vo.session.SessionSaveVo;
 import com.minzi.plan.model.vo.session.SessionUpdateVo;
 import com.minzi.plan.service.SessionService;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,6 +41,7 @@ public class SessionController {
         return R.ok().setData(one);
     }
 
+    @CacheClean(business = "session")
     @PostMapping("/save")
     public R save(@RequestBody SessionSaveVo vo) {
         sessionService.add(vo);
@@ -48,6 +51,14 @@ public class SessionController {
     @PostMapping("/update")
     public R update(@RequestBody SessionUpdateVo vo) {
         sessionService.update(vo);
+        return R.ok();
+    }
+
+    @ApiOperation(value = "删除消息")
+    @PostMapping("/delete")
+    @CacheClean(business = "session")
+    public R delete(@RequestBody String[] ids) {
+        sessionService.delete(ids);
         return R.ok();
     }
 }

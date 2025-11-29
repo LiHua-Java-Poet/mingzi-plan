@@ -20,8 +20,6 @@
     <modules>
         <module>minzi-common</module>
         <module>minzi-plan</module>
-        <module>minzi-scprit</module>
-        <module>minzi-encryptor</module>
     </modules>
     <dependencyManagement>
         <dependencies>

@@ -11,11 +11,13 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="minzi-common" />
-        <module name="minzi-encryptor" />
-        <module name="minzi-scprit" />
         <module name="minzi-plan" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="minzi-encryptor" target="1.8" />
+      <module name="minzi-scprit" target="1.8" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">

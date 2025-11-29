@@ -7,6 +7,7 @@ import com.minzi.plan.dao.RequestLogDao;
 import com.minzi.plan.model.entity.RequestLogEntity;
 import lombok.extern.java.Log;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 
 import javax.annotation.Priority;
@@ -23,7 +24,7 @@ import java.util.Map;
 
 @Log
 @Priority(100)
-@WebFilter(filterName = "requestLogFilter", urlPatterns = {"/app"})
+@WebFilter(filterName = "requestLogFilter", urlPatterns = {"/app/*"})
 public class RequestLogFilter  implements Filter{
 
     @Resource
