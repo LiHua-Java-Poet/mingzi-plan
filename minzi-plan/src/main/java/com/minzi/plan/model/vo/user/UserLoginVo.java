@@ -13,4 +13,9 @@ public class UserLoginVo {
     @ApiModelProperty("密码")
     private String password;
 
+    @ApiModelProperty("验证码")
+    private String captchaCode;
+
+    @ApiModelProperty("时间戳")
+    private String timeToken;
 }

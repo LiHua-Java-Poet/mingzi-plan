@@ -4,6 +4,7 @@ public class StringUtils {
 
     /**
      * 下划线转小驼峰
+     *
      * @param str 字符串
      * @return 返回的内容
      */
@@ -69,4 +70,8 @@ public class StringUtils {
         return fileName.substring(lastDotIndex + 1);
     }
 
+    public static boolean isEmpty(Object str) {
+        if (str == null || "".equals(str)) return true;
+        return false;
+    }
 }

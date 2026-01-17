@@ -9,6 +9,7 @@ import com.minzi.common.core.query.R;
 import com.minzi.common.utils.AppJwtUtil;
 import com.minzi.common.utils.DateUtils;
 import com.minzi.common.utils.EntityUtils;
+import com.minzi.common.utils.StringUtils;
 import com.minzi.plan.dao.UserDao;
 import com.minzi.plan.model.to.user.UserInfoTo;
 import com.minzi.plan.model.to.user.UserListTo;
@@ -28,6 +29,7 @@ import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import static com.minzi.common.utils.MD5Utils.MD5Upper;
@@ -50,7 +52,14 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
 
 
     @Override
-    public R login(String userName, String password) {
+    public R login(String userName, String password,String captchaCode,String timeToken) {
+        //校验一次验证码是否正确
+        //存一次redis
+        ValueOperations<String, Object> redis = redisTemplate.opsForValue();
+        R.dataParamsAssert(StringUtils.isEmpty(captchaCode),"请传入验证码");
+        R.dataParamsAssert(StringUtils.isEmpty(redis.get("timeToken_" + timeToken)),"不存在验证码");
+        R.dataParamsAssert(!captchaCode.equals(Objects.requireNonNull(redis.get("timeToken_" + timeToken)).toString()),"错误的验证码");
+
         List<UserEntity> list = userService.list(new LambdaQueryWrapper<UserEntity>().eq(UserEntity::getUserName, userName));
         if (list.isEmpty()) {
             return R.error(402, "用户名不存在");

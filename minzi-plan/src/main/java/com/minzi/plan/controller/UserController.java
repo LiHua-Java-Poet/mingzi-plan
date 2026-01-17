@@ -9,6 +9,8 @@ import com.minzi.plan.model.vo.user.UserRegVo;
 import com.minzi.plan.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +23,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping("/app/user")
@@ -29,10 +32,13 @@ public class UserController {
 
     private static final int WIDTH = 160;
     private static final int HEIGHT = 50;
-    private static final int CODE_LEN = 6;
+    private static final int CODE_LEN = 4;
 
     @Resource
     private UserService userService;
+
+    @Resource
+    private RedisTemplate<String, Object> redisTemplate;
 
     @ApiOperation(value = "获取到用户列表", response = UserLoginTo.class)
     @GetMapping("/getUserList")
@@ -49,15 +55,18 @@ public class UserController {
 
     @PostMapping("/login")
     public R login(@RequestBody UserLoginVo vo) {
-        return userService.login(vo.getUserName(), vo.getPassword());
+        return userService.login(vo.getUserName(), vo.getPassword(), vo.getCaptchaCode(), vo.getTimeToken());
     }
 
-
     @GetMapping("/image")
-    public void getCaptcha(HttpServletResponse response, HttpSession session) throws IOException {
+    public void getCaptcha(HttpServletResponse response, HttpSession session, @RequestParam("timeToken") String timeToken) throws IOException {
 
         // 1. 生成随机验证码
         String code = generateCode(CODE_LEN);
+
+        //存一次redis
+        ValueOperations<String, Object> redis = redisTemplate.opsForValue();
+        redis.set("timeToken_" + timeToken, code, 5, TimeUnit.MINUTES);
 
         // 2. 保存验证码（后续校验用）
         session.setAttribute("CAPTCHA_CODE", code);
@@ -108,13 +117,14 @@ public class UserController {
 
         // 9. 输出图片
         response.setContentType("image/png");
+        response.setHeader("ContentType", "image");
         response.setHeader("Cache-Control", "no-store, no-cache");
         ImageIO.write(image, "png", response.getOutputStream());
     }
 
     // 随机验证码
     private String generateCode(int length) {
-        String chars = "abcdefghjkmnpqrstuvwxyz0123456789";
+        String chars = "QWERTYUIOPLKJHGFDSAZXCVBNM0123456789";
         Random random = new Random();
         StringBuilder sb = new StringBuilder(length);
         for (int i = 0; i < length; i++) {

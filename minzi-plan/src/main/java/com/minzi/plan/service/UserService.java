@@ -15,7 +15,7 @@ public interface UserService extends BaseService<UserEntity, UserListTo, UserInf
 
     List<UserEntity> getList();
 
-    R login(String userName, String password);
+    R login(String userName, String password,String captchaCode,String timeToken);
 
     void reg(UserRegVo vo);
 }

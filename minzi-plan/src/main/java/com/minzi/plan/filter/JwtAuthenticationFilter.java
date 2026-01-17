@@ -6,10 +6,13 @@ import com.minzi.common.core.query.R;
 import com.minzi.common.core.tools.SlidingWindowUtils;
 import com.minzi.common.core.tools.UserContext;
 import com.minzi.common.utils.AppJwtUtil;
+import com.minzi.common.utils.DateUtils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.HashOperations;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpMethod;
 
 import javax.annotation.Priority;
@@ -22,6 +25,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 
@@ -35,6 +39,9 @@ public class JwtAuthenticationFilter implements Filter {
 
     @Resource
     private SlidingWindowUtils slidingWindow;
+
+    @Resource
+    private RedisTemplate<String, Object> redisTemplate;
 
     @Resource
     private UserContext userContext;
@@ -97,18 +104,15 @@ public class JwtAuthenticationFilter implements Filter {
     }
 
     private boolean validateToken(String token) {
-        try {
-            Jws<Claims> jws = AppJwtUtil.getJws(token);
-            Claims claims = jws.getBody();
-            int i = AppJwtUtil.verifyToken(claims);
-            if (i < 1) {
-                userContext.setUserInfo(claims.get("name", String.class), claims.get("userName", String.class), claims.get("id", Long.class));
-                return true;
-            }
-        } catch (Exception e) {
-            return false;
-        }
-        return false;
+        //从redis中取出来用户的信息
+        HashOperations<String, String, Object> hashOps = redisTemplate.opsForHash();
+        Map<String, Object> entries = hashOps.entries(token);
+        entries.get("id");
+        entries.get("name");
+        entries.get("userName");
+        if (entries.isEmpty()) return false;
+        userContext.setUserInfo(entries.get("userName").toString(), entries.get("name").toString(), Long.parseLong(entries.get("id").toString()));
+        return !entries.isEmpty();
     }
 
 }
