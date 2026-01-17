@@ -19,11 +19,16 @@ import com.minzi.plan.model.vo.user.UserUpdateVo;
 import com.minzi.plan.service.UserService;
 import lombok.extern.java.Log;
 import org.redisson.api.RedissonClient;
+import org.springframework.data.redis.core.HashOperations;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import static com.minzi.common.utils.MD5Utils.MD5Upper;
 
@@ -35,8 +40,8 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
     @Resource
     private UserService userService;
 
-
-    private RedissonClient redissonClient;
+    @Resource
+    RedisTemplate<String, Object> redisTemplate;
 
     @Override
     public List<UserEntity> getList() {
@@ -67,6 +72,18 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
         UserLoginTo to = new UserLoginTo();
         EntityUtils.copySameFields(userEntity, to);
         to.setToken(token);
+
+        //这里额外将token存到redis中
+        HashOperations<String, Object, Object> hashOps = redisTemplate.opsForHash();
+        Map<String, Object> map = new HashMap<>();
+        map.put("id", userEntity.getId());
+        map.put("name", userEntity.getName());
+        map.put("userName", userEntity.getUserName());
+        map.put("loginTime",DateUtils.currentDateTime());
+        //存一次数据库
+        hashOps.putAll(token, map);
+        redisTemplate.expire(token,24, TimeUnit.HOURS);
+
         return R.ok().setData(to);
     }
 

@@ -130,8 +130,11 @@ public class PlanServiceImpl extends ServiceImpl<PlanDao, PlanEntity> implements
         planService.updateById(entity);
     }
 
+    @Transactional
     @Override
     public void delete(String[] ids) {
+        //这里注意删除的策略，如果删除了说明需要删除底下的任务
+        taskService.remove(new LambdaQueryWrapper<TaskEntity>().in(TaskEntity::getPlanId,ids));
         planService.remove(new LambdaQueryWrapper<PlanEntity>().in(PlanEntity::getId, ids));
     }
 

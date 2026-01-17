@@ -62,7 +62,7 @@ minio:
   secretKey: minioadmin
 
 filter:
-  passage: "/app/user/login,/app/user/reg,/app/script/demo"
+  passage: "/app/user/login,/app/user/reg,/app/user/image"
 window:
   limit: 150
 
