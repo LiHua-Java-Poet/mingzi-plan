@@ -8,13 +8,17 @@ import com.minzi.common.core.map.LambdaHashMap;
 import com.minzi.common.core.model.entity.UserEntity;
 import com.minzi.common.core.query.PageUtils;
 import com.minzi.common.core.query.R;
+import com.minzi.common.core.tools.EntityAct;
 import com.minzi.common.core.tools.UserContext;
 import com.minzi.common.utils.AppJwtUtil;
 import com.minzi.common.utils.DateUtils;
 import com.minzi.common.utils.EntityUtils;
 import com.minzi.common.utils.StringUtils;
 import com.minzi.plan.dao.UserDao;
-import com.minzi.plan.model.entity.TaskEntity;
+import com.minzi.plan.model.entity.*;
+import com.minzi.plan.model.enums.UserEnums;
+import com.minzi.plan.model.to.sysMenu.SysMenuListTo;
+import com.minzi.plan.model.to.sysRole.SysRoleListTo;
 import com.minzi.plan.model.to.task.TaskItemTo;
 import com.minzi.plan.model.to.task.TaskListTo;
 import com.minzi.plan.model.to.user.UserInfoTo;
@@ -23,7 +27,7 @@ import com.minzi.plan.model.to.user.UserLoginTo;
 import com.minzi.plan.model.vo.user.UserRegVo;
 import com.minzi.plan.model.vo.user.UserSaveVo;
 import com.minzi.plan.model.vo.user.UserUpdateVo;
-import com.minzi.plan.service.UserService;
+import com.minzi.plan.service.*;
 import lombok.extern.java.Log;
 import org.redisson.api.RedissonClient;
 import org.springframework.data.redis.core.HashOperations;
@@ -32,10 +36,7 @@ import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -55,6 +56,18 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
     @Resource
     private UserContext userContext;
 
+    @Resource
+    private SysRoleMenuService sysRoleMenuService;
+
+    @Resource
+    private SysUserRoleService sysUserRoleService;
+
+    @Resource
+    private SysRoleService sysRoleService;
+
+    @Resource
+    private SysMenuService sysMenuService;
+
     @Override
     public List<UserEntity> getList() {
         return userService.list();
@@ -62,13 +75,13 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
 
 
     @Override
-    public R login(String userName, String password,String captchaCode,String timeToken) {
+    public R login(String userName, String password, String captchaCode, String timeToken) {
         //校验一次验证码是否正确
         //存一次redis
         ValueOperations<String, Object> redis = redisTemplate.opsForValue();
-        R.dataParamsAssert(StringUtils.isEmpty(captchaCode),"请传入验证码");
-        R.dataParamsAssert(StringUtils.isEmpty(redis.get("timeToken_" + timeToken)),"不存在验证码");
-        R.dataParamsAssert(!captchaCode.equals(Objects.requireNonNull(redis.get("timeToken_" + timeToken)).toString()),"错误的验证码");
+        R.dataParamsAssert(StringUtils.isEmpty(captchaCode), "请传入验证码");
+        R.dataParamsAssert(StringUtils.isEmpty(redis.get("timeToken_" + timeToken)), "不存在验证码");
+        R.dataParamsAssert(!captchaCode.equals(Objects.requireNonNull(redis.get("timeToken_" + timeToken)).toString()), "错误的验证码");
 
         List<UserEntity> list = userService.list(new LambdaQueryWrapper<UserEntity>().eq(UserEntity::getUserName, userName));
         if (list.isEmpty()) {
@@ -98,10 +111,10 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
         map.put("id", userEntity.getId());
         map.put("name", userEntity.getName());
         map.put("userName", userEntity.getUserName());
-        map.put("loginTime",DateUtils.currentDateTime());
+        map.put("loginTime", DateUtils.currentDateTime());
         //存一次数据库
         hashOps.putAll(token, map);
-        redisTemplate.expire(token,24, TimeUnit.HOURS);
+        redisTemplate.expire(token, 24, TimeUnit.HOURS);
 
         return R.ok().setData(to);
     }
@@ -119,6 +132,26 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
         userEntity.setStatus(1);
         userEntity.setCreateTime(currentTime);
         userService.save(userEntity);
+    }
+
+    @Override
+    public List<SysMenuListTo> getUserMenu() {
+        UserEntity userInfo = userContext.getUserInfo();
+
+        //获取到角色的菜单信息
+        List<SysUserRoleEntity> userRoleList = sysUserRoleService.list(new LambdaQueryWrapper<SysUserRoleEntity>().eq(SysUserRoleEntity::getUserId, userInfo.getId()));
+        Set<Long> userRoleIdList = userRoleList.stream().map(SysUserRoleEntity::getId).collect(Collectors.toSet());
+        List<SysRoleEntity> roleList = sysRoleService.list(new LambdaQueryWrapper<SysRoleEntity>().in(SysRoleEntity::getId, userRoleIdList));
+        List<SysRoleMenuEntity> roleMenuEntityList = sysRoleMenuService.list(new LambdaQueryWrapper<SysRoleMenuEntity>().in(SysRoleMenuEntity::getRoleId, roleList));
+        Set<Long> menuIdList = roleMenuEntityList.stream().map(SysRoleMenuEntity::getMenuId).collect(Collectors.toSet());
+        List<SysMenuEntity> menuEntityList = sysMenuService.list(new LambdaQueryWrapper<SysMenuEntity>().in(SysMenuEntity::getId, menuIdList));
+
+        //获取到用户的角色
+        if (UserEnums.UserType.GUAN_LI.getCode().equals(userInfo.getType())) {
+            List<SysMenuEntity> allMenuList = sysMenuService.list();
+            menuEntityList.addAll(allMenuList);
+        }
+        return sysMenuService.formatList(menuEntityList);
     }
 
     @Override
@@ -171,9 +204,32 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
 
     @Override
     public List<UserListTo> formatList(List<UserEntity> list) {
+        //这里查一次用户的角色
+        Set<Long> userIdList = list.stream().map(UserEntity::getId).collect(Collectors.toSet());
+
+        List<SysUserRoleEntity> userRoleList = sysUserRoleService.list(new LambdaQueryWrapper<SysUserRoleEntity>().in(SysUserRoleEntity::getUserId, userIdList));
+        Set<Long> userRoleIdList = userRoleList.stream().map(SysUserRoleEntity::getId).collect(Collectors.toSet());
+        Map<Long, List<SysUserRoleEntity>> userIdMap = EntityUtils.resortEntityByColumnLevel2(userRoleList, SysUserRoleEntity::getUserId);
+
+
+        //获取到对应的角色id映射
+        List<SysRoleEntity> roleList = sysRoleService.list(new LambdaQueryWrapper<SysRoleEntity>().in(SysRoleEntity::getId, userRoleIdList));
+        List<SysRoleListTo> roleTos = sysRoleService.formatList(roleList);
+        Map<Long, SysRoleListTo> roleIdMap = EntityUtils.resortEntityByColumnLevel1(roleTos, SysRoleListTo::getId);
+
         return list.stream().map(item -> {
             UserListTo to = new UserListTo();
             EntityUtils.copySameFields(item, to);
+            to.setRoleList(new ArrayList<>());
+
+            //拿到对应的用户信息
+            List<SysUserRoleEntity> userRoleEntityList = userIdMap.get(item.getId());
+            if (userRoleEntityList == null) return to;
+            List<SysRoleListTo> roleListToList = userRoleEntityList.stream().filter(b -> roleIdMap.get(b.getRoleId()) != null).map(role -> {
+                return roleIdMap.get(role.getRoleId());
+            }).collect(Collectors.toList());
+
+            to.setRoleList(roleListToList);
 
             return to;
         }).collect(Collectors.toList());

@@ -1,9 +1,11 @@
 package com.minzi.plan.model.to.user;
 
 import com.baomidou.mybatisplus.annotation.*;
+import com.minzi.plan.model.to.sysRole.SysRoleListTo;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * 用户表
@@ -54,6 +56,8 @@ public class UserListTo implements Serializable {
      * 名字
      */
 	private String name;
+
+	List<SysRoleListTo> roleList;
 
     /**
      * 创建时间

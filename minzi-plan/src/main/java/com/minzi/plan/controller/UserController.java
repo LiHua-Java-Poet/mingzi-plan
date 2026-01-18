@@ -4,6 +4,7 @@ package com.minzi.plan.controller;
 import com.minzi.common.core.model.entity.UserEntity;
 import com.minzi.common.core.query.PageUtils;
 import com.minzi.common.core.query.R;
+import com.minzi.plan.model.to.sysMenu.SysMenuListTo;
 import com.minzi.plan.model.to.task.TaskListTo;
 import com.minzi.plan.model.to.user.UserListTo;
 import com.minzi.plan.model.to.user.UserLoginTo;
@@ -48,19 +49,26 @@ public class UserController {
     private RedisTemplate<String, Object> redisTemplate;
 
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "page",value = "页码",required = false,dataType = "int",paramType = "query"),
-            @ApiImplicitParam(name = "limit",value = "大小",required = false,dataType = "int",paramType = "query"),
-            @ApiImplicitParam(name = "status",value = "状态",required = false,dataType = "int",paramType = "query")
+            @ApiImplicitParam(name = "page", value = "页码", required = false, dataType = "int", paramType = "query"),
+            @ApiImplicitParam(name = "limit", value = "大小", required = false, dataType = "int", paramType = "query"),
+            @ApiImplicitParam(name = "status", value = "状态", required = false, dataType = "int", paramType = "query")
     })
     @ApiOperation(value = "获取到用户列表", response = UserLoginTo.class)
     @GetMapping("/list")
-    public R list(@RequestParam Map<String,Object> params) {
-        if (StringUtils.isEmpty(params.get("page"))){
+    public R list(@RequestParam Map<String, Object> params) {
+        if (StringUtils.isEmpty(params.get("page"))) {
             List<UserListTo> all = userService.all(params);
             return R.ok().setData(all);
         }
         PageUtils pageUtils = userService.queryPage(params);
         return R.ok().setData(pageUtils);
+    }
+
+    @ApiOperation(value = "获取到用户的菜单", response = SysMenuListTo.class)
+    @GetMapping("/getUserMenu")
+    public R getUserMenu() {
+        List<SysMenuListTo> res = userService.getUserMenu();
+        return R.ok().setData(res);
     }
 
     @ApiOperation(value = "获取到用户列表", response = UserLoginTo.class)

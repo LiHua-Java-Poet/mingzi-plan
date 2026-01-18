@@ -3,6 +3,7 @@ package com.minzi.plan.service;
 import com.minzi.common.core.model.entity.UserEntity;
 import com.minzi.common.core.query.R;
 import com.minzi.common.core.service.BaseService;
+import com.minzi.plan.model.to.sysMenu.SysMenuListTo;
 import com.minzi.plan.model.to.user.UserListTo;
 import com.minzi.plan.model.to.user.UserInfoTo;
 import com.minzi.plan.model.vo.user.UserRegVo;
@@ -18,4 +19,10 @@ public interface UserService extends BaseService<UserEntity, UserListTo, UserInf
     R login(String userName, String password,String captchaCode,String timeToken);
 
     void reg(UserRegVo vo);
+
+    /**
+     * 获取到用户的菜单列表
+     * @return
+     */
+    List<SysMenuListTo> getUserMenu();
 }

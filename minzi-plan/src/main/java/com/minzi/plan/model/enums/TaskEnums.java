@@ -21,8 +21,8 @@ public class TaskEnums {
         private final Integer code;
         private final String name;
 
-        public static <K, V> Map<K, V> toMap(Function<PlanEnums.PlanType, K> k, Function<PlanEnums.PlanType, V> v) {
-            return Arrays.stream(PlanEnums.PlanType.values()).collect(Collectors.toMap(k, v));
+        public static <K, V> Map<K, V> toMap(Function<PlanType, K> k, Function<PlanType, V> v) {
+            return Arrays.stream(PlanType.values()).collect(Collectors.toMap(k, v));
         }
     }
 }
