@@ -19,11 +19,12 @@ public class UserContext {
         return userEntity == null ? 0L : userEntity.getId();
     }
 
-    public void setUserInfo(String name, String userName, long userId) {
+    public void setUserInfo(String name, String userName, long userId, Integer type) {
         UserEntity userEntity = new UserEntity();
         userEntity.setId(userId);
         userEntity.setName(name);
         userEntity.setUserName(userName);
+        userEntity.setType(type);
         threadUserLocal.set(userEntity);
     }
 

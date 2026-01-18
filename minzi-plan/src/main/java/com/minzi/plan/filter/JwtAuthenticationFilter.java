@@ -111,7 +111,7 @@ public class JwtAuthenticationFilter implements Filter {
         entries.get("name");
         entries.get("userName");
         if (entries.isEmpty()) return false;
-        userContext.setUserInfo(entries.get("userName").toString(), entries.get("name").toString(), Long.parseLong(entries.get("id").toString()));
+        userContext.setUserInfo(entries.get("userName").toString(), entries.get("name").toString(), Long.parseLong(entries.get("id").toString()),Integer.parseInt(entries.get("type").toString()));
         return !entries.isEmpty();
     }
 

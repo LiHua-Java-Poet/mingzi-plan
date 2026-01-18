@@ -16,6 +16,7 @@ import com.minzi.common.utils.EntityUtils;
 import com.minzi.common.utils.StringUtils;
 import com.minzi.plan.dao.UserDao;
 import com.minzi.plan.model.entity.*;
+import com.minzi.plan.model.enums.SysMenuEnums;
 import com.minzi.plan.model.enums.UserEnums;
 import com.minzi.plan.model.to.sysMenu.SysMenuListTo;
 import com.minzi.plan.model.to.sysRole.SysRoleListTo;
@@ -112,6 +113,7 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
         map.put("name", userEntity.getName());
         map.put("userName", userEntity.getUserName());
         map.put("loginTime", DateUtils.currentDateTime());
+        map.put("type", userEntity.getType());
         //存一次数据库
         hashOps.putAll(token, map);
         redisTemplate.expire(token, 24, TimeUnit.HOURS);
@@ -142,15 +144,25 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
         List<SysUserRoleEntity> userRoleList = sysUserRoleService.list(new LambdaQueryWrapper<SysUserRoleEntity>().eq(SysUserRoleEntity::getUserId, userInfo.getId()));
         Set<Long> userRoleIdList = userRoleList.stream().map(SysUserRoleEntity::getId).collect(Collectors.toSet());
         List<SysRoleEntity> roleList = sysRoleService.list(new LambdaQueryWrapper<SysRoleEntity>().in(SysRoleEntity::getId, userRoleIdList));
-        List<SysRoleMenuEntity> roleMenuEntityList = sysRoleMenuService.list(new LambdaQueryWrapper<SysRoleMenuEntity>().in(SysRoleMenuEntity::getRoleId, roleList));
+        List<Long> roleIdlIST = roleList.stream().map(SysRoleEntity::getId).collect(Collectors.toList());
+        List<SysRoleMenuEntity> roleMenuEntityList = sysRoleMenuService.list(new LambdaQueryWrapper<SysRoleMenuEntity>().in(SysRoleMenuEntity::getRoleId, roleIdlIST));
         Set<Long> menuIdList = roleMenuEntityList.stream().map(SysRoleMenuEntity::getMenuId).collect(Collectors.toSet());
-        List<SysMenuEntity> menuEntityList = sysMenuService.list(new LambdaQueryWrapper<SysMenuEntity>().in(SysMenuEntity::getId, menuIdList));
+        List<SysMenuEntity> menuEntityList = sysMenuService.list(new LambdaQueryWrapper<SysMenuEntity>()
+                .in(SysMenuEntity::getId, menuIdList)
+                .eq(SysMenuEntity::getStatus, SysMenuEnums.SysMenuStatus.ZENG_CHANG.getCode()));
 
         //获取到用户的角色
         if (UserEnums.UserType.GUAN_LI.getCode().equals(userInfo.getType())) {
-            List<SysMenuEntity> allMenuList = sysMenuService.list();
+            List<SysMenuEntity> allMenuList = sysMenuService.list(new LambdaQueryWrapper<SysMenuEntity>()
+                    .eq(SysMenuEntity::getStatus, SysMenuEnums.SysMenuStatus.ZENG_CHANG.getCode()));
             menuEntityList.addAll(allMenuList);
         }
+        //这里手动做一次排序
+        menuEntityList.sort(
+                Comparator.comparing(SysMenuEntity::getSort, Comparator.nullsLast(Integer::compareTo))
+                        .reversed()
+        );
+
         return sysMenuService.formatList(menuEntityList);
     }
 
