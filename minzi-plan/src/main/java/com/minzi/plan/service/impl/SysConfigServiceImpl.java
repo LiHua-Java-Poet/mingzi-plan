@@ -51,13 +51,6 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigDao,SysConfigEnti
         sysConfigService.save(entity);
     }
 
-    @Override
-    public Wrapper<SysConfigEntity> getOneCondition(Map<String, Object> params) {
-        LambdaQueryWrapper<SysConfigEntity> wrapper = new LambdaQueryWrapper<>();
-
-        wrapper.last("limit 1");
-        return wrapper;
-    }
 
     @Override
     public SysConfigInfoTo formatOne(SysConfigEntity entity) {

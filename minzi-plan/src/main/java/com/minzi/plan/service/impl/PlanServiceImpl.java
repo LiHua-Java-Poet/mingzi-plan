@@ -96,16 +96,6 @@ public class PlanServiceImpl extends ServiceImpl<PlanDao, PlanEntity> implements
         planService.save(entity);
     }
 
-    @Override
-    public Wrapper<PlanEntity> getOneCondition(Map<String, Object> params) {
-        LambdaQueryWrapper<PlanEntity> wrapper = new LambdaQueryWrapper<>();
-
-        Object id = params.get("id");
-        wrapper.eq(!StringUtils.isEmpty(id), PlanEntity::getId, id);
-
-        wrapper.last("limit 1");
-        return wrapper;
-    }
 
     @Override
     public PlanInfoTo formatOne(PlanEntity entity) {

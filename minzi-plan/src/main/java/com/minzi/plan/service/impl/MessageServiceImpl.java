@@ -86,14 +86,6 @@ public class MessageServiceImpl extends ServiceImpl<MessageDao, MessageEntity> i
     }
 
     @Override
-    public Wrapper<MessageEntity> getOneCondition(Map<String, Object> params) {
-        LambdaQueryWrapper<MessageEntity> wrapper = new LambdaQueryWrapper<>();
-
-        wrapper.last("limit 1");
-        return wrapper;
-    }
-
-    @Override
     public MessageInfoTo formatOne(MessageEntity entity) {
         MessageInfoTo to = new MessageInfoTo();
         EntityUtils.copySameFields(entity, to);

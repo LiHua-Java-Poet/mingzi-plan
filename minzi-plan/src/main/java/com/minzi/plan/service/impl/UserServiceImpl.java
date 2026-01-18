@@ -1,16 +1,22 @@
 package com.minzi.plan.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.minzi.common.core.map.LambdaHashMap;
 import com.minzi.common.core.model.entity.UserEntity;
 import com.minzi.common.core.query.PageUtils;
 import com.minzi.common.core.query.R;
+import com.minzi.common.core.tools.UserContext;
 import com.minzi.common.utils.AppJwtUtil;
 import com.minzi.common.utils.DateUtils;
 import com.minzi.common.utils.EntityUtils;
 import com.minzi.common.utils.StringUtils;
 import com.minzi.plan.dao.UserDao;
+import com.minzi.plan.model.entity.TaskEntity;
+import com.minzi.plan.model.to.task.TaskItemTo;
+import com.minzi.plan.model.to.task.TaskListTo;
 import com.minzi.plan.model.to.user.UserInfoTo;
 import com.minzi.plan.model.to.user.UserListTo;
 import com.minzi.plan.model.to.user.UserLoginTo;
@@ -31,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import static com.minzi.common.utils.MD5Utils.MD5Upper;
 
@@ -44,6 +51,9 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
 
     @Resource
     RedisTemplate<String, Object> redisTemplate;
+
+    @Resource
+    private UserContext userContext;
 
     @Override
     public List<UserEntity> getList() {
@@ -121,10 +131,6 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
         return UserService.super.getOne(id);
     }
 
-    @Override
-    public Wrapper<UserEntity> getOneCondition(Map<String, Object> params) {
-        return null;
-    }
 
     @Override
     public UserInfoTo formatOne(UserEntity entity) {
@@ -133,12 +139,44 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
 
     @Override
     public Wrapper<UserEntity> getListCondition(Map<String, Object> params) {
-        return null;
+        LambdaHashMap<String, Object> lambdaHashMap = new LambdaHashMap<>(params);
+        LambdaQueryWrapper<UserEntity> wrapper = new LambdaQueryWrapper<>();
+        wrapper.orderByDesc(UserEntity::getId);
+
+        //查询 - Id
+        Object id = lambdaHashMap.get(UserEntity::getId);
+        wrapper.eq(!StringUtils.isEmpty(id), UserEntity::getId, id);
+
+        //查询 - 状态
+        Object status = lambdaHashMap.get(UserEntity::getStatus);
+        wrapper.eq(!StringUtils.isEmpty(status), UserEntity::getStatus, status);
+
+        Object userName = lambdaHashMap.get(UserEntity::getUserName);
+        wrapper.like(!StringUtils.isEmpty(userName), UserEntity::getUserName, userName);
+
+        Object name = lambdaHashMap.get(UserEntity::getName);
+        wrapper.like(!StringUtils.isEmpty(name), UserEntity::getName, name);
+
+        Object account = lambdaHashMap.get(UserEntity::getAccount);
+        wrapper.like(!StringUtils.isEmpty(account), UserEntity::getAccount, account);
+
+        Object phone = lambdaHashMap.get(UserEntity::getPhone);
+        wrapper.like(!StringUtils.isEmpty(phone), UserEntity::getPhone, phone);
+
+        Object type = lambdaHashMap.get(UserEntity::getType);
+        wrapper.eq(!StringUtils.isEmpty(type), UserEntity::getType, type);
+
+        return wrapper;
     }
 
     @Override
     public List<UserListTo> formatList(List<UserEntity> list) {
-        return null;
+        return list.stream().map(item -> {
+            UserListTo to = new UserListTo();
+            EntityUtils.copySameFields(item, to);
+
+            return to;
+        }).collect(Collectors.toList());
     }
 
     @Override

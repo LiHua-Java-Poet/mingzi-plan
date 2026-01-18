@@ -59,11 +59,6 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, TaskEntity> implements
     private RedisTemplate<String, String> redisTemplate;
 
     @Override
-    public Wrapper<TaskEntity> getOneCondition(Map<String, Object> params) {
-        return null;
-    }
-
-    @Override
     public TaskInfoTo formatOne(TaskEntity entity) {
         TaskInfoTo to = new TaskInfoTo();
         EntityUtils.copySameFields(entity, to);
@@ -92,9 +87,6 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, TaskEntity> implements
         wrapper.orderByDesc(TaskEntity::getId);
 
         UserEntity userInfo = userContext.getUserInfo();
-//        if (userInfo != null) {
-//            wrapper.eq(TaskEntity::getUserId, userInfo.getId());
-//        }
         wrapper.eq(userInfo != null,TaskEntity::getUserId, userInfo.getId());
 
         //查询 - Id

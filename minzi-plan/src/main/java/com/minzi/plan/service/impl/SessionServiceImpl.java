@@ -70,13 +70,6 @@ public class SessionServiceImpl extends ServiceImpl<SessionDao, SessionEntity> i
         sessionService.save(entity);
     }
 
-    @Override
-    public Wrapper<SessionEntity> getOneCondition(Map<String, Object> params) {
-        LambdaQueryWrapper<SessionEntity> wrapper = new LambdaQueryWrapper<>();
-
-        wrapper.last("limit 1");
-        return wrapper;
-    }
 
     @Override
     public SessionInfoTo formatOne(SessionEntity entity) {

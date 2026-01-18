@@ -85,15 +85,6 @@ public class FileServiceImpl extends ServiceImpl<FileDao, FileEntity> implements
     }
 
     @Override
-    public Wrapper<FileEntity> getOneCondition(Map<String, Object> params) {
-        LambdaHashMap<String, Object> lambdaHashMap = new LambdaHashMap<>(params);
-        LambdaQueryWrapper<FileEntity> wrapper = new LambdaQueryWrapper<>();
-
-        wrapper.last("limit 1");
-        return wrapper;
-    }
-
-    @Override
     public FileInfoTo formatOne(FileEntity entity) {
         FileInfoTo to = new FileInfoTo();
         EntityUtils.copySameFields(entity, to);

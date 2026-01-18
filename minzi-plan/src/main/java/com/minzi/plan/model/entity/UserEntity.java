@@ -1,9 +1,7 @@
-package com.minzi.plan.model.vo.user;
+package com.minzi.plan.model.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
-
-import java.io.Serializable;
 
 /**
  * 用户表
@@ -11,13 +9,14 @@ import java.io.Serializable;
  * @author MinZi
  */
 @Data
-public class UserUpdateVo implements Serializable {
+@TableName("user")
+public class UserEntity {
 
-	private static final long serialVersionUID = 1L;
 
     /**
      * 用户主键
      */
+	@TableId(value = "id", type = IdType.AUTO)
 	private Long id;
 
     /**
@@ -58,6 +57,7 @@ public class UserUpdateVo implements Serializable {
     /**
      * 创建时间
      */
+	@TableField(fill = FieldFill.INSERT)
 	private Integer createTime;
 
     /**
@@ -69,5 +69,4 @@ public class UserUpdateVo implements Serializable {
      * 1 普通用户 2 管理员
      */
 	private Integer type;
-
 }

@@ -15,8 +15,6 @@ public interface InfoBaseService<T, INFO_TO> extends IService<T> {
         return this.formatOne(this.getById(id));
     }
 
-    Wrapper<T> getOneCondition(Map<String, Object> params);
-
     INFO_TO formatOne(T entity);
 
 }

@@ -2,16 +2,22 @@ package com.minzi.plan.controller;
 
 
 import com.minzi.common.core.model.entity.UserEntity;
+import com.minzi.common.core.query.PageUtils;
 import com.minzi.common.core.query.R;
+import com.minzi.plan.model.to.task.TaskListTo;
+import com.minzi.plan.model.to.user.UserListTo;
 import com.minzi.plan.model.to.user.UserLoginTo;
 import com.minzi.plan.model.vo.user.UserLoginVo;
 import com.minzi.plan.model.vo.user.UserRegVo;
 import com.minzi.plan.service.UserService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -22,6 +28,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -39,6 +46,22 @@ public class UserController {
 
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
+
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "page",value = "页码",required = false,dataType = "int",paramType = "query"),
+            @ApiImplicitParam(name = "limit",value = "大小",required = false,dataType = "int",paramType = "query"),
+            @ApiImplicitParam(name = "status",value = "状态",required = false,dataType = "int",paramType = "query")
+    })
+    @ApiOperation(value = "获取到用户列表", response = UserLoginTo.class)
+    @GetMapping("/list")
+    public R list(@RequestParam Map<String,Object> params) {
+        if (StringUtils.isEmpty(params.get("page"))){
+            List<UserListTo> all = userService.all(params);
+            return R.ok().setData(all);
+        }
+        PageUtils pageUtils = userService.queryPage(params);
+        return R.ok().setData(pageUtils);
+    }
 
     @ApiOperation(value = "获取到用户列表", response = UserLoginTo.class)
     @GetMapping("/getUserList")
