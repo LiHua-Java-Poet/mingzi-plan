@@ -19,6 +19,7 @@ import com.minzi.plan.model.vo.sysRoleMenu.SysRoleMenuSaveVo;
 import com.minzi.plan.model.vo.sysRoleMenu.SysRoleMenuUpdateVo;
 import com.minzi.plan.service.SysRoleMenuService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -96,6 +97,7 @@ public class SysRoleMenuServiceImpl extends ServiceImpl<SysRoleMenuDao, SysRoleM
         sysRoleMenuService.remove(new LambdaQueryWrapper<SysRoleMenuEntity>().eq(SysRoleMenuEntity::getRoleId, vo.getRoleId()).eq(SysRoleMenuEntity::getMenuId, vo.getMenuId()));
     }
 
+    @Transactional
     @Override
     public void addList(List<SysRoleMenuSaveVo> vos) {
         if (vos.isEmpty()) return;

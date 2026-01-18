@@ -5,23 +5,30 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.minzi.common.core.map.LambdaHashMap;
+import com.minzi.common.core.model.entity.UserEntity;
 import com.minzi.common.core.tools.EntityAct;
 import com.minzi.common.utils.DateUtils;
 import com.minzi.common.utils.EntityUtils;
 import com.minzi.common.core.tools.UserContext;
 import com.minzi.common.utils.StringUtils;
 import com.minzi.plan.dao.SysUserRoleDao;
+import com.minzi.plan.model.entity.SysRoleEntity;
+import com.minzi.plan.model.entity.SysRoleMenuEntity;
 import com.minzi.plan.model.entity.SysUserRoleEntity;
 import com.minzi.plan.model.to.sysUserRole.SysUserRoleInfoTo;
 import com.minzi.plan.model.to.sysUserRole.SysUserRoleListTo;
+import com.minzi.plan.model.vo.sysRoleMenu.SysRoleMenuSaveVo;
 import com.minzi.plan.model.vo.sysUserRole.SysUserRoleSaveVo;
 import com.minzi.plan.model.vo.sysUserRole.SysUserRoleUpdateVo;
 import com.minzi.plan.service.SysUserRoleService;
+import com.minzi.plan.service.UserService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,6 +39,9 @@ public class SysUserRoleServiceImpl extends ServiceImpl<SysUserRoleDao,SysUserRo
 
     @Resource
     private EntityAct entityAct;
+
+    @Resource
+    private UserService userService;
 
     @Override
     public Wrapper<SysUserRoleEntity> getListCondition(Map<String, Object> params) {
@@ -91,4 +101,33 @@ public class SysUserRoleServiceImpl extends ServiceImpl<SysUserRoleDao,SysUserRo
     );
     }
 
+    @Transactional
+    @Override
+    public void userRelateRole(List<SysUserRoleSaveVo> vos) {
+        //关联用户角色表
+        if (vos.isEmpty()) return;
+        SysUserRoleSaveVo sysUserRoleSaveVo = vos.get(0);
+        Long userId = sysUserRoleSaveVo.getUserId();
+
+        //现存的用户角色表
+        List<SysUserRoleEntity> dbUserRoleList = sysUserRoleService.list(new LambdaQueryWrapper<SysUserRoleEntity>().eq(SysUserRoleEntity::getUserId, userId));
+        Set<Long> dbRoleIdSet = dbUserRoleList.stream().map(SysUserRoleEntity::getRoleId).collect(Collectors.toSet());
+        Set<Long> saveRoleIdSet = vos.stream().map(SysUserRoleSaveVo::getRoleId).collect(Collectors.toSet());
+        Set<Long> removeRoleIdSet = vos.stream().map(SysUserRoleSaveVo::getRoleId).collect(Collectors.toSet());
+
+        saveRoleIdSet.removeAll(dbRoleIdSet);
+        dbRoleIdSet.removeAll(removeRoleIdSet);
+
+        List<SysUserRoleEntity> saveList = saveRoleIdSet.stream().map(item -> {
+            SysUserRoleEntity vo = new SysUserRoleEntity();
+            vo.setUserId(userId);
+            vo.setRoleId(item);
+            return vo;
+        }).collect(Collectors.toList());
+
+        sysUserRoleService.saveBatch(saveList);
+        if (dbRoleIdSet.isEmpty()) return;
+        sysUserRoleService.remove(new LambdaQueryWrapper<SysUserRoleEntity>().eq(SysUserRoleEntity::getUserId, userId).in(SysUserRoleEntity::getRoleId, dbRoleIdSet));
+        userService.update(new LambdaUpdateWrapper<UserEntity>().set(UserEntity::getUpdateTime,DateUtils.currentDateTime()).eq(UserEntity::getId,userId));
+    }
 }

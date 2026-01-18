@@ -49,6 +49,13 @@ public class SysUserRoleController {
         return R.ok();
     }
 
+    @ApiOperation(value = "关联用户角色")
+    @PostMapping("/userRelateRole")
+    public R userRelateRole(@RequestBody List<SysUserRoleSaveVo> vos) {
+        sysUserRoleService.userRelateRole(vos);
+        return R.ok();
+    }
+
     @ApiOperation(value = "更新用户角色授权表")
     @PostMapping("/update")
     public R update(@RequestBody SysUserRoleUpdateVo vo) {

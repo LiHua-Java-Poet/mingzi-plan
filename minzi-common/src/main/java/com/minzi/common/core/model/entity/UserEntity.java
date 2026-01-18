@@ -60,6 +60,12 @@ public class UserEntity {
     @TableField(fill = FieldFill.INSERT) // 插入时自动填充
     private Integer createTime;
 
+    /**
+     * 创建时间
+     */
+    private Integer updateTime;
+
+
     @TableLogic(value = "0", delval = "unix_timestamp()")
     @TableField(select = false)
     private Integer deletedTime;

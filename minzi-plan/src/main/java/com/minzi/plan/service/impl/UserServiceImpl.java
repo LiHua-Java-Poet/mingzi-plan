@@ -19,6 +19,7 @@ import com.minzi.plan.model.entity.*;
 import com.minzi.plan.model.enums.SysMenuEnums;
 import com.minzi.plan.model.enums.UserEnums;
 import com.minzi.plan.model.to.sysMenu.SysMenuListTo;
+import com.minzi.plan.model.to.sysRole.SysRoleInfoTo;
 import com.minzi.plan.model.to.sysRole.SysRoleListTo;
 import com.minzi.plan.model.to.task.TaskItemTo;
 import com.minzi.plan.model.to.task.TaskListTo;
@@ -157,6 +158,17 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
                     .eq(SysMenuEntity::getStatus, SysMenuEnums.SysMenuStatus.ZENG_CHANG.getCode()));
             menuEntityList.addAll(allMenuList);
         }
+        // 基于 menuId 去重（保留第一次出现的）
+        menuEntityList = new ArrayList<>(
+                menuEntityList.stream()
+                        .collect(Collectors.toMap(
+                                SysMenuEntity::getId,          // key = menuId
+                                e -> e,                        // value = entity
+                                (oldVal, newVal) -> oldVal     // 冲突时保留旧的
+                        ))
+                        .values()
+        );
+
         //这里手动做一次排序
         menuEntityList.sort(
                 Comparator.comparing(SysMenuEntity::getSort, Comparator.nullsLast(Integer::compareTo))
@@ -220,14 +232,13 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
         Set<Long> userIdList = list.stream().map(UserEntity::getId).collect(Collectors.toSet());
 
         List<SysUserRoleEntity> userRoleList = sysUserRoleService.list(new LambdaQueryWrapper<SysUserRoleEntity>().in(SysUserRoleEntity::getUserId, userIdList));
-        Set<Long> userRoleIdList = userRoleList.stream().map(SysUserRoleEntity::getId).collect(Collectors.toSet());
+        Set<Long> roleIdList = userRoleList.stream().map(SysUserRoleEntity::getRoleId).collect(Collectors.toSet());
         Map<Long, List<SysUserRoleEntity>> userIdMap = EntityUtils.resortEntityByColumnLevel2(userRoleList, SysUserRoleEntity::getUserId);
 
 
         //获取到对应的角色id映射
-        List<SysRoleEntity> roleList = sysRoleService.list(new LambdaQueryWrapper<SysRoleEntity>().in(SysRoleEntity::getId, userRoleIdList));
-        List<SysRoleListTo> roleTos = sysRoleService.formatList(roleList);
-        Map<Long, SysRoleListTo> roleIdMap = EntityUtils.resortEntityByColumnLevel1(roleTos, SysRoleListTo::getId);
+        List<SysRoleEntity> roleList = sysRoleService.list(new LambdaQueryWrapper<SysRoleEntity>().in(SysRoleEntity::getId, roleIdList));
+        Map<Long, SysRoleEntity> roleIdMap = EntityUtils.resortEntityByColumnLevel1(roleList, SysRoleEntity::getId);
 
         return list.stream().map(item -> {
             UserListTo to = new UserListTo();
@@ -237,10 +248,12 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
             //拿到对应的用户信息
             List<SysUserRoleEntity> userRoleEntityList = userIdMap.get(item.getId());
             if (userRoleEntityList == null) return to;
-            List<SysRoleListTo> roleListToList = userRoleEntityList.stream().filter(b -> roleIdMap.get(b.getRoleId()) != null).map(role -> {
-                return roleIdMap.get(role.getRoleId());
+            List<SysRoleInfoTo> roleListToList = userRoleEntityList.stream().filter(b -> roleIdMap.get(b.getRoleId()) != null).map(role -> {
+                SysRoleInfoTo sysRoleEntity = new SysRoleInfoTo();
+                SysRoleEntity sysRole = roleIdMap.get(role.getRoleId());
+                EntityUtils.copySameFields(sysRole, sysRoleEntity);
+                return sysRoleEntity;
             }).collect(Collectors.toList());
-
             to.setRoleList(roleListToList);
 
             return to;

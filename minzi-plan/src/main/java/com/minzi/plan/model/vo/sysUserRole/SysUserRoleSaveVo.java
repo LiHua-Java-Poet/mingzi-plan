@@ -25,14 +25,5 @@ public class SysUserRoleSaveVo implements Serializable {
 	*/
 	private Long roleId;
 
-	/**
-	 * 创建时间
-	*/
-	private Integer createTime;
-
-	/**
-	 * 删除时间
-	*/
-	private Integer deleteTime;
 
 }
