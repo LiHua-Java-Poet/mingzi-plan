@@ -15,6 +15,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 
@@ -54,6 +55,24 @@ public class Config {
         template.afterPropertiesSet();
         return template;
     }
+
+    @Bean
+    public RedisTemplate<String, String> stringRedisTemplate(RedisConnectionFactory factory) {
+        RedisTemplate<String, String> template = new RedisTemplate<>();
+        template.setConnectionFactory(factory);
+
+        StringRedisSerializer stringSerializer =
+                new StringRedisSerializer(StandardCharsets.UTF_8);
+
+        template.setKeySerializer(stringSerializer);
+        template.setValueSerializer(stringSerializer);
+        template.setHashKeySerializer(stringSerializer);
+        template.setHashValueSerializer(stringSerializer);
+
+        template.afterPropertiesSet();
+        return template;
+    }
+
 
     @Bean
     public MybatisPlusInterceptor mybatisPlusInterceptor() {

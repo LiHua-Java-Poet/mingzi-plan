@@ -143,8 +143,8 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
 
         //获取到角色的菜单信息
         List<SysUserRoleEntity> userRoleList = sysUserRoleService.list(new LambdaQueryWrapper<SysUserRoleEntity>().eq(SysUserRoleEntity::getUserId, userInfo.getId()));
-        Set<Long> userRoleIdList = userRoleList.stream().map(SysUserRoleEntity::getId).collect(Collectors.toSet());
-        List<SysRoleEntity> roleList = sysRoleService.list(new LambdaQueryWrapper<SysRoleEntity>().in(SysRoleEntity::getId, userRoleIdList));
+        Set<Long> roleIdList = userRoleList.stream().map(SysUserRoleEntity::getRoleId).collect(Collectors.toSet());
+        List<SysRoleEntity> roleList = sysRoleService.list(new LambdaQueryWrapper<SysRoleEntity>().in(SysRoleEntity::getId, roleIdList));
         List<Long> roleIdlIST = roleList.stream().map(SysRoleEntity::getId).collect(Collectors.toList());
         List<SysRoleMenuEntity> roleMenuEntityList = sysRoleMenuService.list(new LambdaQueryWrapper<SysRoleMenuEntity>().in(SysRoleMenuEntity::getRoleId, roleIdlIST));
         Set<Long> menuIdList = roleMenuEntityList.stream().map(SysRoleMenuEntity::getMenuId).collect(Collectors.toSet());

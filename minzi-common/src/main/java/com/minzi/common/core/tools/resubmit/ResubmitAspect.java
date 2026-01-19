@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 public class ResubmitAspect {
 
     @Resource
-    private RedisTemplate<String, String> redisTemplate;
+    private RedisTemplate<String, String> stringRedisTemplate;
 
     @Resource
     private RedissonClient redissonClient;
@@ -73,10 +73,10 @@ public class ResubmitAspect {
             R.dataParamsAssert(!locked, "操作过于频繁，请稍后再试");
 
             // 加锁后判断 Redis 中是否已有该值
-            ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
+            ValueOperations<String, String> valueOperations = stringRedisTemplate.opsForValue();
             String value = valueOperations.get(codeStr);
 
-            redisTemplate.delete(codeStr);
+            stringRedisTemplate.delete(codeStr);
 
             R.dataParamsAssert(value == null, "请不要重复提交");
 
