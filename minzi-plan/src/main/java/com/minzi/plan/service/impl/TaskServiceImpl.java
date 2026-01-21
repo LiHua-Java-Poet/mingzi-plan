@@ -85,9 +85,15 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, TaskEntity> implements
         LambdaHashMap<String, Object> lambdaHashMap = new LambdaHashMap<>(params);
         LambdaQueryWrapper<TaskEntity> wrapper = new LambdaQueryWrapper<>();
         wrapper.orderByDesc(TaskEntity::getId);
+        Object key = params.get("key");
+        Optional.ofNullable(key).ifPresent(obj->{
+            wrapper.or(w -> w.like(TaskEntity::getRemark, key)
+                    .or()
+                    .like(TaskEntity::getTaskName, key));
+        });
 
         UserEntity userInfo = userContext.getUserInfo();
-        wrapper.eq(userInfo != null,TaskEntity::getUserId, userInfo.getId());
+        wrapper.eq(userInfo != null, TaskEntity::getUserId, userInfo.getId());
 
         //查询 - Id
         Object id = lambdaHashMap.get(TaskEntity::getId);
@@ -123,10 +129,14 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, TaskEntity> implements
         UserEntity userInfo = userContext.getUserInfo();
         save.setUserId(userInfo.getId());
         save.setStatus(1);
-        save.setRemark(JSON.toJSONString(taskSaveVo.getItemToList()));
+        List<TaskItemTo> itemToList = taskSaveVo.getItemToList();
+        itemToList.forEach(item -> {
+            item.setLabel("unStart");
+        });
+        save.setRemark(JSON.toJSONString(itemToList));
 
         //保存附件,先处理一下附件的格式
-        AnnexFileUtils.fillAnnexFiles(taskSaveVo,save);
+        AnnexFileUtils.fillAnnexFiles(taskSaveVo, save);
         taskService.save(save);
     }
 
@@ -144,8 +154,8 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, TaskEntity> implements
         //保存附件,先处理一下附件的格式
         List<AnnexFile> annexFiles = taskUpdateVo.getAnnexFiles();
         Map<String, Integer> annexFileEnumMap = AnnexFileEnum.FileType.toMap(AnnexFileEnum.FileType::getName, AnnexFileEnum.FileType::getCode);
-        Optional.ofNullable(annexFiles).ifPresent(value->{
-            value.forEach(item->{
+        Optional.ofNullable(annexFiles).ifPresent(value -> {
+            value.forEach(item -> {
                 String fileSuffix = item.getFileSuffix();
                 Integer type = annexFileEnumMap.get(fileSuffix);
                 item.setFileType(type);

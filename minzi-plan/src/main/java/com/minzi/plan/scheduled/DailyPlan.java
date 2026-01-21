@@ -63,7 +63,7 @@ public class DailyPlan {
             task.setTaskTime(DateUtils.currentDateTime());
             task.setUserId(planEntity.getUserId());
             task.setPlanId(planEntity.getId());
-            task.setTaskType(planEntity.getPlanType());
+//            task.setTaskType(planEntity.getPlanType());
             task.setAnnexFile(planEntity.getAnnexFile());
             task.setRemark(planEntity.getPlanInfo());
             taskService.save(task);

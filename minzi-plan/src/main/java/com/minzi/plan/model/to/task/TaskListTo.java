@@ -60,6 +60,11 @@ public class TaskListTo {
     private Integer planType;
 
     /**
+     * 任务类型
+     */
+    private Integer taskType;
+
+    /**
      * 附件内容
      */
     private AnnexFile annexFile;

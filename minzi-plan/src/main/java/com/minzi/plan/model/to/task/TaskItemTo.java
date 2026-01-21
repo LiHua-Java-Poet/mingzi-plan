@@ -16,4 +16,9 @@ public class TaskItemTo implements Serializable {
      * 序号内容
      */
     private String itemContext;
+
+    /**
+     * 任务项标签
+     */
+    private String label;
 }

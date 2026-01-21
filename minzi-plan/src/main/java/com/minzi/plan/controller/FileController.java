@@ -34,6 +34,12 @@ public class FileController {
         return R.ok().setData(pageUtils);
     }
 
+    @GetMapping("/folderList")
+    public R folderList(@RequestParam Map<String, Object> params) {
+        List<FileListTo> fileListTos = fileService.folderList(params);
+        return R.ok().setData(fileListTos);
+    }
+
     @GetMapping("/info")
     public R info(@RequestParam Long id) {
         FileInfoTo one = fileService.getOne(id);

@@ -11,11 +11,13 @@ import com.minzi.common.utils.EntityUtils;
 import com.minzi.common.core.tools.UserContext;
 import com.minzi.common.utils.StringUtils;
 import com.minzi.plan.dao.SysDictDao;
+import com.minzi.plan.model.entity.SysDictClassifyEntity;
 import com.minzi.plan.model.entity.SysDictEntity;
 import com.minzi.plan.model.to.sysDict.SysDictInfoTo;
 import com.minzi.plan.model.to.sysDict.SysDictListTo;
 import com.minzi.plan.model.vo.sysDict.SysDictSaveVo;
 import com.minzi.plan.model.vo.sysDict.SysDictUpdateVo;
+import com.minzi.plan.service.SysDictClassifyService;
 import com.minzi.plan.service.SysDictService;
 import org.springframework.stereotype.Service;
 
@@ -25,10 +27,13 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
-public class SysDictServiceImpl extends ServiceImpl<SysDictDao,SysDictEntity> implements SysDictService{
+public class SysDictServiceImpl extends ServiceImpl<SysDictDao, SysDictEntity> implements SysDictService {
 
     @Resource
     private SysDictService sysDictService;
+
+    @Resource
+    private SysDictClassifyService sysDictClassifyService;
 
     @Resource
     private EntityAct entityAct;
@@ -38,25 +43,31 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictDao,SysDictEntity> im
         LambdaHashMap<String, Object> lambdaHashMap = new LambdaHashMap<>(params);
         LambdaQueryWrapper<SysDictEntity> wrapper = new LambdaQueryWrapper<>();
         wrapper.orderByDesc(SysDictEntity::getId);
-    
+
         Object id = lambdaHashMap.get(SysDictEntity::getId);
         wrapper.eq(!StringUtils.isEmpty(id), SysDictEntity::getId, id);
-    
+
         Object classifyId = lambdaHashMap.get(SysDictEntity::getClassifyId);
         wrapper.eq(!StringUtils.isEmpty(classifyId), SysDictEntity::getClassifyId, classifyId);
-    
+
         Object dictName = lambdaHashMap.get(SysDictEntity::getDictName);
         wrapper.like(!StringUtils.isEmpty(dictName), SysDictEntity::getDictName, dictName);
-    
+
         Object dictCode = lambdaHashMap.get(SysDictEntity::getDictCode);
         wrapper.like(!StringUtils.isEmpty(dictCode), SysDictEntity::getDictCode, dictCode);
-    
+
         Object sort = lambdaHashMap.get(SysDictEntity::getSort);
         wrapper.eq(!StringUtils.isEmpty(sort), SysDictEntity::getSort, sort);
-    
+
         Object remark = lambdaHashMap.get(SysDictEntity::getRemark);
         wrapper.like(!StringUtils.isEmpty(remark), SysDictEntity::getRemark, remark);
-            return wrapper;
+
+        Object classifyCode = params.get("classifyCode");
+        SysDictClassifyEntity classify = sysDictClassifyService.getOne(new LambdaQueryWrapper<SysDictClassifyEntity>().eq(SysDictClassifyEntity::getClassifyCode, classifyCode));
+        if (classify != null) wrapper.like(!StringUtils.isEmpty(classify), SysDictEntity::getClassifyId, classify.getId());
+
+
+        return wrapper;
     }
 
     @Override
@@ -92,12 +103,12 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictDao,SysDictEntity> im
 
     @Override
     public void delete(String[] ids) {
-                                        
+
         sysDictService.update(
-            new LambdaUpdateWrapper<SysDictEntity>()
-                    .set(SysDictEntity::getDeleteTime, DateUtils.currentDateTime())
-                    .in(SysDictEntity::getId, ids)
-    );
+                new LambdaUpdateWrapper<SysDictEntity>()
+                        .set(SysDictEntity::getDeleteTime, DateUtils.currentDateTime())
+                        .in(SysDictEntity::getId, ids)
+        );
     }
 
 }

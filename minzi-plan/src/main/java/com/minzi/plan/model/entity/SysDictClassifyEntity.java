@@ -29,6 +29,11 @@ public class SysDictClassifyEntity {
      */
 	private String classifyName;
 
+	/**
+	 * 字典分类Code
+	 */
+	private String classifyCode;
+
     /**
      * 排序
      */

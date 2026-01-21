@@ -59,6 +59,9 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuDao, SysMenuEntity> i
         Object status = lambdaHashMap.get(SysMenuEntity::getStatus);
         wrapper.eq(!StringUtils.isEmpty(status), SysMenuEntity::getStatus, status);
 
+        Object menuType = lambdaHashMap.get(SysMenuEntity::getMenuType);
+        wrapper.eq(!StringUtils.isEmpty(menuType), SysMenuEntity::getMenuType, menuType);
+
         return wrapper;
     }
 

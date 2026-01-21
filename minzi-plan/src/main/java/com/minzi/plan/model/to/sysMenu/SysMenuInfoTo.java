@@ -51,6 +51,11 @@ public class SysMenuInfoTo implements Serializable {
      */
 	private String componetPath;
 
+	/**
+	 * 菜单类型 1 普通菜单 2 系统菜单
+	 */
+	private Integer menuType;
+
     /**
      * 创建时间
      */

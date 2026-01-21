@@ -45,6 +45,11 @@ public class SysDictUpdateVo implements Serializable {
      */
 	private String remark;
 
+	/**
+	 * 颜色
+	 */
+	private String color;
+
     /**
      * 创建时间
      */

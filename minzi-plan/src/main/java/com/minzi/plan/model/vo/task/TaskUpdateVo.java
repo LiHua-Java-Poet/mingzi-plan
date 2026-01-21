@@ -58,7 +58,7 @@ public class TaskUpdateVo {
     /**
      * 计划类型 1 学习 2 锻炼 3 写作 4 阅读 5 影视
      */
-    private Integer taskType;
+    private String taskType;
 
     /**
      * 附件内容

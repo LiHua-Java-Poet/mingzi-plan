@@ -8,26 +8,13 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class SysMenuEnums {
-
-    @Getter
-    @AllArgsConstructor
-    public enum SysMenuStatus {
-        ZENG_CHANG(1, "正常"),
-        TING_YON(2, "停用");
-        private final Integer code;
-        private final String name;
-
-        public static <K, V> Map<K, V> toMap(Function<TaskEnums.PlanType, K> k, Function<TaskEnums.PlanType, V> v) {
-            return Arrays.stream(TaskEnums.PlanType.values()).collect(Collectors.toMap(k, v));
-        }
-    }
+public class FileEnums {
 
     @Getter
     @AllArgsConstructor
     public enum MenuType {
-        PU_TON(1, "普通菜单"),
-        XI_TON(2, "系统菜单");
+        WEN_DANG(1, "文档"),
+        WEN_JIAN_JIA(2, "文件夹");
         private final Integer code;
         private final String name;
 

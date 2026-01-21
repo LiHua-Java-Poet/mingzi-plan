@@ -44,7 +44,12 @@ public class SysDictEntity {
      */
 	private String remark;
 
-    /**
+	/**
+	 * 颜色
+	 */
+	private String color;
+
+	/**
      * 创建时间
      */
 	@TableField(fill = FieldFill.INSERT)

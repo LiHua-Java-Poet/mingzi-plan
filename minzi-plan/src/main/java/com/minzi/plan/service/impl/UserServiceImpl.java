@@ -152,12 +152,13 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
                 .in(SysMenuEntity::getId, menuIdList)
                 .eq(SysMenuEntity::getStatus, SysMenuEnums.SysMenuStatus.ZENG_CHANG.getCode()));
 
-        //获取到用户的角色
-        if (UserEnums.UserType.GUAN_LI.getCode().equals(userInfo.getType())) {
-            List<SysMenuEntity> allMenuList = sysMenuService.list(new LambdaQueryWrapper<SysMenuEntity>()
-                    .eq(SysMenuEntity::getStatus, SysMenuEnums.SysMenuStatus.ZENG_CHANG.getCode()));
-            menuEntityList.addAll(allMenuList);
-        }
+        //获取到用户类型
+        LambdaQueryWrapper<SysMenuEntity> wrapper = new LambdaQueryWrapper<SysMenuEntity>().eq(SysMenuEntity::getStatus, SysMenuEnums.SysMenuStatus.ZENG_CHANG.getCode());
+        if (UserEnums.UserType.YON_HU.getCode().equals(userInfo.getType())) wrapper.eq(SysMenuEntity::getMenuType, SysMenuEnums.MenuType.PU_TON.getCode());
+        List<SysMenuEntity> allMenuList = sysMenuService.list(wrapper);
+        menuEntityList.addAll(allMenuList);
+
+
         // 基于 menuId 去重（保留第一次出现的）
         menuEntityList = new ArrayList<>(
                 menuEntityList.stream()

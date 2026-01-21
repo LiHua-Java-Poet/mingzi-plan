@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.minzi.common.core.model.entity.UserEntity;
+import com.minzi.common.core.query.R;
 import com.minzi.common.core.tools.EntityAct;
 import com.minzi.common.core.tools.UserContext;
 import com.minzi.common.core.tools.lock.DistributedLock;
@@ -13,6 +14,7 @@ import com.minzi.common.utils.EntityUtils;
 import com.minzi.common.core.map.LambdaHashMap;
 import com.minzi.plan.dao.FileDao;
 import com.minzi.plan.model.entity.FileEntity;
+import com.minzi.plan.model.enums.FileEnums;
 import com.minzi.plan.model.to.file.FileInfoTo;
 import com.minzi.plan.model.to.file.FileListTo;
 import com.minzi.plan.model.vo.file.FileSaveVo;
@@ -56,6 +58,9 @@ public class FileServiceImpl extends ServiceImpl<FileDao, FileEntity> implements
 
         Object name = lambdaHashMap.get(FileEntity::getName);
         wrapper.like(!StringUtils.isEmpty(name), FileEntity::getName, name);
+
+        Object fileType = lambdaHashMap.get(FileEntity::getFileType);
+        wrapper.like(!StringUtils.isEmpty(fileType), FileEntity::getFileType, fileType);
 
         return wrapper;
     }
@@ -144,5 +149,22 @@ public class FileServiceImpl extends ServiceImpl<FileDao, FileEntity> implements
                 .eq(FileEntity::getId, vo.getId())
                 .set(FileEntity::getContent, vo.getContent());
         fileService.update(wrapper);
+    }
+
+    @Override
+    public List<FileListTo> folderList(Map<String, Object> params) {
+        Object id = params.get("id");
+        Object pid = params.get("pid");
+        R.dataParamsAssert(StringUtils.isEmpty(id), "ID不能为空");
+        R.dataParamsAssert(StringUtils.isEmpty(pid), "PID不能为空");
+        List<FileEntity> fileEntityList = fileService.list(new LambdaQueryWrapper<FileEntity>()
+                .eq(FileEntity::getPid, pid)
+                .eq(FileEntity::getFileType, FileEnums.MenuType.WEN_JIAN_JIA.getCode())
+                .ne(FileEntity::getId, id));
+        return fileEntityList.stream().map(item -> {
+            FileListTo to = new FileListTo();
+            EntityUtils.copySameFields(item, to);
+            return to;
+        }).collect(Collectors.toList());
     }
 }

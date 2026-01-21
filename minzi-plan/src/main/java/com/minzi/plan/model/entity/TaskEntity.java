@@ -70,7 +70,7 @@ public class TaskEntity {
     /**
      * 任务类型 1 学习 2 锻炼 3 写作 4 阅读 5 影视
      */
-    private Integer taskType;
+    private String taskType;
 
     /**
      * 创建时间

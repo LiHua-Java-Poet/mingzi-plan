@@ -41,6 +41,11 @@ public class SysDictSaveVo implements Serializable {
 	private String remark;
 
 	/**
+	 * 颜色
+	 */
+	private String color;
+
+	/**
 	 * 创建时间
 	*/
 	private Integer createTime;
