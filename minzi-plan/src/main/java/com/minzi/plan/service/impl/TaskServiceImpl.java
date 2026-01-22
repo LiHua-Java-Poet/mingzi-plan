@@ -89,7 +89,9 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, TaskEntity> implements
         Optional.ofNullable(key).ifPresent(obj->{
             wrapper.or(w -> w.like(TaskEntity::getRemark, key)
                     .or()
-                    .like(TaskEntity::getTaskName, key));
+                    .like(TaskEntity::getTaskName, key)
+                    .or()
+                    .like(TaskEntity::getDescription, key));
         });
 
         UserEntity userInfo = userContext.getUserInfo();

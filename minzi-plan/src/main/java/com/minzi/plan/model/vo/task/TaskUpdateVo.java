@@ -26,6 +26,11 @@ public class TaskUpdateVo {
     private String taskName;
 
     /**
+     * 任务名
+     */
+    private String description;
+
+    /**
      * 备注
      */
     private String remark;

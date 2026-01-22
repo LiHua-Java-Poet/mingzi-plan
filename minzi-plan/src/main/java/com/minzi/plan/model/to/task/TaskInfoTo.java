@@ -43,6 +43,11 @@ public class TaskInfoTo implements Serializable {
     private String taskName;
 
     /**
+     * 任务名
+     */
+    private String description;
+
+    /**
      * 任务时间
      */
     private Integer taskTime;
