@@ -10,6 +10,7 @@ import com.minzi.plan.model.vo.task.TaskUpdateVo;
 public interface TaskService extends BaseService<TaskEntity, TaskListTo, TaskInfoTo, TaskSaveVo, TaskUpdateVo> {
     /**
      * 完成任务
+     *
      * @param ids 完成的任务ID
      */
     void completeTask(String[] ids);
@@ -17,6 +18,7 @@ public interface TaskService extends BaseService<TaskEntity, TaskListTo, TaskInf
 
     /**
      * 取消任务
+     *
      * @param ids 任务ID
      */
     void cancelTask(String[] ids);
@@ -29,7 +31,24 @@ public interface TaskService extends BaseService<TaskEntity, TaskListTo, TaskInf
 
     /**
      * 更新用户的备注
+     *
      * @param updateVo 更新备注
      */
     void updateRemark(TaskUpdateVo updateVo);
+
+    /**
+     * 显示对应的分享code
+     *
+     * @param id id
+     * @return 返回的code
+     */
+    String getShareCode(Long id);
+
+    /**
+     * 获取到对应的分享任务信息
+     *
+     * @param code
+     * @return
+     */
+    TaskInfoTo shareTaskInfo(String code);
 }

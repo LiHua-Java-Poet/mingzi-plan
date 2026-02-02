@@ -51,6 +51,27 @@ public class TaskController {
         return R.ok().setData(one);
     }
 
+    @ApiOperation(value = "获取到任务信息", notes = "获取到分享任务信息接口")
+    @GetMapping("/shareTaskInfo")
+    public R shareTaskInfo(@RequestParam String code) {
+        TaskInfoTo one = taskService.shareTaskInfo(code);
+        return R.ok().setData(one);
+    }
+
+    @ApiOperation(value = "获取到对应的分享Code", notes = "获取到对应的分享Code")
+    @GetMapping("/getShareCode")
+    public R getShareCode(@RequestParam Long id) {
+        String code = taskService.getShareCode(id);
+        return R.ok().setData(code);
+    }
+
+    @ApiOperation(value = "分享修改任务")
+    @PostMapping("/shareUpdate")
+    public R shareUpdate(@RequestBody TaskUpdateVo vo) {
+        taskService.update(vo);
+        return R.ok();
+    }
+
     @ApiOperation(value = "保存新增任务")
     @PostMapping("/save")
     public R save(@RequestBody TaskSaveVo vo) {

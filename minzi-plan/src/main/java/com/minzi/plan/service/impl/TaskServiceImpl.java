@@ -34,6 +34,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
+import java.security.SecureRandom;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -86,7 +87,7 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, TaskEntity> implements
         LambdaQueryWrapper<TaskEntity> wrapper = new LambdaQueryWrapper<>();
         wrapper.orderByDesc(TaskEntity::getId);
         Object key = params.get("key");
-        Optional.ofNullable(key).ifPresent(obj->{
+        Optional.ofNullable(key).ifPresent(obj -> {
             wrapper.or(w -> w.like(TaskEntity::getRemark, key)
                     .or()
                     .like(TaskEntity::getTaskName, key)
@@ -149,8 +150,8 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, TaskEntity> implements
         TaskEntity update = new TaskEntity();
         EntityUtils.copySameFields(taskUpdateVo, update);
 
-        UserEntity userInfo = userContext.getUserInfo();
-        update.setUserId(userInfo.getId());
+//        UserEntity userInfo = userContext.getUserInfo();
+//        update.setUserId(userInfo!=null?userInfo.getId():1);
         update.setRemark(JSON.toJSONString(taskUpdateVo.getItemToList()));
 
         //保存附件,先处理一下附件的格式
@@ -214,6 +215,36 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, TaskEntity> implements
         R.dataParamsAssert(byId == null, "请传入正确的任务ID");
         byId.setRemark(JSON.toJSONString(updateVo.getItemToList()));
         taskService.updateById(byId);
+    }
+
+
+    @Override
+    public String getShareCode(Long id) {
+        ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
+        String shareCode = generateRandomCode(24); // 8位随机码，可以根据需要调整长度
+        valueOperations.set(shareCode, id + "");
+        return shareCode;
+    }
+
+    private String generateRandomCode(int length) {
+        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        SecureRandom random = new SecureRandom();
+        StringBuilder sb = new StringBuilder(length);
+        for (int i = 0; i < length; i++) {
+            sb.append(chars.charAt(random.nextInt(chars.length())));
+        }
+        return sb.toString();
+    }
+
+    @Override
+    public TaskInfoTo shareTaskInfo(String code) {
+        //先验证一次code
+        ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
+        String taskId = valueOperations.get(code);
+        R.dataParamsAssert(taskId == null, "无效的CODE");
+        TaskEntity one = taskService.getById(Long.parseLong(taskId));
+        R.dataParamsAssert(one == null, "无效的任务ID");
+        return taskService.formatOne(one);
     }
 
     @Override

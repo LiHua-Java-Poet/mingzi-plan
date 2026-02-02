@@ -42,7 +42,8 @@ public class SysDictServiceImpl extends ServiceImpl<SysDictDao, SysDictEntity> i
     public Wrapper<SysDictEntity> getListCondition(Map<String, Object> params) {
         LambdaHashMap<String, Object> lambdaHashMap = new LambdaHashMap<>(params);
         LambdaQueryWrapper<SysDictEntity> wrapper = new LambdaQueryWrapper<>();
-        wrapper.orderByDesc(SysDictEntity::getId);
+//        wrapper.orderByDesc(SysDictEntity::getId);
+        wrapper.orderByDesc(SysDictEntity::getSort);
 
         Object id = lambdaHashMap.get(SysDictEntity::getId);
         wrapper.eq(!StringUtils.isEmpty(id), SysDictEntity::getId, id);
