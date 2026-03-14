@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.minzi.common.core.model.AnnexFile;
 import com.minzi.plan.model.to.plan.PlanInfoTo;
+import com.minzi.plan.model.to.taskLog.TaskLogListTo;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -87,6 +88,11 @@ public class TaskInfoTo implements Serializable {
      * 附件内容
      */
     private List<AnnexFile> annexFiles;
+
+    /**
+     * 日志列表
+     */
+    private List<TaskLogListTo> taskLogListTo;
 
     /**
      * 删除时间

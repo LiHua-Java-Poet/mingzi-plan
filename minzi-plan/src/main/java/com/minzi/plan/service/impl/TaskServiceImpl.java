@@ -23,9 +23,11 @@ import com.minzi.plan.model.to.plan.PlanInfoTo;
 import com.minzi.plan.model.to.task.TaskInfoTo;
 import com.minzi.plan.model.to.task.TaskItemTo;
 import com.minzi.plan.model.to.task.TaskListTo;
+import com.minzi.plan.model.to.taskLog.TaskLogListTo;
 import com.minzi.plan.model.vo.task.TaskSaveVo;
 import com.minzi.plan.model.vo.task.TaskUpdateVo;
 import com.minzi.plan.service.PlanService;
+import com.minzi.plan.service.TaskLogService;
 import com.minzi.plan.service.TaskService;
 import lombok.extern.java.Log;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -36,6 +38,7 @@ import org.springframework.util.StringUtils;
 import javax.annotation.Resource;
 import java.security.SecureRandom;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -54,6 +57,9 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, TaskEntity> implements
     private PlanService planService;
 
     @Resource
+    private TaskLogService taskLogService;
+
+    @Resource
     private EntityAct entityAct;
 
     @Resource
@@ -66,10 +72,15 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, TaskEntity> implements
 
         //补充计划的信息
         entityAct.oneToOne(entity, TaskEntity::getPlanEntity);
+        entityAct.oneToMany(entity,TaskEntity::getTaskLogEntityList);
         Optional.ofNullable(entity.getPlanEntity()).ifPresent(value -> {
             PlanInfoTo planInfoTo = new PlanInfoTo();
             EntityUtils.copySameFields(value, planInfoTo);
             to.setPlanInfoTo(planInfoTo);
+        });
+        Optional.ofNullable(entity.getTaskLogEntityList()).ifPresent(value -> {
+            List<TaskLogListTo> taskLogListTos = taskLogService.formatList(value);
+            to.setTaskLogListTo(taskLogListTos);
         });
         //将得到的任务备注格式化为对象
         List<TaskItemTo> taskItemTos = JSON.parseArray(entity.getRemark(), TaskItemTo.class);
@@ -221,8 +232,16 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, TaskEntity> implements
     @Override
     public String getShareCode(Long id) {
         ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
+        //先查一遍有没有数据，没有的话颁发新Code
+        String oldShareCode = valueOperations.get("taskShare_" + id);
+        if (!StringUtils.isEmpty(oldShareCode)) return oldShareCode;
         String shareCode = generateRandomCode(24); // 8位随机码，可以根据需要调整长度
-        valueOperations.set(shareCode, id + "");
+
+        long expireTime = 24;
+        TimeUnit unit = TimeUnit.HOURS;
+        valueOperations.set(shareCode, id + "",expireTime, unit);
+        valueOperations.set("taskShare_" + id, shareCode,expireTime, unit);
+
         return shareCode;
     }
 

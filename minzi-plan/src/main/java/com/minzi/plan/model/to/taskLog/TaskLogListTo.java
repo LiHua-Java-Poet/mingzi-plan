@@ -1,17 +1,19 @@
-package com.minzi.plan.model.vo.sysConfig;
+package com.minzi.plan.model.to.taskLog;
 
 import com.baomidou.mybatisplus.annotation.*;
+import com.minzi.common.core.model.AnnexFile;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
- * 配置表
+ * 任务日志表
  *
  * @author MinZi
  */
 @Data
-public class SysConfigUpdateVo implements Serializable {
+public class TaskLogListTo implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -21,24 +23,19 @@ public class SysConfigUpdateVo implements Serializable {
 	private Long id;
 
     /**
-     * 配置名
+     * 任务id
      */
-	private String confName;
+	private Long taskId;
 
     /**
-     * 配置内容
+     * 日志内容
      */
-	private String confContent;
+	private String logContent;
 
     /**
-     * 配置描述
+     * 日志附件
      */
-	private String description;
-
-    /**
-     * 状态 1 正常 2 停用
-     */
-	private Integer status;
+	private List<AnnexFile> annexFileList;
 
     /**
      * 创建时间

@@ -2,9 +2,14 @@ package com.minzi.plan.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.minzi.common.core.map.LambdaHashMap;
 import com.minzi.common.core.tools.EntityAct;
+import com.minzi.common.utils.DateUtils;
 import com.minzi.common.utils.EntityUtils;
+import com.minzi.common.core.tools.UserContext;
+import com.minzi.common.utils.StringUtils;
 import com.minzi.plan.dao.SysConfigDao;
 import com.minzi.plan.model.entity.SysConfigEntity;
 import com.minzi.plan.model.to.sysConfig.SysConfigInfoTo;
@@ -20,7 +25,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
-public class SysConfigServiceImpl extends ServiceImpl<SysConfigDao,SysConfigEntity> implements SysConfigService {
+public class SysConfigServiceImpl extends ServiceImpl<SysConfigDao, SysConfigEntity> implements SysConfigService {
 
     @Resource
     private SysConfigService sysConfigService;
@@ -30,8 +35,18 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigDao,SysConfigEnti
 
     @Override
     public Wrapper<SysConfigEntity> getListCondition(Map<String, Object> params) {
+        LambdaHashMap<String, Object> lambdaHashMap = new LambdaHashMap<>(params);
         LambdaQueryWrapper<SysConfigEntity> wrapper = new LambdaQueryWrapper<>();
+        wrapper.orderByDesc(SysConfigEntity::getId);
 
+        Object id = lambdaHashMap.get(SysConfigEntity::getId);
+        wrapper.eq(!StringUtils.isEmpty(id), SysConfigEntity::getId, id);
+
+        Object confName = lambdaHashMap.get(SysConfigEntity::getConfName);
+        wrapper.like(!StringUtils.isEmpty(confName), SysConfigEntity::getConfName, confName);
+
+        Object confContent = lambdaHashMap.get(SysConfigEntity::getConfContent);
+        wrapper.like(!StringUtils.isEmpty(confContent), SysConfigEntity::getConfContent, confContent);
         return wrapper;
     }
 
@@ -51,7 +66,6 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigDao,SysConfigEnti
         sysConfigService.save(entity);
     }
 
-
     @Override
     public SysConfigInfoTo formatOne(SysConfigEntity entity) {
         SysConfigInfoTo to = new SysConfigInfoTo();
@@ -63,11 +77,18 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigDao,SysConfigEnti
     public void update(SysConfigUpdateVo UpdateVo) {
         SysConfigEntity entity = sysConfigService.getById(UpdateVo.getId());
         EntityUtils.copySameFields(UpdateVo, entity);
+        entity.setUpdateTime(DateUtils.currentDateTime());
         sysConfigService.updateById(entity);
     }
 
     @Override
     public void delete(String[] ids) {
-        sysConfigService.remove(new LambdaQueryWrapper<SysConfigEntity>().in(SysConfigEntity::getId,ids));
+
+        sysConfigService.update(
+                new LambdaUpdateWrapper<SysConfigEntity>()
+                        .set(SysConfigEntity::getDeleteTime, DateUtils.currentDateTime())
+                        .in(SysConfigEntity::getId, ids)
+        );
     }
+
 }

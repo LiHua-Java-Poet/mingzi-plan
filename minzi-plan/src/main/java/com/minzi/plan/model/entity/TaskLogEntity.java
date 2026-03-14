@@ -4,13 +4,13 @@ import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 
 /**
- * 配置表
+ * 任务日志表
  *
  * @author MinZi
  */
 @Data
-@TableName("sys_config")
-public class SysConfigEntity {
+@TableName("task_log")
+public class TaskLogEntity {
 
 
     /**
@@ -20,24 +20,19 @@ public class SysConfigEntity {
 	private Long id;
 
     /**
-     * 配置名
+     * 任务id
      */
-	private String confName;
+	private Long taskId;
 
     /**
-     * 配置内容
+     * 日志内容
      */
-	private String confContent;
+	private String logContent;
 
     /**
-     * 配置描述
+     * 日志附件
      */
-	private String description;
-
-    /**
-     * 状态 1 正常 2 停用
-     */
-	private Integer status;
+	private String annexFile;
 
     /**
      * 创建时间

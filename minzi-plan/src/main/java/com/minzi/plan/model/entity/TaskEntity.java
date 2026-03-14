@@ -1,11 +1,14 @@
 package com.minzi.plan.model.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
+import com.minzi.common.annotation.OneToMany;
 import com.minzi.common.annotation.OneToOne;
 import com.minzi.plan.service.PlanService;
+import com.minzi.plan.service.TaskLogService;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Data
 @TableName("task")
@@ -93,5 +96,9 @@ public class TaskEntity {
     @OneToOne(localKey = "plan_id", foreignKey = "id", targetService = PlanService.class)
     @TableField(exist = false)
     private PlanEntity planEntity;
+
+    @OneToMany(localKey = "id", foreignKey = "task_id",targetService = TaskLogService.class)
+    @TableField(exist = false)
+    private List<TaskLogEntity> taskLogEntityList;
 
 }

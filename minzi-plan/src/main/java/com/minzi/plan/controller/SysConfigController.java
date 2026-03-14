@@ -3,7 +3,7 @@ package com.minzi.plan.controller;
 
 import com.minzi.common.core.query.PageUtils;
 import com.minzi.common.core.query.R;
-import com.minzi.plan.common.SysConfigContext;
+import io.swagger.annotations.ApiOperation;
 import com.minzi.plan.model.to.sysConfig.SysConfigInfoTo;
 import com.minzi.plan.model.to.sysConfig.SysConfigListTo;
 import com.minzi.plan.model.vo.sysConfig.SysConfigSaveVo;
@@ -23,9 +23,8 @@ public class SysConfigController {
     @Resource
     private SysConfigService sysConfigService;
 
-    @Resource
-    private SysConfigContext sysConfigContext;
 
+    @ApiOperation(value = "配置表列表")
     @GetMapping("/list")
     public R list(@RequestParam Map<String, Object> params) {
         if (StringUtils.isEmpty(params.get("page"))) {
@@ -36,27 +35,31 @@ public class SysConfigController {
         return R.ok().setData(pageUtils);
     }
 
-    @GetMapping("/getConfigName")
-    public R getConfigName(@RequestParam Map<String, Object> params) {
-        String key = sysConfigContext.getConfigContext(params.get("key").toString());
-        return R.ok().setData(key);
-    }
-
+    @ApiOperation(value = "配置表信息")
     @GetMapping("/info")
     public R info(@RequestParam Long id) {
         SysConfigInfoTo one = sysConfigService.getOne(id);
         return R.ok().setData(one);
     }
 
+    @ApiOperation(value = "保存配置表")
     @PostMapping("/save")
     public R save(@RequestBody SysConfigSaveVo vo) {
         sysConfigService.add(vo);
         return R.ok();
     }
 
+    @ApiOperation(value = "更新配置表")
     @PostMapping("/update")
     public R update(@RequestBody SysConfigUpdateVo vo) {
         sysConfigService.update(vo);
+        return R.ok();
+    }
+
+    @ApiOperation(value = "删除配置表")
+    @PostMapping("/delete")
+    public R update(@RequestBody String[] ids) {
+        sysConfigService.delete(ids);
         return R.ok();
     }
 }
