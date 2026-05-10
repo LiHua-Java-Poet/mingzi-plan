@@ -99,11 +99,11 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, TaskEntity> implements
         wrapper.orderByDesc(TaskEntity::getId);
         Object key = params.get("key");
         Optional.ofNullable(key).ifPresent(obj -> {
-            wrapper.or(w -> w.like(TaskEntity::getRemark, key)
+            wrapper.and(w -> w.like(TaskEntity::getTaskName, key)
                     .or()
-                    .like(TaskEntity::getTaskName, key)
+                    .like(TaskEntity::getDescription, key)
                     .or()
-                    .like(TaskEntity::getDescription, key));
+                    .like(TaskEntity::getRemark, key));
         });
 
         UserEntity userInfo = userContext.getUserInfo();
@@ -117,6 +117,15 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, TaskEntity> implements
         Object status = lambdaHashMap.get(TaskEntity::getStatus);
         wrapper.eq(!StringUtils.isEmpty(status), TaskEntity::getStatus, status);
 
+        //查询 - 任务类型
+        Object taskType = params.get("taskType");
+        wrapper.eq(!StringUtils.isEmpty(taskType), TaskEntity::getTaskType, taskType);
+
+        //查询 - 起止时间
+        Object startTime = params.get("startTime");
+        Object endTime = params.get("endTime");
+        wrapper.ge(!StringUtils.isEmpty(startTime), TaskEntity::getTaskTime, startTime);
+        wrapper.le(!StringUtils.isEmpty(endTime), TaskEntity::getTaskTime, endTime);
 
         return wrapper;
     }

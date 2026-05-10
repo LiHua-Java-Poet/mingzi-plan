@@ -25,4 +25,6 @@ public interface UserService extends BaseService<UserEntity, UserListTo, UserInf
      * @return
      */
     List<SysMenuListTo> getUserMenu();
+
+    R appLogin(String userName, String password);
 }

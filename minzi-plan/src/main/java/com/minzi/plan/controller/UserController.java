@@ -89,6 +89,11 @@ public class UserController {
         return userService.login(vo.getUserName(), vo.getPassword(), vo.getCaptchaCode(), vo.getTimeToken());
     }
 
+    @PostMapping("/appLogin")
+    public R appLogin(@RequestBody UserLoginVo vo) {
+        return userService.appLogin(vo.getUserName(), vo.getPassword());
+    }
+
     @GetMapping("/image")
     public void getCaptcha(HttpServletResponse response, HttpSession session, @RequestParam("timeToken") String timeToken) throws IOException {
 

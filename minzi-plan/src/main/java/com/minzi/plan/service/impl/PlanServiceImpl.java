@@ -11,6 +11,7 @@ import com.minzi.common.core.model.enums.AnnexFileEnum;
 import com.minzi.common.core.query.R;
 import com.minzi.common.core.tools.EntityAct;
 import com.minzi.common.core.tools.UserContext;
+import com.minzi.common.core.tools.lock.DistributedLock;
 import com.minzi.common.core.tools.utils.AnnexFileUtils;
 import com.minzi.common.utils.DateUtils;
 import com.minzi.common.utils.EntityUtils;
@@ -113,10 +114,20 @@ public class PlanServiceImpl extends ServiceImpl<PlanDao, PlanEntity> implements
         return to;
     }
 
+    @DistributedLock(prefixKey = "plan:", key = "#planUpdateVo.id")
     @Override
     public void update(PlanUpdateVo planUpdateVo) {
         PlanEntity entity = planService.getById(planUpdateVo.getId());
+        R.dataParamsAssert(entity == null, "计划不存在");
         EntityUtils.copySameFields(planUpdateVo, entity);
+        //处理计划内容列表
+        if (planUpdateVo.getItemToList() != null) {
+            entity.setPlanInfo(JSON.toJSONString(planUpdateVo.getItemToList()));
+        }
+        //处理附件
+        if (planUpdateVo.getAnnexFiles() != null) {
+            entity.setAnnexFile(JSON.toJSONString(planUpdateVo.getAnnexFiles()));
+        }
         planService.updateById(entity);
     }
 

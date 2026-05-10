@@ -18,8 +18,8 @@ public class SysMenuEnums {
         private final Integer code;
         private final String name;
 
-        public static <K, V> Map<K, V> toMap(Function<TaskEnums.PlanType, K> k, Function<TaskEnums.PlanType, V> v) {
-            return Arrays.stream(TaskEnums.PlanType.values()).collect(Collectors.toMap(k, v));
+        public static <K, V> Map<K, V> toMap(Function<SysMenuEnums.SysMenuStatus, K> k, Function<SysMenuEnums.SysMenuStatus, V> v) {
+            return Arrays.stream(SysMenuEnums.SysMenuStatus.values()).collect(Collectors.toMap(k, v));
         }
     }
 
@@ -31,8 +31,8 @@ public class SysMenuEnums {
         private final Integer code;
         private final String name;
 
-        public static <K, V> Map<K, V> toMap(Function<PlanEnums.PlanType, K> k, Function<PlanEnums.PlanType, V> v) {
-            return Arrays.stream(PlanEnums.PlanType.values()).collect(Collectors.toMap(k, v));
+        public static <K, V> Map<K, V> toMap(Function<SysMenuEnums.MenuType, K> k, Function<SysMenuEnums.MenuType, V> v) {
+            return Arrays.stream(SysMenuEnums.MenuType.values()).collect(Collectors.toMap(k, v));
         }
     }
 }

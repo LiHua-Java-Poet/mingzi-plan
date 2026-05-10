@@ -77,13 +77,21 @@ public class TaskLogServiceImpl extends ServiceImpl<TaskLogDao, TaskLogEntity> i
     public TaskLogInfoTo formatOne(TaskLogEntity entity) {
         TaskLogInfoTo to = new TaskLogInfoTo();
         EntityUtils.copySameFields(entity, to);
+        //转换附件
+        String annexFile = entity.getAnnexFile();
+        if (!StringUtils.isEmpty(annexFile)) to.setAnnexFileList(JSONArray.parseArray(annexFile, AnnexFile.class));
         return to;
     }
 
     @Override
-    public void update(TaskLogUpdateVo UpdateVo) {
-        TaskLogEntity entity = taskLogService.getById(UpdateVo.getId());
-        EntityUtils.copySameFields(UpdateVo, entity);
+    public void update(TaskLogUpdateVo updateVo) {
+        TaskLogEntity entity = taskLogService.getById(updateVo.getId());
+        EntityUtils.copySameFields(updateVo, entity);
+        //处理附件
+        List<AnnexFile> annexFileList = updateVo.getAnnexFileList();
+        if (annexFileList != null) {
+            entity.setAnnexFile(JSONObject.toJSONString(annexFileList));
+        }
         entity.setUpdateTime(DateUtils.currentDateTime());
         taskLogService.updateById(entity);
     }

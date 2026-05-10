@@ -1,9 +1,11 @@
 package com.minzi.plan.model.vo.taskLog;
 
 import com.baomidou.mybatisplus.annotation.*;
+import com.minzi.common.core.model.AnnexFile;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * 任务日志表
@@ -33,7 +35,7 @@ public class TaskLogUpdateVo implements Serializable {
     /**
      * 日志附件
      */
-	private String annexFile;
+	private List<AnnexFile> annexFileList;
 
     /**
      * 创建时间

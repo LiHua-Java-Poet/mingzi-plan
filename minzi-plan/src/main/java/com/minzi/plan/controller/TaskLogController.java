@@ -58,7 +58,7 @@ public class TaskLogController {
 
     @ApiOperation(value = "删除任务日志表")
     @PostMapping("/delete")
-    public R update(@RequestBody String[] ids) {
+    public R delete(@RequestBody String[] ids) {
         taskLogService.delete(ids);
         return R.ok();
     }

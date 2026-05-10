@@ -180,6 +180,46 @@ public class UserServiceImpl extends ServiceImpl<UserDao, UserEntity> implements
     }
 
     @Override
+    public R appLogin(String userName, String password) {
+        List<UserEntity> list = userService.list(new LambdaQueryWrapper<UserEntity>().eq(UserEntity::getUserName, userName));
+        if (list.isEmpty()) {
+            return R.error(402, "用户名不存在");
+        }
+        UserEntity userEntity = list.get(0);
+        String newPassword = MD5Upper(password, userEntity.getCreateTime().toString());
+
+        if (userEntity.getStatus() == 2) {
+            return R.error(-402, "该账号已停用");
+        }
+
+        String password1 = userEntity.getPassword();
+        if (!password1.equals(newPassword)) {
+            return R.error(406, "密码错误");
+        }
+
+
+        //颁发token
+        String token = AppJwtUtil.getToken(userEntity.getId(), userEntity.getName(), userEntity.getUserName());
+        UserLoginTo to = new UserLoginTo();
+        EntityUtils.copySameFields(userEntity, to);
+        to.setToken(token);
+
+        //这里额外将token存到redis中
+        HashOperations<String, Object, Object> hashOps = redisTemplate.opsForHash();
+        Map<String, Object> map = new HashMap<>();
+        map.put("id", userEntity.getId());
+        map.put("name", userEntity.getName());
+        map.put("userName", userEntity.getUserName());
+        map.put("loginTime", DateUtils.currentDateTime());
+        map.put("type", userEntity.getType());
+        //存一次数据库
+        hashOps.putAll(token, map);
+        redisTemplate.expire(token, 24, TimeUnit.HOURS);
+
+        return R.ok().setData(to);
+    }
+
+    @Override
     public void delete(String[] ids) {
 
     }

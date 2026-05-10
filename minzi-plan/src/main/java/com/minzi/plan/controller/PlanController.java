@@ -10,6 +10,7 @@ import com.minzi.plan.model.to.plan.PlanListTo;
 import com.minzi.plan.model.vo.plan.PlanSaveVo;
 import com.minzi.plan.model.vo.plan.PlanUpdateVo;
 import com.minzi.plan.service.PlanService;
+import com.minzi.plan.service.TaskService;
 import io.swagger.annotations.*;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +26,9 @@ public class PlanController {
 
     @Resource
     private PlanService planService;
+
+    @Resource
+    private TaskService taskService;
 
     @Cacheable(business = "plan")
     @ApiOperation(value = "获取到用户的计划列表", response = PlanListTo.class)
@@ -81,6 +85,13 @@ public class PlanController {
         Long id = Long.parseLong(ids[0]);
         planService.deliver(id);
         return R.ok().setData(null);
+    }
+
+    @ApiOperation(value = "获取到唯一码")
+    @GetMapping("/getUniqueCode")
+    public R getUniqueCode() {
+        String one = taskService.getUniqueCode();
+        return R.ok().setData(one);
     }
 
 

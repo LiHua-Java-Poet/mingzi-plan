@@ -71,4 +71,14 @@ public class ObjectUtils {
         return null;
     }
 
+    public static Integer objectToInteger(Object obj) {
+        if (obj == null) return 0;
+        if (obj instanceof Integer) return (Integer) obj;
+        try {
+            return Integer.parseInt(obj.toString());
+        } catch (Exception e) {
+            return 0;
+        }
+    }
+
 }
