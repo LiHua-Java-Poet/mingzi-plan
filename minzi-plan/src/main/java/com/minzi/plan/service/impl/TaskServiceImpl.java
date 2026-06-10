@@ -158,6 +158,15 @@ public class TaskServiceImpl extends ServiceImpl<TaskDao, TaskEntity> implements
         });
         save.setRemark(JSON.toJSONString(itemToList));
 
+        //如果有planId，更新对应计划的taskTotal
+        if (save.getPlanId() != null && save.getPlanId() != 0L) {
+            PlanEntity plan = planService.getById(save.getPlanId());
+            if (plan != null) {
+                plan.setTaskTotal((plan.getTaskTotal() == null ? 0 : plan.getTaskTotal()) + 1);
+                planService.updateById(plan);
+            }
+        }
+
         //保存附件,先处理一下附件的格式
         AnnexFileUtils.fillAnnexFiles(taskSaveVo, save);
         taskService.save(save);

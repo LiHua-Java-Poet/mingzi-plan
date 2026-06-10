@@ -40,6 +40,11 @@ public class TaskSaveVo {
     private Integer lockTime;
 
     /**
+     * 所属计划ID
+     */
+    private Long planId;
+
+    /**
      * 唯一码
      */
     private String uniqueCode;

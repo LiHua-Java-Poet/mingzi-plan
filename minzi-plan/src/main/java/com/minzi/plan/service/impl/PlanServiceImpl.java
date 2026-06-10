@@ -108,6 +108,9 @@ public class PlanServiceImpl extends ServiceImpl<PlanDao, PlanEntity> implements
         //拿到进行中的任务数
         to.setTowardProgress((int) taskEntityList.stream().filter(b -> b.getStatus() == 1).count());
 
+        //关联任务列表
+        to.setTaskEntityList(taskEntityList);
+
         //处理返回的数据
         to.setAnnexFiles(JSON.parseArray(entity.getAnnexFile(), AnnexFile.class));
         to.setPlanInfo(JSON.parseArray(entity.getPlanInfo(), PlanItemTo.class));

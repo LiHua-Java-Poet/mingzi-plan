@@ -1,6 +1,7 @@
 package com.minzi.plan.model.to.plan;
 
 import com.minzi.common.core.model.AnnexFile;
+import com.minzi.plan.model.entity.TaskEntity;
 import lombok.Data;
 
 import java.util.List;
@@ -88,4 +89,9 @@ public class PlanInfoTo {
      * 附件内容
      */
     private List<AnnexFile> annexFiles;
+
+    /**
+     * 关联的任务列表
+     */
+    private List<TaskEntity> taskEntityList;
 }
